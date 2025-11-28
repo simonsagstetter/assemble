@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:7
+    container_name: assemble-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    # WARNING: Do NOT use default credentials in production. Set secure values via environment variables or a secrets manager.
+    # The following uses environment variables, optionally with defaults for local development.
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password}
+      MONGO_INITDB_DATABASE: "assemble"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - assemble-network
+
+  postgresql:
+    image: postgres:17.7
+    container_name: assemble-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: "assemble"
+    volumes:
+      - pgdata:/data/db
+    networks:
+      - assemble-network
+
+volumes:
+  mongodb_data:
+  pgdata:
+
+networks:
+  assemble-network:
