@@ -1,5 +1,7 @@
 *.iml
 .idea/
+*.env
+*.log
 
 backend/HELP.md
 backend/target/
