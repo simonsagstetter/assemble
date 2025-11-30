@@ -1,5 +1,8 @@
 package com.assemble.backend.operations;
 
+import com.assemble.backend.models.db.DocumentGreeting;
+import com.assemble.backend.repositories.DocumentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
@@ -8,13 +11,11 @@ import java.util.List;
 @Controller
 public class GreetingOperation {
 
-    @QueryMapping(name = "greetings")
-    public List<Greeting> greetings() {
-        return List.of( new Greeting( "Hello, world!" ), new Greeting( "Hello, world2!" ) );
-    }
+    @Autowired
+    private DocumentRepository documentRepository;
 
-    public record Greeting(
-            String message
-    ) {
+    @QueryMapping(name = "greetings")
+    public List<DocumentGreeting> greetings() {
+        return this.documentRepository.findAll();
     }
 }

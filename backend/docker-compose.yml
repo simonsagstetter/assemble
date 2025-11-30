@@ -31,26 +31,9 @@ services:
     networks:
       - assemble-network
 
-  postgresqltest:
-    image: postgres:17.7
-    container_name: assemble-postgres-test
-    restart: always
-    ports:
-      - "5431:5432"
-    environment:
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
-      POSTGRES_DB: "test"
-    volumes:
-      - pgtestdata:/data/db
-    networks:
-      - test-network
-
 volumes:
   mongodb_data:
   pgdata:
-  pgtestdata:
 
 networks:
   assemble-network:
-  test-network:

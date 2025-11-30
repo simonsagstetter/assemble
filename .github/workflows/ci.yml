@@ -6,27 +6,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  POSTGRES_URI: jdbc:postgresql://localhost:5432/test
-  POSTGRES_USER: test
-  POSTGRES_PASSWORD: test
-  POSTGRES_DB: test
-
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
-    services:
-      postgresqltest:
-        image: postgres:17.7
-        env:
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-          POSTGRES_DB: test
-
-          ports:
-            -5431:5432
 
     steps:
       - uses: actions/checkout@v4
