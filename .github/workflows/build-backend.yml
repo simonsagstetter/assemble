@@ -5,6 +5,13 @@ on:
       - main
   pull_request:
     types: [ opened, synchronize, reopened ]
+
+env:
+  POSTGRES_URI: jdbc:postgresql://localhost:5432/test
+  POSTGRES_USER: test
+  POSTGRES_PASSWORD: test
+  POSTGRES_DB: test
+
 jobs:
   build:
     name: Build and analyze

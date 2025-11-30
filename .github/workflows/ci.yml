@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  POSTGRES_URI: jdbc:postgresql://localhost:5432/test
+  POSTGRES_USER: test
+  POSTGRES_PASSWORD: test
+  POSTGRES_DB: test
+
 jobs:
   build:
 
