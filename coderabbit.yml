@@ -1,4 +1,8 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: de-DE
+tone_instructions: ''
+early_access: false
+enable_free_tier: true
 reviews:
   profile: chill
   high_level_summary: true
@@ -11,9 +15,3 @@ reviews:
       enabled: false
     unit_tests:
       enabled: false
-chat:
-  integrations:
-    jira:
-      usage: disabled
-    linear:
-      usage: disabled

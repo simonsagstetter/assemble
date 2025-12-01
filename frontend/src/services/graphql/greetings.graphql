@@ -1,0 +1,5 @@
+query GetAllGreetings {
+    greetings {
+        message
+    }
+}
