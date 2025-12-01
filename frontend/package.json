@@ -9,10 +9,12 @@
     "lint": "eslint",
     "codegen:schema": "npx graphql-codegen --config codegen.ts",
     "codegen:client": "npx graphql-codegen --config codegen-query.ts",
-    "codegen:generate": "npm run codegen:schema && npm run codegen:client"
+    "codegen:generate": "npm run codegen:schema && npm run codegen:client",
+    "orval:generate": "npx orval --config orval.config.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.11",
+    "axios": "^1.13.2",
     "next": "16.0.5",
     "react": "19.2.0",
     "react-dom": "19.2.0"
@@ -32,6 +34,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.5",
+    "orval": "^7.17.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

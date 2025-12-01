@@ -1,7 +1,13 @@
 import { useGetAllGreetingsQuery } from "@/api/graphql/queries/graphql";
+import { getAllGreetings } from "@/api/rest/generated/greetings/greetings";
 
 export default async function Home() {
     const data = await useGetAllGreetingsQuery.fetcher()();
+
+    const data2 = await getAllGreetings();
+
+    console.log( "data", data );
+    console.log( "data2", data2.data );
 
     return (
         <>
