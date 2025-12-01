@@ -1,5 +1,6 @@
 package com.assemble.backend;
 
+import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import org.springframework.boot.SpringApplication;
 
 public class TestBackendApplication {

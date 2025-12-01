@@ -1,4 +1,4 @@
-package com.assemble.backend.operations;
+package com.assemble.backend.controllers.graphql;
 
 import com.assemble.backend.models.db.DocumentGreeting;
 import com.assemble.backend.repositories.DocumentRepository;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import java.util.List;
 
 @Controller
-public class GreetingOperation {
+public class GreetingController {
 
     @Autowired
     private DocumentRepository documentRepository;

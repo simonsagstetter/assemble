@@ -1,6 +1,6 @@
-package com.assemble.backend.operations;
+package com.assemble.backend.controllers.graphql;
 
-import com.assemble.backend.TestcontainersConfiguration;
+import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import com.assemble.backend.models.db.DocumentGreeting;
 import com.assemble.backend.repositories.DocumentRepository;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import org.springframework.graphql.test.tester.GraphQlTester;
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest
 @AutoConfigureGraphQlTester
-class GreetingOperationTest {
+class GreetingControllerTest {
 
     @Autowired
     private GraphQlTester graphQlTester;
@@ -22,7 +22,7 @@ class GreetingOperationTest {
     private DocumentRepository documentRepository;
 
     @Test
-    void testGreetingOperation() {
+    void testGetAllGreetings() {
         DocumentGreeting data = this.documentRepository.insert(
                 new DocumentGreeting( null, "Hello World!" )
         );
