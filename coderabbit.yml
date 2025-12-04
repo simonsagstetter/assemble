@@ -7,7 +7,7 @@ reviews:
   profile: chill
   high_level_summary: true
   auto_review:
-    enabled: true
+    enabled: false
     drafts: false
   suggested_reviewers: false
   finishing_touches:

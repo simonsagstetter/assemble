@@ -17,7 +17,8 @@ import java.util.Optional;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BaseMongoEntity implements Auditable<String, String, Instant> {
+@SuppressWarnings("java:S1192")
+public abstract class BaseMongoEntity implements Auditable<String, String, Instant> {
 
     @Schema(
             description = "unique identifier of the entity",

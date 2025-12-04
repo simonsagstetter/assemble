@@ -1,9 +1,12 @@
 package com.assemble.backend.models.auth;
 
+import com.assemble.backend.models.core.BaseJPAEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -11,7 +14,7 @@ import lombok.*;
 @Entity
 @Table(name = "USER_ROLE")
 @Schema(name = "UserRole", description = "User roles entity")
-public class UserRole {
+public class UserRole implements Serializable {
 
     @Schema(
             description = "unique identifier of the entity",

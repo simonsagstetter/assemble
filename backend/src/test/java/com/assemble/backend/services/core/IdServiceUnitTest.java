@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("IdService Unit Test")
-public class IdServiceUnitTest {
+class IdServiceUnitTest {
 
     private final IdService idService = new IdService();
 

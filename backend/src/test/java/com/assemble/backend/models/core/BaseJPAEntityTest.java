@@ -56,6 +56,8 @@ class BaseJPAEntityTest {
 
         EntityGreeting actual = assertDoesNotThrow( () -> this.entityRepository.findById( saved.getId() ).orElseThrow() );
 
+        System.out.println( actual );
+
         //THEN
         assertThat( actual )
                 .isNotNull()

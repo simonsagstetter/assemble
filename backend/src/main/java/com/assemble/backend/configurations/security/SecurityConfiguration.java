@@ -1,31 +1,36 @@
 package com.assemble.backend.configurations.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
-import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    @Autowired
-    private CorsCustomizer corsCustomizer;
+    private final CorsCustomizer corsCustomizer;
 
-    @Autowired
-    private SessionCustomizer sessionCustomizer;
+    private final SessionCustomizer sessionCustomizer;
 
-    @Autowired
-    private CsrfCustomizer csrfCustomizer;
+    private final CsrfCustomizer csrfCustomizer;
 
-    @Autowired
-    private LogoutCustomizer logoutCustomizer;
+    private final LogoutCustomizer logoutCustomizer;
 
+    public SecurityConfiguration(
+            CorsCustomizer corsCustomizer,
+            SessionCustomizer sessionCustomizer,
+            CsrfCustomizer csrfCustomizer,
+            LogoutCustomizer logoutCustomizer
+    ) {
+        this.corsCustomizer = corsCustomizer;
+        this.sessionCustomizer = sessionCustomizer;
+        this.csrfCustomizer = csrfCustomizer;
+        this.logoutCustomizer = logoutCustomizer;
+
+    }
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain( HttpSecurity http ) throws Exception {

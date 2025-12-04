@@ -77,6 +77,7 @@ public class User extends BaseJPAEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if ( this.roles == null ) return List.of();
         return this.roles.stream()
                 .map( role -> new SimpleGrantedAuthority( role.getName() ) )
                 .toList();
