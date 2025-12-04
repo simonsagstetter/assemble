@@ -12,11 +12,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
     private final CorsCustomizer corsCustomizer;
-
     private final SessionCustomizer sessionCustomizer;
-
     private final CsrfCustomizer csrfCustomizer;
-
     private final LogoutCustomizer logoutCustomizer;
 
     public SecurityConfiguration(

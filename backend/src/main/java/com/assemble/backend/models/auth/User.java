@@ -12,11 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
 import java.util.List;
 
 @SuperBuilder
@@ -27,7 +23,7 @@ import java.util.List;
 @Entity
 @Table(name = "USERS")
 @Schema(name = "User", description = "User entity")
-public class User extends BaseJPAEntity implements UserDetails {
+public class User extends BaseJPAEntity {
 
     @Schema(
             description = "user authentication identifier",
@@ -64,6 +60,7 @@ public class User extends BaseJPAEntity implements UserDetails {
     @Email(message = "Please provide a valid email address")
     private String email;
 
+
     @Schema
     @NotNull
     @ManyToMany(fetch = jakarta.persistence.FetchType.EAGER)
@@ -75,41 +72,22 @@ public class User extends BaseJPAEntity implements UserDetails {
     private List<UserRole> roles;
 
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if ( this.roles == null ) return List.of();
-        return this.roles.stream()
-                .map( role -> new SimpleGrantedAuthority( role.getName() ) )
-                .toList();
-    }
+    @Schema(
+            description = "identifies if user is enabled",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            accessMode = Schema.AccessMode.READ_WRITE
+    )
+    @NotNull
+    @Column(nullable = false, name = "IS_ENABLED")
+    private boolean enabled = true;
 
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
 
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
-    }
+    @Schema(
+            description = "identifies if user is locked",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            accessMode = Schema.AccessMode.READ_WRITE
+    )
+    @NotNull
+    @Column(nullable = false, name = "IS_LOCKED")
+    private boolean locked = false;
 }
