@@ -22,11 +22,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("BaseJPAEntity Intergration Test")
+@DisplayName("BaseJPAEntity Integration Test")
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class BaseJPAEntitiyTest {
+class BaseJPAEntityTest {
 
     @Autowired
     private EntityRepository entityRepository;
@@ -85,8 +85,6 @@ class BaseJPAEntitiyTest {
 
         EntityGreeting created = this.entityRepository.save( given );
 
-        Instant createdDate = created.getCreatedDate().orElseThrow();
-
         EntityGreeting stored = assertDoesNotThrow( () -> this.entityRepository.findById( created.getId() ).orElseThrow() );
         stored.setMessage( "Hello again, Postgres!" );
 
@@ -94,9 +92,14 @@ class BaseJPAEntitiyTest {
         EntityGreeting actual = assertDoesNotThrow( () -> this.entityRepository.save( stored ) );
 
         //ASSERT
-        assertThat( actual )
-                .extracting( "createdDate", "createdBy" )
-                .contains( Optional.of( createdDate.truncatedTo( ChronoUnit.MILLIS ) ), created.getCreatedBy() );
+        Instant createdDate = created.getCreatedDate().orElseThrow();
+        Instant actualCreatedDate = actual.getCreatedDate().orElseThrow();
+
+        assertThat( actualCreatedDate.truncatedTo( ChronoUnit.MILLIS ) )
+                .isEqualTo( createdDate.truncatedTo( ChronoUnit.MILLIS ) );
+
+        assertThat( actual.getCreatedBy() )
+                .isEqualTo( created.getCreatedBy() );
 
         assertThat( actual.getLastModifiedDate() )
                 .isNotEqualTo( created.getLastModifiedDate() );

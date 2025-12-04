@@ -1,6 +1,6 @@
 package com.assemble.backend.models.auth;
 
-import com.assemble.backend.models.core.BaseJPAEntitiy;
+import com.assemble.backend.models.core.BaseJPAEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -27,7 +27,7 @@ import java.util.List;
 @Entity
 @Table(name = "USERS")
 @Schema(name = "User", description = "User entity")
-public class User extends BaseJPAEntitiy implements UserDetails {
+public class User extends BaseJPAEntity implements UserDetails {
 
     @Schema(
             description = "user authentication identifier",
@@ -48,7 +48,6 @@ public class User extends BaseJPAEntitiy implements UserDetails {
     )
     @JsonIgnore
     @Column(nullable = false, name = "PASSWORD")
-    @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters long")
     @NotNull
     private String password;
 
@@ -111,15 +110,5 @@ public class User extends BaseJPAEntitiy implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", roles=" + roles +
-                "} " + super.toString();
     }
 }

@@ -1,6 +1,6 @@
 package com.assemble.backend.models.db;
 
-import com.assemble.backend.models.core.BaseJPAEntitiy;
+import com.assemble.backend.models.core.BaseJPAEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "greetings")
-public class EntityGreeting extends BaseJPAEntitiy {
+public class EntityGreeting extends BaseJPAEntity {
 
     @Schema(
             description = "Message",

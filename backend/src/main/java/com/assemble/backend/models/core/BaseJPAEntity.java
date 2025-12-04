@@ -24,7 +24,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseJPAEntitiy
+public abstract class BaseJPAEntity
         implements Auditable<String, String, Instant> {
 
     @Schema(
@@ -109,7 +109,7 @@ public abstract class BaseJPAEntitiy
 
     @Override
     public Optional<String> getCreatedBy() {
-        return Optional.of( createdBy );
+        return Optional.ofNullable( createdBy );
     }
 
     @Override
@@ -119,7 +119,7 @@ public abstract class BaseJPAEntitiy
 
     @Override
     public Optional<Instant> getCreatedDate() {
-        return Optional.of( createdDate );
+        return Optional.ofNullable( createdDate );
     }
 
     @Override
@@ -129,7 +129,7 @@ public abstract class BaseJPAEntitiy
 
     @Override
     public Optional<String> getLastModifiedBy() {
-        return Optional.of( lastModifiedBy );
+        return Optional.ofNullable( lastModifiedBy );
     }
 
     @Override
@@ -139,7 +139,7 @@ public abstract class BaseJPAEntitiy
 
     @Override
     public Optional<Instant> getLastModifiedDate() {
-        return Optional.of( lastModifiedDate );
+        return Optional.ofNullable( lastModifiedDate );
     }
 
     @Override

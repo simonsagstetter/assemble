@@ -1,7 +1,6 @@
 package com.assemble.backend.models.core;
 
 import com.assemble.backend.models.db.DocumentGreeting;
-import com.assemble.backend.models.db.EntityGreeting;
 import com.assemble.backend.repositories.DocumentRepository;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
@@ -21,7 +20,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("BaseMongoEntity Intergration Test")
+@DisplayName("BaseMongoEntity Integration Test")
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)
 class BaseMongoEntityTest {
@@ -74,7 +73,7 @@ class BaseMongoEntityTest {
                 .thenReturn( Optional.of( "FAKE-USER" ) );
 
         String testMessage = "Hello MongoDB!";
-        String recordId = idService.generateIdFor( EntityGreeting.class );
+        String recordId = idService.generateIdFor( DocumentGreeting.class );
 
         DocumentGreeting given = DocumentGreeting.builder()
                 .id( recordId )
@@ -83,8 +82,6 @@ class BaseMongoEntityTest {
 
         DocumentGreeting created = this.documentRepository.save( given );
 
-        Instant createdDate = created.getCreatedDate().orElseThrow();
-
         DocumentGreeting stored = assertDoesNotThrow( () -> this.documentRepository.findById( created.getId() ).orElseThrow() );
         stored.setMessage( "Hello again, MongoDB!" );
 
@@ -92,10 +89,14 @@ class BaseMongoEntityTest {
         DocumentGreeting actual = assertDoesNotThrow( () -> this.documentRepository.save( stored ) );
 
         //ASSERT
-        assertThat( actual )
-                .extracting( "createdDate", "createdBy" )
-                .contains( Optional.of( createdDate.truncatedTo( ChronoUnit.MILLIS ) ), created.getCreatedBy() );
+        Instant createdDate = created.getCreatedDate().orElseThrow();
+        Instant actualCreatedDate = actual.getCreatedDate().orElseThrow();
 
+        assertThat( actualCreatedDate.truncatedTo( ChronoUnit.MILLIS ) )
+                .isEqualTo( createdDate.truncatedTo( ChronoUnit.MILLIS ) );
+
+        assertThat( actual.getCreatedBy() )
+                .isEqualTo( created.getCreatedBy() );
         assertThat( actual.getLastModifiedDate() )
                 .isNotEqualTo( created.getLastModifiedDate() );
 

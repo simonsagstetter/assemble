@@ -1,7 +1,6 @@
 package com.assemble.backend.models.core;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -82,7 +81,7 @@ public class BaseMongoEntity implements Auditable<String, String, Instant> {
 
     @Override
     public Optional<String> getCreatedBy() {
-        return Optional.of( createdBy );
+        return Optional.ofNullable( createdBy );
     }
 
     @Override
@@ -92,7 +91,7 @@ public class BaseMongoEntity implements Auditable<String, String, Instant> {
 
     @Override
     public Optional<Instant> getCreatedDate() {
-        return Optional.of( createdDate );
+        return Optional.ofNullable( createdDate );
     }
 
     @Override
@@ -102,7 +101,7 @@ public class BaseMongoEntity implements Auditable<String, String, Instant> {
 
     @Override
     public Optional<String> getLastModifiedBy() {
-        return Optional.of( lastModifiedBy );
+        return Optional.ofNullable( lastModifiedBy );
     }
 
     @Override
@@ -112,7 +111,7 @@ public class BaseMongoEntity implements Auditable<String, String, Instant> {
 
     @Override
     public Optional<Instant> getLastModifiedDate() {
-        return Optional.of( lastModifiedDate );
+        return Optional.ofNullable( lastModifiedDate );
     }
 
     @Override
