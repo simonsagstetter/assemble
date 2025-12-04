@@ -1,9 +1,7 @@
 package com.assemble.backend.configurations.mongodb;
 
 import com.assemble.backend.models.db.DocumentGreeting;
-import com.assemble.backend.models.db.EntityGreeting;
 import com.assemble.backend.repositories.DocumentRepository;
-import com.assemble.backend.repositories.EntityRepository;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import org.junit.jupiter.api.DisplayName;

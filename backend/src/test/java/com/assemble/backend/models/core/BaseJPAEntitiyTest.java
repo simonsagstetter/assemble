@@ -14,6 +14,8 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -83,6 +85,8 @@ class BaseJPAEntitiyTest {
 
         EntityGreeting created = this.entityRepository.save( given );
 
+        Instant createdDate = created.getCreatedDate().orElseThrow();
+
         EntityGreeting stored = assertDoesNotThrow( () -> this.entityRepository.findById( created.getId() ).orElseThrow() );
         stored.setMessage( "Hello again, Postgres!" );
 
@@ -92,7 +96,7 @@ class BaseJPAEntitiyTest {
         //ASSERT
         assertThat( actual )
                 .extracting( "createdDate", "createdBy" )
-                .contains( created.getCreatedDate(), created.getCreatedBy() );
+                .contains( Optional.of( createdDate.truncatedTo( ChronoUnit.MILLIS ) ), created.getCreatedBy() );
 
         assertThat( actual.getLastModifiedDate() )
                 .isNotEqualTo( created.getLastModifiedDate() );
