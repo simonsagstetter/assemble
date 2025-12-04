@@ -1,5 +1,6 @@
 package com.assemble.backend.configurations.security;
 
+import com.assemble.backend.models.auth.SecurityUser;
 import com.assemble.backend.models.auth.User;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
@@ -13,7 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,9 @@ class AuditorAwareImplTest {
 
     @Autowired
     private IdService idService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private final Authentication authentication = Mockito.mock( Authentication.class );
 
@@ -66,15 +70,17 @@ class AuditorAwareImplTest {
     void getCurrentAuditor_ShouldReturnAuthenticatedUser_FromUserDetails() {
         Mockito.when( authentication.isAuthenticated() ).thenReturn( true );
 
-        UserDetails user = User.builder()
+        User user = User.builder()
                 .id( idService.generateIdFor( User.class ) )
                 .username( "mustermannmax" )
-                .password( new BCryptPasswordEncoder().encode( "securePassword" ) )
+                .password( passwordEncoder.encode( "securePassword" ) )
                 .email( "max.mustermann@exmaple.com" )
                 .roles( List.of() )
                 .build();
 
-        Mockito.when( authentication.getPrincipal() ).thenReturn( user );
+        UserDetails userDetails = new SecurityUser( user );
+
+        Mockito.when( authentication.getPrincipal() ).thenReturn( userDetails );
         Mockito.when( securityContext.getAuthentication() ).thenReturn( authentication );
 
         SecurityContextHolder.setContext( securityContext );
@@ -82,6 +88,6 @@ class AuditorAwareImplTest {
         AuditorAwareImpl auditorAware = new AuditorAwareImpl();
         Optional<String> actual = auditorAware.getCurrentAuditor();
 
-        assertEquals( Optional.of( user.getUsername() ), actual );
+        assertEquals( Optional.of( userDetails.getUsername() ), actual );
     }
 }
