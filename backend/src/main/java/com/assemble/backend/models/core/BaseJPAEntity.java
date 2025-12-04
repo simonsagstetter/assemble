@@ -24,7 +24,6 @@ import java.util.Optional;
 @NoArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@SuppressWarnings("java:S1192")
 public abstract class BaseJPAEntity
         implements Auditable<String, String, Instant> {
 
