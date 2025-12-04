@@ -41,12 +41,4 @@ public class UserRole implements Serializable {
         this.id = null;
         this.name = name;
     }
-
-    @Override
-    public String toString() {
-        return "UserRole{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }

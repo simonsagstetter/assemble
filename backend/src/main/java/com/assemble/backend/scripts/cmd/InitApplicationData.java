@@ -21,10 +21,10 @@ public class InitApplicationData implements CommandLineRunner {
         if ( userRoleRepository.count() == 0 ) {
             userRoleRepository.saveAll(
                     List.of(
-                            new UserRole( "ROLE_USER" ),
-                            new UserRole( "ROLE_MANAGER" ),
-                            new UserRole( "ROLE_ADMIN" ),
-                            new UserRole( "ROLE_SUPERADMIN" )
+                            new UserRole( "USER" ),
+                            new UserRole( "MANAGER" ),
+                            new UserRole( "ADMIN" ),
+                            new UserRole( "SUPERADMIN" )
                     )
             );
         }
