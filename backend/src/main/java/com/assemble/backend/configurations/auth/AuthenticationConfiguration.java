@@ -18,12 +18,17 @@ public class AuthenticationConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager( HttpSecurity http, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService ) throws Exception {
+    public AuthenticationManager authenticationManager( HttpSecurity http,
+                                                        PasswordEncoder passwordEncoder,
+                                                        UserDetailsService userDetailsService )
+            throws Exception {
         AuthenticationManagerBuilder authBuilder = http.getSharedObject( AuthenticationManagerBuilder.class );
         authBuilder
                 .userDetailsService( userDetailsService )
                 .passwordEncoder( passwordEncoder );
 
-        return authBuilder.build();
+        AuthenticationManager authenticationManager = authBuilder.build();
+        http.authenticationManager( authenticationManager );
+        return authenticationManager;
     }
 }

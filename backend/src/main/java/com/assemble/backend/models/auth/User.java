@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 
 @SuperBuilder
@@ -23,7 +24,7 @@ import java.util.List;
 @Entity
 @Table(name = "USERS")
 @Schema(name = "User", description = "User entity")
-public class User extends BaseJPAEntity {
+public class User extends BaseJPAEntity implements Serializable {
 
     @Schema(
             description = "user authentication identifier",
@@ -61,7 +62,11 @@ public class User extends BaseJPAEntity {
     private String email;
 
 
-    @Schema
+    @Schema(
+            description = "user roles",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            accessMode = Schema.AccessMode.READ_WRITE
+    )
     @NotNull
     @ManyToMany(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinTable(
