@@ -12,14 +12,13 @@ public class CsrfCustomizer implements Customizer<CsrfConfigurer<HttpSecurity>> 
 
     @Override
     public void customize( CsrfConfigurer<HttpSecurity> httpSecurityCsrfConfigurer ) {
-        httpSecurityCsrfConfigurer.disable();
-//        httpSecurityCsrfConfigurer
-//                .csrfTokenRepository(
-//                        CookieCsrfTokenRepository.withHttpOnlyFalse()
-//                )
-//                .csrfTokenRequestHandler(
-//                        new CsrfTokenRequestAttributeHandler()
-//                )
-//                .ignoringRequestMatchers( "/api/auth/**" );
+        httpSecurityCsrfConfigurer
+                .csrfTokenRepository(
+                        CookieCsrfTokenRepository.withHttpOnlyFalse()
+                )
+                .csrfTokenRequestHandler(
+                        new CsrfTokenRequestAttributeHandler()
+                )
+                .ignoringRequestMatchers( "/**" );
     }
 }
