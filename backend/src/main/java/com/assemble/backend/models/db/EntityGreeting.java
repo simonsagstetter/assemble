@@ -1,35 +1,28 @@
 package com.assemble.backend.models.db;
 
+import com.assemble.backend.models.core.BaseJPAEntitiy;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.lang.NonNull;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "greetings")
-public class EntityGreeting {
-
-    @Schema(
-            description = "Unique identifier of this entity",
-            requiredMode = Schema.RequiredMode.REQUIRED,
-            nullable = false,
-            accessMode = Schema.AccessMode.READ_ONLY
-    )
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+public class EntityGreeting extends BaseJPAEntitiy {
 
     @Schema(
             description = "Message",
             requiredMode = Schema.RequiredMode.REQUIRED,
             nullable = false,
-            accessMode = Schema.AccessMode.READ_WRITE
+            accessMode = Schema.AccessMode.READ_WRITE,
+            example = "Hello World!"
     )
-    @NonNull
+    @NotNull
     private String message;
 }
