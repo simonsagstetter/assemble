@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
@@ -89,11 +88,8 @@ class BaseMongoEntityTest {
         DocumentGreeting actual = assertDoesNotThrow( () -> this.documentRepository.save( stored ) );
 
         //ASSERT
-        Instant createdDate = created.getCreatedDate().orElseThrow();
-        Instant actualCreatedDate = actual.getCreatedDate().orElseThrow();
-
-        assertThat( actualCreatedDate.truncatedTo( ChronoUnit.MILLIS ) )
-                .isEqualTo( createdDate.truncatedTo( ChronoUnit.MILLIS ) );
+        assertThat( created.getCreatedDate().truncatedTo( ChronoUnit.MILLIS ) )
+                .isEqualTo( actual.getCreatedDate().truncatedTo( ChronoUnit.MILLIS ) );
 
         assertThat( actual.getCreatedBy() )
                 .isEqualTo( created.getCreatedBy() );
@@ -101,7 +97,7 @@ class BaseMongoEntityTest {
                 .isNotEqualTo( created.getLastModifiedDate() );
 
         assertThat( actual.getLastModifiedBy() )
-                .isEqualTo( Optional.of( "FAKE-USER" ) );
+                .isEqualTo( "FAKE-USER" );
     }
 
 }

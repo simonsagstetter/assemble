@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(value = "greetings")
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class DocumentGreeting extends BaseMongoEntity {
 
     @Schema(

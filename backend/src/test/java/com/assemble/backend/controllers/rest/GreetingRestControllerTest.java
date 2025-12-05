@@ -58,7 +58,7 @@ class GreetingRestControllerTest {
                 )
                 .andExpect(
                         MockMvcResultMatchers
-                                .jsonPath( "$[0].createdBy" ).value( data.getCreatedBy().orElse( null ) )
+                                .jsonPath( "$[0].createdBy" ).value( data.getCreatedBy() )
                 )
                 .andExpect(
                         MockMvcResultMatchers
@@ -66,7 +66,7 @@ class GreetingRestControllerTest {
                 )
                 .andExpect(
                         MockMvcResultMatchers
-                                .jsonPath( "$[0].lastModifiedBy" ).value( data.getLastModifiedBy().orElse( null ) )
+                                .jsonPath( "$[0].lastModifiedBy" ).value( data.getLastModifiedBy() )
                 );
 
     }

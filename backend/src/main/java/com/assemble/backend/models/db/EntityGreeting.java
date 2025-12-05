@@ -14,6 +14,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "greetings")
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class EntityGreeting extends BaseJPAEntity {
 
     @Schema(

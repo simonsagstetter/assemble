@@ -5,27 +5,24 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.*;
-import org.springframework.data.domain.Auditable;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
-import java.util.Optional;
 
 @SuperBuilder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseJPAEntity
-        implements Auditable<String, String, Instant> {
+        implements Persistable<String> {
 
     @Schema(
             description = "unique identifier of the entity",
@@ -101,45 +98,5 @@ public abstract class BaseJPAEntity
     @Override
     public String getId() {
         return this.id;
-    }
-
-    @Override
-    public Optional<String> getCreatedBy() {
-        return Optional.ofNullable( createdBy );
-    }
-
-    @Override
-    public void setCreatedBy( String createdBy ) {
-        this.createdBy = createdBy;
-    }
-
-    @Override
-    public Optional<Instant> getCreatedDate() {
-        return Optional.ofNullable( createdDate );
-    }
-
-    @Override
-    public void setCreatedDate( Instant creationDate ) {
-        this.createdDate = creationDate;
-    }
-
-    @Override
-    public Optional<String> getLastModifiedBy() {
-        return Optional.ofNullable( lastModifiedBy );
-    }
-
-    @Override
-    public void setLastModifiedBy( String lastModifiedBy ) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    @Override
-    public Optional<Instant> getLastModifiedDate() {
-        return Optional.ofNullable( lastModifiedDate );
-    }
-
-    @Override
-    public void setLastModifiedDate( Instant lastModifiedDate ) {
-        this.lastModifiedDate = lastModifiedDate;
     }
 }
