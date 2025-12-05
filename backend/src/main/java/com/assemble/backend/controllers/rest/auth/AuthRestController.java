@@ -1,15 +1,20 @@
 package com.assemble.backend.controllers.rest.auth;
 
+import com.assemble.backend.dtos.ErrorResponse;
+import com.assemble.backend.dtos.auth.LoginRequest;
+import com.assemble.backend.dtos.auth.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,11 +45,27 @@ public class AuthRestController {
     )
     @ApiResponse(
             responseCode = "200",
-            description = "Login successful"
+            description = "Login successful",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = LoginResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Invalid Credentials",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorResponse.class)
+            )
     )
     @ApiResponse(
             responseCode = "403",
-            description = "Login failed or already authenticated"
+            description = "Access Denied",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorResponse.class)
+            )
     )
     @PostMapping(
             path = "/login",
@@ -55,15 +76,14 @@ public class AuthRestController {
                     "Content-Type=" + MediaType.APPLICATION_JSON_VALUE
             }
     )
-    @PreAuthorize("isAnonymous()")
-    public ResponseEntity<String> login(
+    public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest credentials,
             HttpServletRequest request,
             HttpServletResponse response
     ) {
 
         Authentication authRequest = UsernamePasswordAuthenticationToken
-                .unauthenticated( credentials.username(), credentials.password() );
+                .unauthenticated( credentials.getUsername(), credentials.getPassword() );
 
         Authentication authResult = authenticationManager.authenticate( authRequest );
 
@@ -77,7 +97,13 @@ public class AuthRestController {
 
         log.info( "User {} logged in successfully", authResult.getName() );
 
-        return ResponseEntity.ok( "Login successful" );
+        LoginResponse loginResponse = LoginResponse.builder()
+                .statusCode( HttpStatus.OK.value() )
+                .statusText( HttpStatus.OK.getReasonPhrase() )
+                .sessionId( request.getSession().getId() )
+                .build();
+
+        return ResponseEntity.ok( loginResponse );
     }
 
     @Operation(
@@ -85,14 +111,17 @@ public class AuthRestController {
             summary = "Successful logout deletes cookies and invalidates session"
     )
     @ApiResponse(
-            responseCode = "200",
+            responseCode = "204",
             description = "Logout successful"
     )
     @ApiResponse(
-            responseCode = "403",
-            description = "Logout failed or not authenticated"
+            responseCode = "401",
+            description = "Not authenticated",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorResponse.class)
+            )
     )
-    @PreAuthorize("isAuthenticated()")
     @PostMapping(
             path = "/logout"
     )
@@ -103,9 +132,7 @@ public class AuthRestController {
     ) {
         securityContextLogoutHandler.logout( request, response, authentication );
         log.info( "User {} logged out successfully", authentication.getName() );
-        return ResponseEntity.noContent().build();
-    }
 
-    public record LoginRequest( String username, String password ) {
+        return ResponseEntity.noContent().build();
     }
 }
