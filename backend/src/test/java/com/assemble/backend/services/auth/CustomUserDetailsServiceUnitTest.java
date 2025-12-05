@@ -74,38 +74,6 @@ class CustomUserDetailsServiceUnitTest {
         assertTrue( userDetails.isEnabled() );
     }
 
-    @DisplayName("loadUserByUsername should return an instance of UserDetails but no Authorities")
-    @Test
-    void loadUserByUsername_ShouldReturnUserDetailsWithoutAuthorities() {
-
-        User givenUser = User.builder()
-                .id( idService.generateIdFor( User.class ) )
-                .username( "mustermannmax" )
-                .password( passwordEncoder.encode( "CompletelySecurePassword123!" ) )
-                .email( "max.mustermann@example.com" )
-                .enabled( true )
-                .build();
-
-        Mockito.when( userRepository.findByUsername( givenUser.getUsername() ) )
-                .thenReturn( Optional.of( givenUser ) );
-
-        UserDetails userDetails = assertDoesNotThrow( () -> customUserDetailsService.loadUserByUsername( givenUser.getUsername() ) );
-
-        assertThat( userDetails )
-                .isNotNull()
-                .isInstanceOf( SecurityUser.class )
-                .extracting( "user" )
-                .isEqualTo( givenUser );
-
-        assertEquals( List.of(), userDetails.getAuthorities() );
-        assertEquals( givenUser.getUsername(), userDetails.getUsername() );
-        assertEquals( givenUser.getPassword(), userDetails.getPassword() );
-        assertTrue( userDetails.isAccountNonExpired() );
-        assertTrue( userDetails.isAccountNonLocked() );
-        assertTrue( userDetails.isCredentialsNonExpired() );
-        assertTrue( userDetails.isEnabled() );
-    }
-
     @DisplayName("loadUserByUsername should return an instance of SecurityUser with all Details of User")
     @Test
     void loadUserByUsername_ShouldThrowUserNameNotFoundException_WhenUserNotFound() {

@@ -1,23 +1,21 @@
 package com.assemble.backend.models.core;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.*;
-import org.springframework.data.domain.Auditable;
+import org.springframework.data.domain.Persistable;
 
+import java.io.Serializable;
 import java.time.Instant;
-import java.util.Optional;
 
 @SuperBuilder
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class BaseMongoEntity implements Auditable<String, String, Instant> {
+public abstract class BaseMongoEntity implements Persistable<String>, Serializable {
 
     @Schema(
             description = "unique identifier of the entity",
@@ -27,6 +25,7 @@ public abstract class BaseMongoEntity implements Auditable<String, String, Insta
             example = "ur123e4567e89b12d3a456426655440000"
     )
     @Id
+    @NonNull
     private String id;
 
 
@@ -77,45 +76,5 @@ public abstract class BaseMongoEntity implements Auditable<String, String, Insta
     @Override
     public String getId() {
         return this.id;
-    }
-
-    @Override
-    public Optional<String> getCreatedBy() {
-        return Optional.ofNullable( createdBy );
-    }
-
-    @Override
-    public void setCreatedBy( String createdBy ) {
-        this.createdBy = createdBy;
-    }
-
-    @Override
-    public Optional<Instant> getCreatedDate() {
-        return Optional.ofNullable( createdDate );
-    }
-
-    @Override
-    public void setCreatedDate( Instant creationDate ) {
-        this.createdDate = creationDate;
-    }
-
-    @Override
-    public Optional<String> getLastModifiedBy() {
-        return Optional.ofNullable( lastModifiedBy );
-    }
-
-    @Override
-    public void setLastModifiedBy( String lastModifiedBy ) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    @Override
-    public Optional<Instant> getLastModifiedDate() {
-        return Optional.ofNullable( lastModifiedDate );
-    }
-
-    @Override
-    public void setLastModifiedDate( Instant lastModifiedDate ) {
-        this.lastModifiedDate = lastModifiedDate;
     }
 }

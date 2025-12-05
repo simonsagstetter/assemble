@@ -1,16 +1,15 @@
 package com.assemble.backend.models.auth;
 
-import com.assemble.backend.models.core.BaseJPAEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serializable;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@RequiredArgsConstructor
+@NoArgsConstructor(force = true)
 @Entity
 @Table(name = "USER_ROLE")
 @Schema(name = "UserRole", description = "User roles entity")
@@ -34,11 +33,6 @@ public class UserRole implements Serializable {
             accessMode = Schema.AccessMode.READ_WRITE
     )
     @Column(name = "NAME", unique = true, nullable = false, updatable = false)
-    @NotNull
+    @NonNull
     private String name;
-
-    public UserRole( String name ) {
-        this.id = null;
-        this.name = name;
-    }
 }

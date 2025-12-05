@@ -1,26 +1,24 @@
-package com.assemble.backend.models.db;
+package com.assemble.backend.dtos;
 
-import com.assemble.backend.models.core.BaseMongoEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Getter
-@Setter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document("greetings")
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class DocumentGreeting extends BaseMongoEntity {
-
+@Schema(name = "Error Response", description = "Error response entity")
+public class ErrorResponse extends BaseResponse {
     @Schema(
-            description = "Message",
+            description = "Human readable error message",
             requiredMode = Schema.RequiredMode.REQUIRED,
-            accessMode = Schema.AccessMode.READ_WRITE
+            accessMode = Schema.AccessMode.READ_ONLY,
+            example = "Invalid credentials"
     )
     @NonNull
     @NotBlank

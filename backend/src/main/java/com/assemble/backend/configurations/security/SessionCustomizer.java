@@ -15,4 +15,5 @@ public class SessionCustomizer implements Customizer<SessionManagementConfigurer
                 .sessionCreationPolicy( SessionCreationPolicy.IF_REQUIRED )
                 .maximumSessions( 3 );
     }
+
 }

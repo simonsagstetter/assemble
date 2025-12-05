@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JpaAuditingConfiguration Integration Test")
@@ -39,7 +37,7 @@ class JpaAuditingConfigurationTest {
                 .extracting( "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
                 .doesNotContainNull();
 
-        assertThat( actual.getCreatedBy() ).isEqualTo( Optional.of( "SYSTEM" ) );
-        assertThat( actual.getLastModifiedBy() ).isEqualTo( Optional.of( "SYSTEM" ) );
+        assertThat( actual.getCreatedBy() ).isEqualTo( "SYSTEM" );
+        assertThat( actual.getLastModifiedBy() ).isEqualTo( "SYSTEM" );
     }
 }
