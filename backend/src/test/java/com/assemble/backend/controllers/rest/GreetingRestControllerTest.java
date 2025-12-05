@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -31,6 +32,7 @@ class GreetingRestControllerTest {
     private IdService idService;
 
     @Test
+    @WithMockUser(username = "mustermannmax", roles = { "USER" })
     void getAllGreetings_ShouldReturnAllGreetings() throws Exception {
         EntityGreeting data = this.entityRepository.save(
                 EntityGreeting.builder()
