@@ -20,7 +20,6 @@ public class DocumentGreeting extends BaseMongoEntity {
     @Schema(
             description = "Message",
             requiredMode = Schema.RequiredMode.REQUIRED,
-            nullable = false,
             accessMode = Schema.AccessMode.READ_WRITE
     )
     @NotNull

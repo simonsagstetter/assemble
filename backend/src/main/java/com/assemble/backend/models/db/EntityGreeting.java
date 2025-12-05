@@ -21,7 +21,6 @@ public class EntityGreeting extends BaseJPAEntity {
     @Schema(
             description = "Message",
             requiredMode = Schema.RequiredMode.REQUIRED,
-            nullable = false,
             accessMode = Schema.AccessMode.READ_WRITE,
             example = "Hello World!"
     )
