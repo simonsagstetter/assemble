@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @ControllerAdvice
-public class ExceptionContoller {
+public class ExceptionController {
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseBody
-    public ResponseEntity<?> handleBadCredentialsException() {
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException() {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .statusCode( HttpStatus.UNAUTHORIZED.value() )
                 .statusText( HttpStatus.UNAUTHORIZED.getReasonPhrase() )

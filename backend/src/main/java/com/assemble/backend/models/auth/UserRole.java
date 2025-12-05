@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @Entity
 @Table(name = "USER_ROLE")
 @Schema(name = "UserRole", description = "User roles entity")

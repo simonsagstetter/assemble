@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -77,7 +78,7 @@ public class AuthRestController {
             }
     )
     public ResponseEntity<LoginResponse> login(
-            @RequestBody LoginRequest credentials,
+            @RequestBody @Valid LoginRequest credentials,
             HttpServletRequest request,
             HttpServletResponse response
     ) {
@@ -125,7 +126,7 @@ public class AuthRestController {
     @PostMapping(
             path = "/logout"
     )
-    public ResponseEntity<?> logout(
+    public ResponseEntity<Void> logout(
             Authentication authentication,
             HttpServletRequest request,
             HttpServletResponse response
