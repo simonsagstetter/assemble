@@ -1,22 +1,20 @@
 package com.assemble.backend.models.auth;
 
 import lombok.Getter;
-import org.springframework.security.core.CredentialsContainer;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
+@RequiredArgsConstructor
 @Getter
-public class SecurityUser implements UserDetails, CredentialsContainer {
+public class SecurityUser implements UserDetails {
 
+    @NonNull
     private User user;
-
-    public SecurityUser( User user ) {
-        this.user = user;
-    }
 
     @Override
     public String getUsername() {
@@ -35,13 +33,10 @@ public class SecurityUser implements UserDetails, CredentialsContainer {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if ( user.getRoles() != null ) {
-            return user.getRoles().
-                    stream()
-                    .map( role -> new SimpleGrantedAuthority( "ROLE_" + role.getName() ) )
-                    .toList();
-        }
-        return List.of();
+        return user.getRoles().
+                stream()
+                .map( role -> new SimpleGrantedAuthority( "ROLE_" + role.getName() ) )
+                .toList();
     }
 
     @Override
@@ -57,10 +52,5 @@ public class SecurityUser implements UserDetails, CredentialsContainer {
     @Override
     public boolean isEnabled() {
         return this.user.isEnabled();
-    }
-
-    @Override
-    public void eraseCredentials() {
-        this.user.setPassword( null );
     }
 }

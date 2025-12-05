@@ -1,20 +1,25 @@
 package com.assemble.backend.scripts.cmd;
 
+import com.assemble.backend.models.auth.User;
 import com.assemble.backend.models.auth.UserRole;
+import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.auth.UserRoleRepository;
+import com.assemble.backend.services.core.IdService;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Component
 public class InitApplicationData implements CommandLineRunner {
 
     private final UserRoleRepository userRoleRepository;
-
-    public InitApplicationData( UserRoleRepository userRoleRepository ) {
-        this.userRoleRepository = userRoleRepository;
-    }
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final IdService idService;
 
     @Override
     public void run( String... args ) {
@@ -26,6 +31,20 @@ public class InitApplicationData implements CommandLineRunner {
                             new UserRole( "ADMIN" ),
                             new UserRole( "SUPERADMIN" )
                     )
+            );
+        }
+
+        if ( userRepository.count() == 0 ) {
+            UserRole superAdmin = this.userRoleRepository.findByName( "SUPERADMIN" ).orElseThrow();
+            userRepository.save(
+                    User.builder()
+                            .id( idService.generateIdFor( User.class ) )
+                            .username( "sagstettersi" )
+                            .password( passwordEncoder.encode( "SuperSecurePassword123!" ) )
+                            .email( "simon.sagstetter@example.com" )
+                            .roles( List.of( superAdmin ) )
+                            .enabled( true )
+                            .build()
             );
         }
     }

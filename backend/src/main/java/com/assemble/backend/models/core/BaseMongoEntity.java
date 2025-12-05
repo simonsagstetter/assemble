@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.*;
 import org.springframework.data.domain.Persistable;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 @SuperBuilder
@@ -14,7 +15,7 @@ import java.time.Instant;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class BaseMongoEntity implements Persistable<String> {
+public abstract class BaseMongoEntity implements Persistable<String>, Serializable {
 
     @Schema(
             description = "unique identifier of the entity",
@@ -24,6 +25,7 @@ public abstract class BaseMongoEntity implements Persistable<String> {
             example = "ur123e4567e89b12d3a456426655440000"
     )
     @Id
+    @NonNull
     private String id;
 
 

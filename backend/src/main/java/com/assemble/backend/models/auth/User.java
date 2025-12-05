@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -16,7 +15,7 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -33,8 +32,8 @@ public class User extends BaseJPAEntity implements Serializable {
             example = "mustermannmax",
             accessMode = Schema.AccessMode.READ_WRITE
     )
-    @NotNull
     @Size(min = 6, max = 15, message = "Username must be between 6 and 15 characters long")
+    @NonNull
     @Column(unique = true, nullable = false, length = 15, name = "USERNAME")
     private String username;
 
@@ -43,8 +42,8 @@ public class User extends BaseJPAEntity implements Serializable {
             hidden = true
     )
     @JsonIgnore
+    @NonNull
     @Column(nullable = false, name = "PASSWORD")
-    @NotNull
     private String password;
 
 
@@ -55,9 +54,9 @@ public class User extends BaseJPAEntity implements Serializable {
             accessMode = Schema.AccessMode.READ_WRITE,
             example = "max.mustermann@example.com"
     )
-    @Column(unique = true, nullable = false, name = "EMAIL")
-    @NotNull
+    @NonNull
     @Email(message = "Please provide a valid email address")
+    @Column(unique = true, nullable = false, name = "EMAIL")
     private String email;
 
 
@@ -66,7 +65,7 @@ public class User extends BaseJPAEntity implements Serializable {
             requiredMode = Schema.RequiredMode.REQUIRED,
             accessMode = Schema.AccessMode.READ_WRITE
     )
-    @NotNull
+    @NonNull
     @ManyToMany(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinTable(
             name = "USER_ROLES",
@@ -81,8 +80,8 @@ public class User extends BaseJPAEntity implements Serializable {
             requiredMode = Schema.RequiredMode.REQUIRED,
             accessMode = Schema.AccessMode.READ_WRITE
     )
-    @NotNull
     @Column(nullable = false, name = "IS_ENABLED")
+    @Builder.Default
     private boolean enabled = true;
 
 
@@ -91,7 +90,7 @@ public class User extends BaseJPAEntity implements Serializable {
             requiredMode = Schema.RequiredMode.REQUIRED,
             accessMode = Schema.AccessMode.READ_WRITE
     )
-    @NotNull
     @Column(nullable = false, name = "IS_LOCKED")
+    @Builder.Default
     private boolean locked = false;
 }

@@ -11,6 +11,7 @@ import org.springframework.data.annotation.*;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 @SuperBuilder
@@ -22,7 +23,7 @@ import java.time.Instant;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseJPAEntity
-        implements Persistable<String> {
+        implements Persistable<String>, Serializable {
 
     @Schema(
             description = "unique identifier of the entity",
@@ -32,6 +33,7 @@ public abstract class BaseJPAEntity
             example = "ur123e4567e89b12d3a456426655440000"
     )
     @Id
+    @NonNull
     @Column(nullable = false, unique = true, name = "ID")
     private String id;
 
@@ -82,6 +84,7 @@ public abstract class BaseJPAEntity
     @JsonIgnore
     @Schema(hidden = true)
     @Transient
+    @Builder.Default
     private boolean isNew = true;
 
     @Override
