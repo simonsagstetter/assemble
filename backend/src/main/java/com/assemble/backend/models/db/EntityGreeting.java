@@ -3,7 +3,7 @@ package com.assemble.backend.models.db;
 import com.assemble.backend.models.core.BaseJPAEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -24,6 +24,7 @@ public class EntityGreeting extends BaseJPAEntity {
             accessMode = Schema.AccessMode.READ_WRITE,
             example = "Hello World!"
     )
-    @NotNull
+    @NonNull
+    @NotBlank
     private String message;
 }

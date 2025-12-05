@@ -2,7 +2,7 @@ package com.assemble.backend.models.db;
 
 import com.assemble.backend.models.core.BaseMongoEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(value = "greetings")
+@Document("greetings")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class DocumentGreeting extends BaseMongoEntity {
@@ -22,6 +22,7 @@ public class DocumentGreeting extends BaseMongoEntity {
             requiredMode = Schema.RequiredMode.REQUIRED,
             accessMode = Schema.AccessMode.READ_WRITE
     )
-    @NotNull
+    @NonNull
+    @NotBlank
     private String message;
 }
