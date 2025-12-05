@@ -23,6 +23,7 @@ public class SecurityConfiguration {
     private final SecurityContextCustomizer securityContextCustomizer;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
+    private final ExceptionHandlingCustomizer exceptionHandlingCustomizer;
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain( HttpSecurity http ) throws Exception {
@@ -33,10 +34,18 @@ public class SecurityConfiguration {
                 .securityContext( securityContextCustomizer )
                 .authenticationManager( authenticationManager )
                 .userDetailsService( userDetailsService )
+                .exceptionHandling( exceptionHandlingCustomizer )
                 .httpBasic( AbstractHttpConfigurer::disable )
                 .formLogin( AbstractHttpConfigurer::disable )
                 .authorizeHttpRequests(
-                        auth -> auth.anyRequest().permitAll()
+                        auth -> auth
+                                .requestMatchers( "/api/auth/login" ).anonymous()
+                                .requestMatchers( "/api/auth/logout" ).authenticated()
+                                .requestMatchers( "/swagger-ui/**" ).permitAll()
+                                .requestMatchers( "/v3/api-docs/**" ).permitAll()
+                                .requestMatchers( "/graphiql/**" ).permitAll()
+                                .requestMatchers( "/graphql/**" ).permitAll()
+                                .anyRequest().authenticated()
                 )
                 .logout( AbstractHttpConfigurer::disable )
                 .build();
