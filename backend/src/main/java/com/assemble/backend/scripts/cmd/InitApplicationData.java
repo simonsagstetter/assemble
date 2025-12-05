@@ -33,19 +33,5 @@ public class InitApplicationData implements CommandLineRunner {
                     )
             );
         }
-
-        if ( userRepository.count() == 0 ) {
-            UserRole superAdmin = this.userRoleRepository.findByName( "SUPERADMIN" ).orElseThrow();
-            userRepository.save(
-                    User.builder()
-                            .id( idService.generateIdFor( User.class ) )
-                            .username( "sagstettersi" )
-                            .password( passwordEncoder.encode( "SuperSecurePassword123!" ) )
-                            .email( "simon.sagstetter@example.com" )
-                            .roles( List.of( superAdmin ) )
-                            .enabled( true )
-                            .build()
-            );
-        }
     }
 }
