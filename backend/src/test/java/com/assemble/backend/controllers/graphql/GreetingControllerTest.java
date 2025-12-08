@@ -52,7 +52,10 @@ class GreetingControllerTest {
                 .execute()
                 .path( "greetings[0].id" )
                 .entity( String.class )
-                .isEqualTo( data.getId() );
+                .isEqualTo( data.getId() )
+                .path( "greetings[0].message" )
+                .entity( String.class )
+                .isEqualTo( data.getMessage() );
 
     }
 }

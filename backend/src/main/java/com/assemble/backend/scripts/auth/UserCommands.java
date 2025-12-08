@@ -41,7 +41,7 @@ public class UserCommands {
 
             userRepository.save( superUser );
 
-            log.info( superUser.toString() );
+            log.info( "Superuser created with username: superuser and password: {}", rawPassword );
 
             return "Superuser created with username: superuser and password: " + rawPassword;
         }

@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-
 @SuperBuilder
 @Getter
 @Schema(name = "Validation Error Response", description = "Contains a list of field errors")

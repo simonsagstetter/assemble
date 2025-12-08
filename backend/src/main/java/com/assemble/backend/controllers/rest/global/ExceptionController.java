@@ -28,6 +28,7 @@ public class ExceptionController {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
     public ResponseEntity<ValidationErrorResponse> handleMethodArgumentNotValidException( MethodArgumentNotValidException ex ) {
         List<FieldValidationError> errors = ex.getFieldErrors().stream()
                 .map( fieldError -> FieldValidationError.builder()

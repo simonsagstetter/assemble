@@ -13,6 +13,8 @@ import java.util.Arrays;
 
 final class WithMockCustomUserSecurityContextFactory implements WithSecurityContextFactory<WithMockCustomUser> {
 
+    private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+
     @Override
     public SecurityContext createSecurityContext( WithMockCustomUser customUser ) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -22,7 +24,7 @@ final class WithMockCustomUserSecurityContextFactory implements WithSecurityCont
                         .username( customUser.username() )
                         .email( "test@example.com" )
                         .roles( Arrays.stream( customUser.roles() ).toList() )
-                        .password( new BCryptPasswordEncoder().encode( "secret" ) )
+                        .password( PASSWORD_ENCODER.encode( "secret" ) )
                         .build()
         );
 

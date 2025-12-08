@@ -68,7 +68,7 @@ public class User extends BaseJPAEntity implements Serializable {
     @NonNull
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "USER_ROLES", joinColumns = @JoinColumn(name = "ID"))
+    @CollectionTable(name = "USER_ROLES", joinColumns = @JoinColumn(name = "USER_ID"))
     @Column(name = "ROLE")
     private List<UserRole> roles;
 

@@ -6,7 +6,6 @@ import com.assemble.backend.models.auth.UserAudit;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -20,9 +19,8 @@ public class AuditorAwareImpl implements AuditorAware<UserAudit> {
 
         if ( authentication != null &&
                 authentication.isAuthenticated() &&
-                authentication.getPrincipal() instanceof UserDetails
+                authentication.getPrincipal() instanceof SecurityUser principal
         ) {
-            SecurityUser principal = ( SecurityUser ) authentication.getPrincipal();
             return Optional.of(
                     new UserAudit(
                             principal.getUser().getId(),
