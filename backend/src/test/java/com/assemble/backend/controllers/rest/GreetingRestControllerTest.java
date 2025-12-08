@@ -4,6 +4,7 @@ import com.assemble.backend.models.db.EntityGreeting;
 import com.assemble.backend.repositories.EntityRepository;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
+import com.assemble.backend.testutils.WithMockCustomUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 
 @DisplayName("Rest GreetingController Integration Test")
 @Import(TestcontainersConfiguration.class)
@@ -31,8 +32,9 @@ class GreetingRestControllerTest {
     @Autowired
     private IdService idService;
 
+
     @Test
-    @WithMockUser(username = "mustermannmax", roles = { "USER" })
+    @WithMockCustomUser
     void getAllGreetings_ShouldReturnAllGreetings() throws Exception {
         EntityGreeting data = this.entityRepository.save(
                 EntityGreeting.builder()
@@ -60,7 +62,11 @@ class GreetingRestControllerTest {
                 )
                 .andExpect(
                         MockMvcResultMatchers
-                                .jsonPath( "$[0].createdBy" ).value( data.getCreatedBy() )
+                                .jsonPath( "$[0].createdBy.id" ).value( data.getCreatedBy().getId() )
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .jsonPath( "$[0].createdBy.username" ).value( data.getCreatedBy().getUsername() )
                 )
                 .andExpect(
                         MockMvcResultMatchers
@@ -68,7 +74,11 @@ class GreetingRestControllerTest {
                 )
                 .andExpect(
                         MockMvcResultMatchers
-                                .jsonPath( "$[0].lastModifiedBy" ).value( data.getLastModifiedBy() )
+                                .jsonPath( "$[0].lastModifiedBy.id" ).value( data.getLastModifiedBy().getId() )
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .jsonPath( "$[0].lastModifiedBy.username" ).value( data.getLastModifiedBy().getUsername() )
                 );
 
     }
