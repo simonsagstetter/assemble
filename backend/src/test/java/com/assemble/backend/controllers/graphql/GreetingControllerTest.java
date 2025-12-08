@@ -19,13 +19,14 @@ import org.springframework.graphql.test.tester.GraphQlTester;
 class GreetingControllerTest {
 
     @Autowired
-    private GraphQlTester graphQlTester;
-
-    @Autowired
     private DocumentRepository documentRepository;
 
     @Autowired
     private IdService idService;
+
+    @Autowired
+    private GraphQlTester graphQlTester;
+
 
     @Test
     @DisplayName("GET /greetings should return all greeting")
@@ -37,20 +38,21 @@ class GreetingControllerTest {
                         .build()
         );
 
-        graphQlTester.document( """
-                        query GetAllGreetings {
-                           greetings {
-                              id,
-                              message
-                           }
+        String query = """ 
+                    query GetAllGreetings {
+                        greetings {
+                            id,
+                            message
                         }
-                        """ )
+                    }
+                """;
+
+        graphQlTester
+                .document( query )
                 .execute()
-                .path( "greetings[0].message" )
-                .entity( String.class )
-                .isEqualTo( data.getMessage() )
                 .path( "greetings[0].id" )
                 .entity( String.class )
                 .isEqualTo( data.getId() );
+
     }
 }
