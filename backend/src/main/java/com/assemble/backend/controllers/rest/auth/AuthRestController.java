@@ -1,9 +1,9 @@
 package com.assemble.backend.controllers.rest.auth;
 
-import com.assemble.backend.dtos.global.ErrorResponse;
-import com.assemble.backend.dtos.auth.LoginRequest;
-import com.assemble.backend.dtos.auth.LoginResponse;
-import com.assemble.backend.dtos.global.ValidationErrorResponse;
+import com.assemble.backend.models.dtos.global.ErrorResponse;
+import com.assemble.backend.models.dtos.auth.LoginRequest;
+import com.assemble.backend.models.dtos.auth.LoginResponse;
+import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,8 +42,8 @@ public class AuthRestController {
     private final SecurityContextLogoutHandler securityContextLogoutHandler;
 
     @Operation(
-            description = "Login",
-            summary = "Successful login returns a secure session cookie"
+            summary = "Login",
+            description = "Will log in a user with valid credentials and return a session cookie"
     )
     @ApiResponse(
             responseCode = "200",
@@ -117,8 +117,8 @@ public class AuthRestController {
     }
 
     @Operation(
-            description = "Logout",
-            summary = "Successful logout deletes cookies and invalidates session"
+            summary = "Logout",
+            description = "Will logout the user, delete cookies and invalidate the session"
     )
     @ApiResponse(
             responseCode = "204",
