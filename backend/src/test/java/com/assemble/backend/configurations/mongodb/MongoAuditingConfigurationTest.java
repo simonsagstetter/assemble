@@ -36,7 +36,7 @@ class MongoAuditingConfigurationTest {
                 .extracting( "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
                 .doesNotContainNull();
 
-        assertThat( actual.getCreatedBy() ).isEqualTo( "SYSTEM" );
-        assertThat( actual.getLastModifiedBy() ).isEqualTo( "SYSTEM" );
+        assertThat( actual.getCreatedBy().getUsername() ).isEqualTo( "SYSTEM" );
+        assertThat( actual.getLastModifiedBy().getUsername() ).isEqualTo( "SYSTEM" );
     }
 }

@@ -2,6 +2,8 @@ package com.assemble.backend.configurations.security;
 
 import com.assemble.backend.models.auth.SecurityUser;
 import com.assemble.backend.models.auth.User;
+import com.assemble.backend.models.auth.UserAudit;
+import com.assemble.backend.models.auth.UserRole;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
@@ -45,24 +47,36 @@ class AuditorAwareImplTest {
         SecurityContextHolder.setContext( securityContext );
 
         AuditorAwareImpl auditorAware = new AuditorAwareImpl();
-        Optional<String> actual = auditorAware.getCurrentAuditor();
+        UserAudit actual = auditorAware.getCurrentAuditor().orElseThrow();
 
-        assertEquals( Optional.of( "SYSTEM" ), actual );
+        assertEquals( "SYSTEM", actual.getUsername() );
     }
 
     @DisplayName("getCurrentAuditor should return username from authentication obj")
     @Test
     void getCurrentAuditor_ShouldReturnAuthenticatedUser() {
+        SecurityUser user = new SecurityUser( User.builder()
+                .id( idService.generateIdFor( User.class ) )
+                .username( "mustermannmax" )
+                .password( passwordEncoder.encode( "securePassword" ) )
+                .email( "max.mustermann@example.com" )
+                .roles( List.of( UserRole.USER ) )
+                .build()
+        );
+        UserAudit expected = new UserAudit( user.getUser().getId(), user.getUsername() );
+
         Mockito.when( authentication.isAuthenticated() ).thenReturn( true );
         Mockito.when( authentication.getName() ).thenReturn( "mustermannmax" );
+        Mockito.when( authentication.getPrincipal() ).thenReturn( user );
         Mockito.when( securityContext.getAuthentication() ).thenReturn( authentication );
 
         SecurityContextHolder.setContext( securityContext );
 
         AuditorAwareImpl auditorAware = new AuditorAwareImpl();
-        Optional<String> actual = auditorAware.getCurrentAuditor();
+        UserAudit actual = auditorAware.getCurrentAuditor().orElseThrow();
 
-        assertEquals( Optional.of( "mustermannmax" ), actual );
+        assertEquals( expected.getId(), actual.getId() );
+        assertEquals( expected.getUsername(), actual.getUsername() );
     }
 
     @DisplayName("getCurrentAuditor should return username from custom userdetails obj")
@@ -70,24 +84,27 @@ class AuditorAwareImplTest {
     void getCurrentAuditor_ShouldReturnAuthenticatedUser_FromUserDetails() {
         Mockito.when( authentication.isAuthenticated() ).thenReturn( true );
 
-        User user = User.builder()
-                .id( idService.generateIdFor( User.class ) )
-                .username( "mustermannmax" )
-                .password( passwordEncoder.encode( "securePassword" ) )
-                .email( "max.mustermann@exmaple.com" )
-                .roles( List.of() )
-                .build();
+        SecurityUser user = new SecurityUser(
+                User.builder()
+                        .id( idService.generateIdFor( User.class ) )
+                        .username( "mustermannmax" )
+                        .password( passwordEncoder.encode( "securePassword" ) )
+                        .email( "max.mustermann@exmaple.com" )
+                        .roles( List.of() )
+                        .build()
+        );
 
-        UserDetails userDetails = new SecurityUser( user );
+        UserAudit expected = new UserAudit( user.getUser().getId(), user.getUsername() );
 
-        Mockito.when( authentication.getPrincipal() ).thenReturn( userDetails );
+        Mockito.when( authentication.getPrincipal() ).thenReturn( user );
         Mockito.when( securityContext.getAuthentication() ).thenReturn( authentication );
 
         SecurityContextHolder.setContext( securityContext );
 
         AuditorAwareImpl auditorAware = new AuditorAwareImpl();
-        Optional<String> actual = auditorAware.getCurrentAuditor();
+        UserAudit actual = auditorAware.getCurrentAuditor().orElseThrow();
 
-        assertEquals( Optional.of( userDetails.getUsername() ), actual );
+        assertEquals( expected.getId(), actual.getId() );
+        assertEquals( expected.getUsername(), actual.getUsername() );
     }
 }

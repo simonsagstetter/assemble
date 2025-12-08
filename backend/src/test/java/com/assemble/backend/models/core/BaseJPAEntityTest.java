@@ -1,5 +1,7 @@
 package com.assemble.backend.models.core;
 
+import com.assemble.backend.models.auth.User;
+import com.assemble.backend.models.auth.UserAudit;
 import com.assemble.backend.models.db.EntityGreeting;
 import com.assemble.backend.repositories.EntityRepository;
 import com.assemble.backend.services.core.IdService;
@@ -34,13 +36,14 @@ class BaseJPAEntityTest {
     private IdService idService;
 
     @MockitoBean
-    private AuditorAware<String> auditorAware;
+    private AuditorAware<UserAudit> auditorAware;
 
     @Test
     @DisplayName("BaseJPAEntity should populate Id, CreatedDate, CreatedBy, LastModifiedData, LastModifiedBy")
     void baseJpaEntity_ShouldContainPopulatedFields_WhenCreated() {
         //GIVEN
-        Mockito.when( auditorAware.getCurrentAuditor() ).thenReturn( Optional.of( "SYSTEM" ) );
+        UserAudit mockedUserAudit = new UserAudit( null, "SYSTEM" );
+        Mockito.when( auditorAware.getCurrentAuditor() ).thenReturn( Optional.of( mockedUserAudit ) );
 
         String testMessage = "Hello Postgres!";
         String recordId = idService.generateIdFor( EntityGreeting.class );
@@ -64,15 +67,21 @@ class BaseJPAEntityTest {
         assertThat( actual )
                 .extracting( "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
                 .doesNotContainNull();
+
+        assertEquals( mockedUserAudit, actual.getCreatedBy() );
+        assertEquals( mockedUserAudit, actual.getLastModifiedBy() );
     }
 
     @Test
     @DisplayName("BaseJPAEntity should update LastModifiedDate and LastModifiedBy")
     void baseJpaEntity_ShouldUpdateModifiedFields_WhenUpdated() {
         //GIVEN
+        UserAudit createdUserAudit = new UserAudit( null, "SYSTEM" );
+        UserAudit lastModifiedUserAudit = new UserAudit( null, "FAKE-USER" );
+
         Mockito.when( auditorAware.getCurrentAuditor() )
-                .thenReturn( Optional.of( "SYSTEM" ) )
-                .thenReturn( Optional.of( "FAKE-USER" ) );
+                .thenReturn( Optional.of( createdUserAudit ) )
+                .thenReturn( Optional.of( lastModifiedUserAudit ) );
 
         String testMessage = "Hello Postgres!";
         String recordId = idService.generateIdFor( EntityGreeting.class );
@@ -87,22 +96,16 @@ class BaseJPAEntityTest {
         EntityGreeting stored = assertDoesNotThrow( () -> this.entityRepository.findById( created.getId() ).orElseThrow() );
         stored.setMessage( "Hello again, Postgres!" );
 
-        //THEN
+        //WHEN
         EntityGreeting actual = assertDoesNotThrow( () -> this.entityRepository.save( stored ) );
 
-        //ASSERT
+        //THEN
         assertThat( created.getCreatedDate().truncatedTo( ChronoUnit.MILLIS ) )
                 .isEqualTo( actual.getCreatedDate().truncatedTo( ChronoUnit.MILLIS ) );
-
-        assertThat( actual.getCreatedBy() )
-                .isEqualTo( created.getCreatedBy() );
-
-        assertThat( actual.getLastModifiedDate() )
-                .isNotEqualTo( created.getLastModifiedDate() );
-
-        assertThat( actual.getLastModifiedBy() )
+        assertEquals( created.getCreatedBy(), actual.getCreatedBy() );
+        assertNotEquals( created.getLastModifiedDate(), actual.getLastModifiedDate() );
+        assertThat( actual.getLastModifiedBy().getUsername() )
                 .isEqualTo( "FAKE-USER" );
 
-        System.out.println( actual );
     }
 }
