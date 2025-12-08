@@ -1,7 +1,7 @@
 package com.assemble.backend.configurations.security;
 
-import com.assemble.backend.models.auth.SecurityUser;
-import com.assemble.backend.models.auth.UserAudit;
+import com.assemble.backend.models.entities.auth.SecurityUser;
+import com.assemble.backend.models.entities.auth.UserAudit;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;

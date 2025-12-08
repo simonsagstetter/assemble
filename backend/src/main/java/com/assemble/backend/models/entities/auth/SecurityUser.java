@@ -1,4 +1,4 @@
-package com.assemble.backend.models.auth;
+package com.assemble.backend.models.entities.auth;
 
 import lombok.Getter;
 import lombok.NonNull;

@@ -1,6 +1,6 @@
-package com.assemble.backend.repositories;
+package com.assemble.backend.repositories.db;
 
-import com.assemble.backend.models.db.DocumentGreeting;
+import com.assemble.backend.models.entities.db.DocumentGreeting;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
