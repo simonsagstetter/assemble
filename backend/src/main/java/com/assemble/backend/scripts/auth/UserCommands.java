@@ -5,6 +5,7 @@ import com.assemble.backend.models.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.services.core.IdService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -12,6 +13,7 @@ import org.springframework.shell.standard.ShellMethod;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @ShellComponent
 @AllArgsConstructor
 public class UserCommands {
@@ -28,7 +30,7 @@ public class UserCommands {
     public String createSuperUser() {
         if ( userRepository.countDistinctByRolesContaining( UserRole.SUPERUSER ) == 0 ) {
             String id = idService.generateIdFor( User.class );
-            String rawPassword = UUID.randomUUID().toString().replaceAll( "-", "" );
+            String rawPassword = UUID.randomUUID().toString().replace( "-", "" );
             User superUser = User.builder()
                     .id( id )
                     .username( "superuser" )
@@ -39,9 +41,9 @@ public class UserCommands {
 
             userRepository.save( superUser );
 
-            System.out.println( "Superuser created with username: superuser and password: " + rawPassword );
+            log.info( superUser.toString() );
 
-            return "Superuser created!";
+            return "Superuser created with username: superuser and password: " + rawPassword;
         }
         return "Superuser already exists!";
     }

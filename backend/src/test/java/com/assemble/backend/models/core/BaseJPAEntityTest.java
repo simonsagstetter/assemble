@@ -1,6 +1,5 @@
 package com.assemble.backend.models.core;
 
-import com.assemble.backend.models.auth.User;
 import com.assemble.backend.models.auth.UserAudit;
 import com.assemble.backend.models.db.EntityGreeting;
 import com.assemble.backend.repositories.EntityRepository;

@@ -70,10 +70,8 @@ public abstract class BaseJPAEntity
     )
     @CreatedBy
     @Column(name = "CREATED_BY", nullable = false, updatable = false)
-    @AttributeOverrides({
-            @AttributeOverride(name = "id", column = @Column(name = "CREATED_BY_ID")),
-            @AttributeOverride(name = "username", column = @Column(name = "CREATED_BY_USERNAME"))
-    })
+    @AttributeOverride(name = "id", column = @Column(name = "CREATED_BY_ID"))
+    @AttributeOverride(name = "username", column = @Column(name = "CREATED_BY_USERNAME"))
     private UserAudit createdBy;
 
 
@@ -84,10 +82,8 @@ public abstract class BaseJPAEntity
     )
     @LastModifiedBy
     @Column(name = "LAST_MODIFIED_BY", nullable = false)
-    @AttributeOverrides({
-            @AttributeOverride(name = "id", column = @Column(name = "LAST_MODIFIED_BY_ID")),
-            @AttributeOverride(name = "username", column = @Column(name = "LAST_MODIFIED_BY_USERNAME"))
-    })
+    @AttributeOverride(name = "id", column = @Column(name = "LAST_MODIFIED_BY_ID"))
+    @AttributeOverride(name = "username", column = @Column(name = "LAST_MODIFIED_BY_USERNAME"))
     private UserAudit lastModifiedBy;
 
     @JsonIgnore
