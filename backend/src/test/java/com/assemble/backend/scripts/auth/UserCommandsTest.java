@@ -1,7 +1,7 @@
 package com.assemble.backend.scripts.auth;
 
-import com.assemble.backend.models.auth.User;
-import com.assemble.backend.models.auth.UserRole;
+import com.assemble.backend.models.entities.auth.User;
+import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
@@ -55,6 +55,8 @@ class UserCommandsTest {
         User superUser = User.builder()
                 .id( id )
                 .username( "superuser" )
+                .firstname( "Super" )
+                .lastname( "User" )
                 .email( "test@example.com" )
                 .password( passwordEncoder.encode( rawPassword ) )
                 .roles( List.of( UserRole.SUPERUSER ) )

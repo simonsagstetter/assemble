@@ -1,7 +1,7 @@
 package com.assemble.backend.configurations.jpa;
 
-import com.assemble.backend.models.db.EntityGreeting;
-import com.assemble.backend.repositories.EntityRepository;
+import com.assemble.backend.models.entities.db.EntityGreeting;
+import com.assemble.backend.repositories.db.EntityRepository;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +34,7 @@ class JpaAuditingConfigurationTest {
         EntityGreeting actual = entityRepository.save( entity );
 
         assertThat( actual )
-                .extracting( "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
+                .extracting( "version", "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
                 .doesNotContainNull();
 
         assertThat( actual.getCreatedBy().getUsername() ).isEqualTo( "SYSTEM" );

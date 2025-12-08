@@ -1,9 +1,9 @@
 package com.assemble.backend.configurations.security;
 
-import com.assemble.backend.models.auth.SecurityUser;
-import com.assemble.backend.models.auth.User;
-import com.assemble.backend.models.auth.UserAudit;
-import com.assemble.backend.models.auth.UserRole;
+import com.assemble.backend.models.entities.auth.SecurityUser;
+import com.assemble.backend.models.entities.auth.User;
+import com.assemble.backend.models.entities.auth.UserAudit;
+import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
@@ -56,6 +56,8 @@ class AuditorAwareImplTest {
         SecurityUser user = new SecurityUser( User.builder()
                 .id( idService.generateIdFor( User.class ) )
                 .username( "mustermannmax" )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
                 .password( passwordEncoder.encode( "securePassword" ) )
                 .email( "max.mustermann@example.com" )
                 .roles( List.of( UserRole.USER ) )
@@ -86,6 +88,8 @@ class AuditorAwareImplTest {
                 User.builder()
                         .id( idService.generateIdFor( User.class ) )
                         .username( "mustermannmax" )
+                        .firstname( "Max" )
+                        .lastname( "Mustermann" )
                         .password( passwordEncoder.encode( "securePassword" ) )
                         .email( "max.mustermann@exmaple.com" )
                         .roles( List.of() )

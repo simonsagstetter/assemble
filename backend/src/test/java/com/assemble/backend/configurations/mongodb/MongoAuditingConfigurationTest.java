@@ -1,7 +1,7 @@
 package com.assemble.backend.configurations.mongodb;
 
-import com.assemble.backend.models.db.DocumentGreeting;
-import com.assemble.backend.repositories.DocumentRepository;
+import com.assemble.backend.models.entities.db.DocumentGreeting;
+import com.assemble.backend.repositories.db.DocumentRepository;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +33,7 @@ class MongoAuditingConfigurationTest {
         DocumentGreeting actual = documentRepository.save( entity );
 
         assertThat( actual )
-                .extracting( "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
+                .extracting( "version", "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
                 .doesNotContainNull();
 
         assertThat( actual.getCreatedBy().getUsername() ).isEqualTo( "SYSTEM" );

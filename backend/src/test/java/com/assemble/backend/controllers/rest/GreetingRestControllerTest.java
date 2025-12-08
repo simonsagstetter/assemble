@@ -1,7 +1,7 @@
 package com.assemble.backend.controllers.rest;
 
-import com.assemble.backend.models.db.EntityGreeting;
-import com.assemble.backend.repositories.EntityRepository;
+import com.assemble.backend.models.entities.db.EntityGreeting;
+import com.assemble.backend.repositories.db.EntityRepository;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import com.assemble.backend.testutils.WithMockCustomUser;
@@ -55,6 +55,10 @@ class GreetingRestControllerTest {
                 .andExpect(
                         MockMvcResultMatchers
                                 .jsonPath( "$[0].message" ).value( data.getMessage() )
+                )
+                .andExpect(
+                        MockMvcResultMatchers
+                                .jsonPath( "$[0].version" ).isNotEmpty()
                 )
                 .andExpect(
                         MockMvcResultMatchers

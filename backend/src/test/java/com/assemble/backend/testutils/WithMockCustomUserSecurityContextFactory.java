@@ -1,7 +1,7 @@
 package com.assemble.backend.testutils;
 
-import com.assemble.backend.models.auth.User;
-import com.assemble.backend.models.auth.SecurityUser;
+import com.assemble.backend.models.entities.auth.User;
+import com.assemble.backend.models.entities.auth.SecurityUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -22,7 +22,9 @@ final class WithMockCustomUserSecurityContextFactory implements WithSecurityCont
                 User.builder()
                         .id( customUser.userId() )
                         .username( customUser.username() )
-                        .email( "test@example.com" )
+                        .email( customUser.email() )
+                        .firstname( customUser.firstname() )
+                        .lastname( customUser.lastname() )
                         .roles( Arrays.stream( customUser.roles() ).toList() )
                         .password( PASSWORD_ENCODER.encode( "secret" ) )
                         .build()

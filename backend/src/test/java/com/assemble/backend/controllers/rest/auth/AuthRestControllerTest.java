@@ -1,8 +1,8 @@
 package com.assemble.backend.controllers.rest.auth;
 
-import com.assemble.backend.dtos.auth.LoginRequest;
-import com.assemble.backend.models.auth.User;
-import com.assemble.backend.models.auth.UserRole;
+import com.assemble.backend.models.dtos.auth.LoginRequest;
+import com.assemble.backend.models.entities.auth.User;
+import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
@@ -103,6 +103,8 @@ class AuthRestControllerTest {
         User user = User.builder()
                 .id( idService.generateIdFor( User.class ) )
                 .username( "mustermannmax" )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
                 .password( passwordEncoder.encode( rawPassword ) )
                 .email( "max.mustermann@example.com" )
                 .roles( List.of( UserRole.USER ) )

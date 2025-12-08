@@ -1,8 +1,8 @@
 package com.assemble.backend.services.auth;
 
-import com.assemble.backend.models.auth.SecurityUser;
-import com.assemble.backend.models.auth.User;
-import com.assemble.backend.models.auth.UserRole;
+import com.assemble.backend.models.entities.auth.SecurityUser;
+import com.assemble.backend.models.entities.auth.User;
+import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.services.core.IdService;
 import org.junit.jupiter.api.DisplayName;
@@ -47,6 +47,8 @@ class CustomUserDetailsServiceUnitTest {
         User givenUser = User.builder()
                 .id( idService.generateIdFor( User.class ) )
                 .username( "mustermannmax" )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
                 .password( passwordEncoder.encode( "CompletelySecurePassword123!" ) )
                 .email( "max.mustermann@example.com" )
                 .roles( List.of( UserRole.USER ) )
@@ -57,6 +59,7 @@ class CustomUserDetailsServiceUnitTest {
                 .thenReturn( Optional.of( givenUser ) );
 
         UserDetails userDetails = assertDoesNotThrow( () -> customUserDetailsService.loadUserByUsername( givenUser.getUsername() ) );
+        SecurityUser securityUser = ( SecurityUser ) userDetails;
 
         assertThat( userDetails )
                 .isNotNull()
@@ -65,6 +68,7 @@ class CustomUserDetailsServiceUnitTest {
                 .isEqualTo( givenUser );
 
         assertEquals( authorities, userDetails.getAuthorities() );
+        assertEquals( givenUser.getFirstname() + " " + givenUser.getLastname(), securityUser.getUser().getFullName() );
         assertEquals( givenUser.getUsername(), userDetails.getUsername() );
         assertEquals( givenUser.getPassword(), userDetails.getPassword() );
         assertTrue( userDetails.isAccountNonExpired() );
