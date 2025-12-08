@@ -1,8 +1,9 @@
 package com.assemble.backend.controllers.rest.auth;
 
-import com.assemble.backend.dtos.ErrorResponse;
+import com.assemble.backend.dtos.global.ErrorResponse;
 import com.assemble.backend.dtos.auth.LoginRequest;
 import com.assemble.backend.dtos.auth.LoginResponse;
+import com.assemble.backend.dtos.global.ValidationErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -50,6 +51,14 @@ public class AuthRestController {
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = LoginResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ValidationErrorResponse.class)
             )
     )
     @ApiResponse(
