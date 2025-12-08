@@ -1,4 +1,4 @@
-package com.assemble.backend.dtos;
+package com.assemble.backend.dtos.global;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -17,8 +17,7 @@ public class ErrorResponse extends BaseResponse {
     @Schema(
             description = "Human readable error message",
             requiredMode = Schema.RequiredMode.REQUIRED,
-            accessMode = Schema.AccessMode.READ_ONLY,
-            example = "Invalid credentials"
+            accessMode = Schema.AccessMode.READ_ONLY
     )
     @NonNull
     @NotBlank

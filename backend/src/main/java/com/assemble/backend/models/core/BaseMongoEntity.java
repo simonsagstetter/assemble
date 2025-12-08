@@ -1,5 +1,6 @@
 package com.assemble.backend.models.core;
 
+import com.assemble.backend.models.auth.UserAudit;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -57,7 +58,7 @@ public abstract class BaseMongoEntity implements Persistable<String>, Serializab
             accessMode = Schema.AccessMode.READ_ONLY
     )
     @CreatedBy
-    private String createdBy;
+    private UserAudit createdBy;
 
 
     @Schema(
@@ -66,7 +67,7 @@ public abstract class BaseMongoEntity implements Persistable<String>, Serializab
             accessMode = Schema.AccessMode.READ_ONLY
     )
     @LastModifiedBy
-    private String lastModifiedBy;
+    private UserAudit lastModifiedBy;
 
     @Override
     public boolean isNew() {

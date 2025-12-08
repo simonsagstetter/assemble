@@ -4,9 +4,9 @@ import com.assemble.backend.dtos.auth.LoginRequest;
 import com.assemble.backend.models.auth.User;
 import com.assemble.backend.models.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
-import com.assemble.backend.repositories.auth.UserRoleRepository;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
+import com.assemble.backend.testutils.WithMockCustomUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -38,8 +37,6 @@ class AuthRestControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private UserRoleRepository userRoleRepository;
 
     @Autowired
     private IdService idService;
@@ -75,16 +72,40 @@ class AuthRestControllerTest {
     }
 
     @Test
+    void login_ShouldReturn400_WhenRequestBodyIsInvalid() throws Exception {
+        LoginRequest loginRequest = new LoginRequest(
+                "not-existing-username",
+                ""
+        );
+
+        mockMvc.perform(
+                        post(
+                                "/api/auth/login"
+                        )
+                                .contentType( MediaType.APPLICATION_JSON_VALUE )
+                                .content( objectMapper.writeValueAsString( loginRequest ) )
+                )
+                .andExpect(
+                        status().isBadRequest()
+                )
+                .andExpect(
+                        content().contentType( MediaType.APPLICATION_JSON_VALUE )
+                )
+                .andExpect(
+                        jsonPath( "$.errors" ).isNotEmpty()
+                );
+    }
+
+    @Test
     void login_ShouldReturn200_WhenCredentialsAreValid() throws Exception {
         String rawPassword = "SuperS3curePassword123!";
-        UserRole userRole = this.userRoleRepository.findByName( "USER" ).orElseThrow();
 
         User user = User.builder()
                 .id( idService.generateIdFor( User.class ) )
                 .username( "mustermannmax" )
                 .password( passwordEncoder.encode( rawPassword ) )
                 .email( "max.mustermann@example.com" )
-                .roles( List.of( userRole ) )
+                .roles( List.of( UserRole.USER ) )
                 .build();
 
         User saved = userRepository.save( user );
@@ -116,7 +137,7 @@ class AuthRestControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "mustermannmax", roles = { "USER" })
+    @WithMockCustomUser
     void logout_ShouldReturn204_WhenUserIsAuthenticated() throws Exception {
         mockMvc.perform(
                         post(

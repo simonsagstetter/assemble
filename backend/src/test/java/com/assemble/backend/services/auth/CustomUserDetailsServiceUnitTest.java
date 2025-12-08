@@ -42,15 +42,14 @@ class CustomUserDetailsServiceUnitTest {
     @DisplayName("loadUserByUsername should return an instance of UserDetails with all Details")
     @Test
     void loadUserByUsername_ShouldReturnUserDetails() {
-        UserRole userRole = new UserRole( "USER" );
-        Collection<GrantedAuthority> authorities = List.of( new SimpleGrantedAuthority( "ROLE_" + userRole.getName() ) );
+        Collection<GrantedAuthority> authorities = List.of( new SimpleGrantedAuthority( "ROLE_" + UserRole.USER.name() ) );
 
         User givenUser = User.builder()
                 .id( idService.generateIdFor( User.class ) )
                 .username( "mustermannmax" )
                 .password( passwordEncoder.encode( "CompletelySecurePassword123!" ) )
                 .email( "max.mustermann@example.com" )
-                .roles( List.of( userRole ) )
+                .roles( List.of( UserRole.USER ) )
                 .enabled( true )
                 .build();
 

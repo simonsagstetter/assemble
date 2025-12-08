@@ -1,4 +1,4 @@
-package com.assemble.backend.dtos;
+package com.assemble.backend.dtos.global;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

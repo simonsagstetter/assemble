@@ -1,5 +1,6 @@
 package com.assemble.backend.models.core;
 
+import com.assemble.backend.models.auth.UserAudit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -69,7 +70,9 @@ public abstract class BaseJPAEntity
     )
     @CreatedBy
     @Column(name = "CREATED_BY", nullable = false, updatable = false)
-    private String createdBy;
+    @AttributeOverride(name = "id", column = @Column(name = "CREATED_BY_ID"))
+    @AttributeOverride(name = "username", column = @Column(name = "CREATED_BY_USERNAME"))
+    private UserAudit createdBy;
 
 
     @Schema(
@@ -79,7 +82,9 @@ public abstract class BaseJPAEntity
     )
     @LastModifiedBy
     @Column(name = "LAST_MODIFIED_BY", nullable = false)
-    private String lastModifiedBy;
+    @AttributeOverride(name = "id", column = @Column(name = "LAST_MODIFIED_BY_ID"))
+    @AttributeOverride(name = "username", column = @Column(name = "LAST_MODIFIED_BY_USERNAME"))
+    private UserAudit lastModifiedBy;
 
     @JsonIgnore
     @Schema(hidden = true)

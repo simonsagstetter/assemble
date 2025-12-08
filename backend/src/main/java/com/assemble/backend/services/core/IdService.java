@@ -37,7 +37,7 @@ public class IdService {
         return prefix + suffix
                 + UUID.randomUUID()
                 .toString().
-                replaceAll( "-", "" )
+                replace( "-", "" )
                 .toLowerCase();
     }
 }
