@@ -1,5 +1,8 @@
 package com.assemble.backend.configurations.security;
 
+import com.assemble.backend.models.auth.SecurityUser;
+import com.assemble.backend.models.auth.UserAudit;
+
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,22 +12,27 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component(value = "auditorAwareImpl")
-public class AuditorAwareImpl implements AuditorAware<String> {
+public class AuditorAwareImpl implements AuditorAware<UserAudit> {
 
     @Override
-    public Optional<String> getCurrentAuditor() {
+    public Optional<UserAudit> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if ( authentication == null || !authentication.isAuthenticated() ) {
-            return Optional.of( "SYSTEM" );
+        if ( authentication != null &&
+                authentication.isAuthenticated() &&
+                authentication.getPrincipal() instanceof UserDetails
+        ) {
+            SecurityUser principal = ( SecurityUser ) authentication.getPrincipal();
+            return Optional.of(
+                    new UserAudit(
+                            principal.getUser().getId(),
+                            principal.getUsername()
+                    )
+            );
         }
 
-        if ( authentication.getPrincipal() instanceof UserDetails userDetails ) {
-            return Optional.of( userDetails.getUsername() );
-        }
-
-        String username = authentication.getName();
-
-        return Optional.of( username );
+        return Optional.of(
+                new UserAudit( null, "SYSTEM" )
+        );
     }
 }

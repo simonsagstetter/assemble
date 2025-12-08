@@ -66,12 +66,10 @@ public class User extends BaseJPAEntity implements Serializable {
             accessMode = Schema.AccessMode.READ_WRITE
     )
     @NonNull
-    @ManyToMany(fetch = jakarta.persistence.FetchType.EAGER)
-    @JoinTable(
-            name = "USER_ROLES",
-            joinColumns = @JoinColumn(name = "USER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "ROLE_ID")
-    )
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "USER_ROLES", joinColumns = @JoinColumn(name = "ID"))
+    @Column(name = "ROLE")
     private List<UserRole> roles;
 
 
