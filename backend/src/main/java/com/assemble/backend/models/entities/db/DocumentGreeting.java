@@ -1,7 +1,6 @@
-package com.assemble.backend.models.db;
+package com.assemble.backend.models.entities.db;
 
-import com.assemble.backend.models.core.BaseMongoEntity;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.assemble.backend.models.entities.core.BaseMongoEntity;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -17,11 +16,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @ToString(callSuper = true)
 public class DocumentGreeting extends BaseMongoEntity {
 
-    @Schema(
-            description = "Message",
-            requiredMode = Schema.RequiredMode.REQUIRED,
-            accessMode = Schema.AccessMode.READ_WRITE
-    )
     @NonNull
     @NotBlank
     private String message;

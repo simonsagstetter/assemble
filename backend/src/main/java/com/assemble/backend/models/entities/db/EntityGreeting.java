@@ -1,7 +1,6 @@
-package com.assemble.backend.models.db;
+package com.assemble.backend.models.entities.db;
 
-import com.assemble.backend.models.core.BaseJPAEntity;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.assemble.backend.models.entities.core.BaseJPAEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -18,12 +17,6 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 public class EntityGreeting extends BaseJPAEntity {
 
-    @Schema(
-            description = "Message",
-            requiredMode = Schema.RequiredMode.REQUIRED,
-            accessMode = Schema.AccessMode.READ_WRITE,
-            example = "Hello World!"
-    )
     @NonNull
     @NotBlank
     private String message;

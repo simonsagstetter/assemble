@@ -1,7 +1,9 @@
-package com.assemble.backend.models.auth;
+package com.assemble.backend.models.entities.auth;
 
 import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
 
@@ -13,7 +15,10 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class UserAudit implements Serializable {
 
+    @Nullable
     private String id;
+    @NotBlank
+    @NonNull
     private String username;
 
 }
