@@ -1,11 +1,13 @@
-package com.assemble.backend.controllers.rest.global;
+package com.assemble.backend.controllers;
 
-import com.assemble.backend.dtos.global.ErrorResponse;
-import com.assemble.backend.dtos.global.FieldValidationError;
-import com.assemble.backend.dtos.global.ValidationErrorResponse;
+import com.assemble.backend.exceptions.auth.PasswordMismatchException;
+import com.assemble.backend.models.dtos.global.ErrorResponse;
+import com.assemble.backend.models.dtos.global.FieldValidationError;
+import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,7 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @ControllerAdvice
-public class ExceptionController {
+public class GlobalExceptionController {
+
+    @ExceptionHandler(TransactionSystemException.class)
+    public ResponseEntity<ValidationErrorResponse> handleJPAViolations( TransactionSystemException ex ) {
+        return ResponseEntity.status( HttpStatus.BAD_REQUEST ).build();
+    }
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseBody
@@ -25,6 +32,17 @@ public class ExceptionController {
                 .message( "Invalid credentials" )
                 .build();
         return ResponseEntity.status( HttpStatus.UNAUTHORIZED ).body( errorResponse );
+    }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handlePasswordMismatchException( PasswordMismatchException ex ) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .statusCode( HttpStatus.BAD_REQUEST.value() )
+                .statusText( HttpStatus.BAD_REQUEST.getReasonPhrase() )
+                .message( ex.getMessage() )
+                .build();
+        return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( errorResponse );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
