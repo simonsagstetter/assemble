@@ -1,4 +1,4 @@
-package com.assemble.backend.dtos.global;
+package com.assemble.backend.models.dtos.global;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
