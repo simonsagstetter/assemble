@@ -57,6 +57,7 @@ class UserServiceImplTest {
                 .build();
     }
 
+    @DisplayName("changePassword() should throw when username from principal not found in database")
     @Test
     void changePassword_ShouldThrow_WhenUsernameNotFound() {
         when( userRepository.findByUsername( "not-existing-username" ) )
@@ -73,6 +74,7 @@ class UserServiceImplTest {
         assertEquals( EntityNotFoundException.class, e.getClass() );
     }
 
+    @DisplayName("changePassword() should throw when password does not match")
     @Test
     void changePassword_ShouldThrow_WhenOldPasswordDoesNotMatch() {
         when( userRepository.findByUsername( "testuser" ) )
@@ -92,6 +94,7 @@ class UserServiceImplTest {
         assertEquals( PasswordMismatchException.class, e.getClass() );
     }
 
+    @DisplayName("changePassword() should return true when username found, password matches, a new password is valid")
     @Test
     void changePassword_ShouldReturnTrue_WhenAllValid() {
         when( userRepository.findByUsername( "testuser" ) )
@@ -113,6 +116,7 @@ class UserServiceImplTest {
 
     }
 
+    @DisplayName("findMe() should throw when user not found")
     @Test
     void findMe_ShouldThrow_WhenUserNotFound() {
         when( userRepository.findByUsername( Mockito.any( String.class ) ) )
@@ -125,6 +129,7 @@ class UserServiceImplTest {
         assertEquals( EntityNotFoundException.class, e.getClass() );
     }
 
+    @DisplayName("findMe() should return user dto when user was found")
     @Test
     void findMe_ShouldReturnUser_WhenUserFound() {
         when( userRepository.findByUsername( user.getUsername() ) )

@@ -46,6 +46,7 @@ class AuthRestControllerTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    @DisplayName("POST /api/auth/login should return 401 Unauthorized when credentials are invalid")
     @Test
     void login_ShouldReturn401_WhenCredentialsAreInvalid() throws Exception {
         LoginRequest loginRequest = new LoginRequest(
@@ -71,6 +72,7 @@ class AuthRestControllerTest {
                 );
     }
 
+    @DisplayName("POST /api/auth/login should return 400 Bad Request when request body is invalid")
     @Test
     void login_ShouldReturn400_WhenRequestBodyIsInvalid() throws Exception {
         LoginRequest loginRequest = new LoginRequest(
@@ -96,6 +98,7 @@ class AuthRestControllerTest {
                 );
     }
 
+    @DisplayName("POST /api/auth/login should return 200 OK when credentials are valid")
     @Test
     void login_ShouldReturn200_WhenCredentialsAreValid() throws Exception {
         String rawPassword = "SuperS3curePassword123!";
@@ -138,6 +141,7 @@ class AuthRestControllerTest {
                 );
     }
 
+    @DisplayName("POST /api/auth/logout should return 204 No Content when user is authenticated")
     @Test
     @WithMockCustomUser
     void logout_ShouldReturn204_WhenUserIsAuthenticated() throws Exception {
