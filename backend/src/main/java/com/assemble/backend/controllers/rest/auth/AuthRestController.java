@@ -1,3 +1,13 @@
+/*
+ * assemble
+ * AuthRestController.java
+ *
+ * Copyright (c) 2025 Simon Sagstetter
+ *
+ * This software is the property of Simon Sagstetter.
+ * All rights reserved.
+ */
+
 package com.assemble.backend.controllers.rest.auth;
 
 import com.assemble.backend.models.dtos.global.ErrorResponse;

@@ -1,3 +1,13 @@
+/*
+ * assemble
+ * GreetingRestController.java
+ *
+ * Copyright (c) 2025 Simon Sagstetter
+ *
+ * This software is the property of Simon Sagstetter.
+ * All rights reserved.
+ */
+
 package com.assemble.backend.controllers.rest;
 
 import com.assemble.backend.models.entities.db.EntityGreeting;
