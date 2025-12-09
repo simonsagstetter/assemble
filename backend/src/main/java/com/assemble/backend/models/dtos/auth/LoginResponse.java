@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@Schema(name = "Login Response", description = "Login response entity")
+@Schema(name = "LoginResponse", description = "Login response entity")
 public class LoginResponse extends BaseResponse {
 
     @Schema(

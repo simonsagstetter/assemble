@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 @Data
-@Schema(name = "Change Password", description = "Contains information about a change password request")
+@Schema(name = "ChangePassword", description = "Contains information about a change password request")
 public class ChangePasswordDTO {
 
     @Schema(

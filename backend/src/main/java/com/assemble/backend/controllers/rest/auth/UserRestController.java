@@ -28,7 +28,8 @@ public class UserRestController {
     private final UserServiceImpl userService;
 
     @Operation(
-            description = "Returns a user dto with basic information about the authenticated user that made the request",
+            description = "Returns a user dto with basic information about the authenticated"
+                    + " user that made the request",
             summary = "Retrieve basic user information"
     )
     @ApiResponse(
@@ -74,7 +75,8 @@ public class UserRestController {
     )
     @PostMapping(
             path = "/change-password",
-            consumes = MediaType.APPLICATION_JSON_VALUE
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Boolean> changePassword(
             @AuthenticationPrincipal SecurityUser user,

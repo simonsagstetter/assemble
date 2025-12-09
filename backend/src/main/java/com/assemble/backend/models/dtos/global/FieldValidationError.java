@@ -7,7 +7,7 @@ import lombok.NonNull;
 
 @Builder
 @Getter
-@Schema(name = "Field Validation Error", description = "Contains information about a field validation error")
+@Schema(name = "FieldValidationError", description = "Contains information about a field validation error")
 public class FieldValidationError {
 
     @Schema(

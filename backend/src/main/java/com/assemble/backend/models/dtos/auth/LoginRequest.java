@@ -11,7 +11,7 @@ import lombok.*;
 @Setter
 @EqualsAndHashCode
 @ToString
-@Schema(name = "Login Request", description = "credentials of a user")
+@Schema(name = "LoginRequest", description = "credentials of a user")
 public class LoginRequest {
     @Schema(
             description = "username",

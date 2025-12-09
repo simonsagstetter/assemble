@@ -8,7 +8,7 @@ import java.util.List;
 
 @SuperBuilder
 @Getter
-@Schema(name = "Validation Error Response", description = "Contains a list of field errors")
+@Schema(name = "ValidationErrorResponse", description = "Contains a list of field errors")
 public class ValidationErrorResponse extends ErrorResponse {
     @Schema(
             description = "List of field errors",

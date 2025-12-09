@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@Schema(name = "Error Response", description = "Error response entity")
+@Schema(name = "ErrorResponse", description = "Error response entity")
 public class ErrorResponse extends BaseResponse {
     @Schema(
             description = "Human readable error message",
