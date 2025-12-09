@@ -119,8 +119,10 @@ class UserServiceImplTest {
         when( userRepository.findByUsername( Mockito.any( String.class ) ) )
                 .thenReturn( Optional.empty() );
 
+        SecurityUser securityUser = new SecurityUser( user );
+
         EntityNotFoundException e = assertThrows( EntityNotFoundException.class,
-                () -> userService.findMe( new SecurityUser( user ) )
+                () -> userService.findMe( securityUser )
         );
 
         assertEquals( EntityNotFoundException.class, e.getClass() );

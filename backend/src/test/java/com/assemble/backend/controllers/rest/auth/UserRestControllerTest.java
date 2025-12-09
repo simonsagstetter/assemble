@@ -111,7 +111,7 @@ class UserRestControllerTest {
     @WithMockCustomUser(username = "fake-user")
     @Test
     void changePassword_ShouldReturn404_WhenUserNotFound() throws Exception {
-        User user = userRepository.save( testUser );
+        userRepository.save( testUser );
 
         ChangePasswordDTO changePasswordDTO = new ChangePasswordDTO(
                 "wrong-password",
