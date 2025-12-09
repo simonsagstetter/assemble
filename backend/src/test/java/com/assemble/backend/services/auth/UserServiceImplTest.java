@@ -1,3 +1,13 @@
+/*
+ * assemble
+ * UserServiceImplTest.java
+ *
+ * Copyright (c) 2025 Simon Sagstetter
+ *
+ * This software is the property of Simon Sagstetter.
+ * All rights reserved.
+ */
+
 package com.assemble.backend.services.auth;
 
 import com.assemble.backend.exceptions.auth.PasswordMismatchException;

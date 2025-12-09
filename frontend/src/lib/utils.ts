@@ -1,3 +1,13 @@
+/*
+ * assemble
+ * utils.ts
+ *
+ * Copyright (c) 2025 Simon Sagstetter
+ *
+ * This software is the property of Simon Sagstetter.
+ * All rights reserved.
+ */
+
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 

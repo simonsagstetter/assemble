@@ -1,3 +1,13 @@
+/*
+ * assemble
+ * field.tsx
+ *
+ * Copyright (c) 2025 Simon Sagstetter
+ *
+ * This software is the property of Simon Sagstetter.
+ * All rights reserved.
+ */
+
 "use client"
 
 import { useMemo } from "react"

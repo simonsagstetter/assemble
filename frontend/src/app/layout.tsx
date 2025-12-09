@@ -1,3 +1,13 @@
+/*
+ * assemble
+ * layout.tsx
+ *
+ * Copyright (c) 2025 Simon Sagstetter
+ *
+ * This software is the property of Simon Sagstetter.
+ * All rights reserved.
+ */
+
 import type { Metadata } from "next";
 import "./globals.css";
 import { ReactNode } from "react";
