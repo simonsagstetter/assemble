@@ -20,25 +20,23 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Boolean changePassword( String username, String oldPassword, String newPassword ) {
+    public void changePassword( String username, String oldPassword, String newPassword ) {
         User user = userRepository.findByUsername( username )
-                .orElseThrow( EntityNotFoundException::new );
+                .orElseThrow( () -> new EntityNotFoundException( "User not found" ) );
 
         if ( !passwordEncoder.matches( oldPassword, user.getPassword() ) ) {
-            throw new PasswordMismatchException( "Old password does not match!" );
+            throw new PasswordMismatchException( "Old password does not match" );
         }
 
         user.setPassword( passwordEncoder.encode( newPassword ) );
         this.userRepository.save( user );
-
-        return true;
     }
 
     @Override
     public UserDTO findMe( SecurityUser securityUser ) {
         return userMapper.toUserDTO(
                 userRepository.findByUsername( securityUser.getUsername() )
-                        .orElseThrow( EntityNotFoundException::new )
+                        .orElseThrow( () -> new EntityNotFoundException( "User not found" ) )
         );
     }
 

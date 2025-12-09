@@ -65,7 +65,7 @@ public class GlobalExceptionController {
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException( EntityNotFoundException ex ) {
         return ResponseEntity.status( HttpStatus.NOT_FOUND ).body(
                 ErrorResponse.builder()
-                        .message( "Record not found" )
+                        .message( ex.getMessage() )
                         .statusCode( HttpStatus.NOT_FOUND.value() )
                         .statusText( HttpStatus.NOT_FOUND.getReasonPhrase() )
                         .build()

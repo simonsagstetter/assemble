@@ -106,14 +106,11 @@ class UserServiceImplTest {
         when( passwordEncoder.encode( "new-password" ) )
                 .thenReturn( encoder.encode( "new-password" ) );
 
-        Boolean actual = userService.changePassword(
+        assertDoesNotThrow( () -> userService.changePassword(
                 "testuser",
                 "secret",
                 "new-password"
-        );
-
-        assertTrue( actual );
-
+        ) );
     }
 
     @DisplayName("findMe() should throw when user not found")

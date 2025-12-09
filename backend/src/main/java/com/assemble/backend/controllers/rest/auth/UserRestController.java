@@ -5,7 +5,7 @@ import com.assemble.backend.models.dtos.auth.UserDTO;
 import com.assemble.backend.models.dtos.global.ErrorResponse;
 import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import com.assemble.backend.models.entities.auth.SecurityUser;
-import com.assemble.backend.services.auth.UserServiceImpl;
+import com.assemble.backend.services.auth.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Users", description = "Basic user endpoints")
 public class UserRestController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @Operation(
             description = "Returns a user dto with basic information about the authenticated"
@@ -78,15 +78,15 @@ public class UserRestController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Boolean> changePassword(
+    public ResponseEntity<Void> changePassword(
             @AuthenticationPrincipal SecurityUser user,
             @Valid @RequestBody ChangePasswordDTO changePasswordDTO ) {
-        return ResponseEntity.status( HttpStatus.NO_CONTENT )
-                .body( userService.changePassword(
-                        user.getUsername(),
-                        changePasswordDTO.getOldPassword(),
-                        changePasswordDTO.getNewPassword()
-                ) );
+        userService.changePassword(
+                user.getUsername(),
+                changePasswordDTO.getOldPassword(),
+                changePasswordDTO.getNewPassword()
+        );
+        return ResponseEntity.noContent().build();
     }
 
 }

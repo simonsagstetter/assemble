@@ -1,6 +1,5 @@
 package com.assemble.backend.models.mappers.auth;
 
-import com.assemble.backend.models.dtos.auth.ChangePasswordDTO;
 import com.assemble.backend.models.dtos.auth.UserDTO;
 import com.assemble.backend.models.entities.auth.User;
 import org.mapstruct.Mapper;
@@ -15,7 +14,4 @@ public interface UserMapper {
 
     UserDTO toUserDTO( User user );
 
-    User toUser( UserDTO userDTO );
-
-    User toUser( ChangePasswordDTO changePasswordDTO );
 }

@@ -26,7 +26,7 @@ public class User extends BaseJPAEntity implements Serializable {
     @NonNull
     @NotBlank
     @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters long")
-    @Column(unique = true, nullable = false, length = 15, name = "USERNAME")
+    @Column(unique = true, nullable = false, length = 20, name = "USERNAME")
     private String username;
 
     @NonNull

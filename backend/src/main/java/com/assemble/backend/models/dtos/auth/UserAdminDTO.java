@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 @Builder
-@Schema(name = "User", description = "Contains all information about a user")
+@Schema(name = "UserAdmin", description = "Contains all information about a user including administrative fields")
 public class UserAdminDTO {
     private String id;
     private String username;

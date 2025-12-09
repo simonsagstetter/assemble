@@ -6,7 +6,7 @@ import com.assemble.backend.models.entities.auth.User;
 
 public interface UserService {
 
-    Boolean changePassword( String username, String oldPassword, String newPassword );
+    void changePassword( String username, String oldPassword, String newPassword );
 
     UserDTO findMe( SecurityUser securityUser );
 

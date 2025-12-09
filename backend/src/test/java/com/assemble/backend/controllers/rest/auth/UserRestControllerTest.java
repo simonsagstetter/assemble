@@ -103,7 +103,7 @@ class UserRestControllerTest {
                 content()
                         .contentType( MediaType.APPLICATION_JSON_VALUE )
         ).andExpect(
-                jsonPath( "$.message" ).value( "Record not found" )
+                jsonPath( "$.message" ).value( "User not found" )
         );
     }
 
@@ -130,7 +130,7 @@ class UserRestControllerTest {
         ).andExpect(
                 content().contentType( MediaType.APPLICATION_JSON_VALUE )
         ).andExpect(
-                jsonPath( "$.message" ).value( "Record not found" )
+                jsonPath( "$.message" ).value( "User not found" )
         );
     }
 
@@ -157,7 +157,7 @@ class UserRestControllerTest {
         ).andExpect(
                 content().contentType( MediaType.APPLICATION_JSON_VALUE )
         ).andExpect(
-                jsonPath( "$.message" ).value( "Old password does not match!" )
+                jsonPath( "$.message" ).value( "Old password does not match" )
         );
     }
 
@@ -191,7 +191,7 @@ class UserRestControllerTest {
     @DisplayName("POST /api/users/change-password should return 204 when password is changed successfully")
     @WithMockCustomUser
     @Test
-    void changePassword_ShouldReturn200() throws Exception {
+    void changePassword_ShouldReturn204() throws Exception {
         userRepository.save( testUser );
 
         ChangePasswordDTO changePasswordDTO = new ChangePasswordDTO(
