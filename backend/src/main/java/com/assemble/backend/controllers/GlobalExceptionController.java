@@ -4,10 +4,10 @@ import com.assemble.backend.exceptions.auth.PasswordMismatchException;
 import com.assemble.backend.models.dtos.global.ErrorResponse;
 import com.assemble.backend.models.dtos.global.FieldValidationError;
 import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,11 +17,6 @@ import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionController {
-
-    @ExceptionHandler(TransactionSystemException.class)
-    public ResponseEntity<ValidationErrorResponse> handleJPAViolations( TransactionSystemException ex ) {
-        return ResponseEntity.status( HttpStatus.BAD_REQUEST ).build();
-    }
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseBody
@@ -63,6 +58,18 @@ public class GlobalExceptionController {
                 .build();
 
         return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( body );
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException( EntityNotFoundException ex ) {
+        return ResponseEntity.status( HttpStatus.NOT_FOUND ).body(
+                ErrorResponse.builder()
+                        .message( "Record not found" )
+                        .statusCode( HttpStatus.NOT_FOUND.value() )
+                        .statusText( HttpStatus.NOT_FOUND.getReasonPhrase() )
+                        .build()
+        );
     }
 
 }
