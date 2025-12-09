@@ -1,7 +1,7 @@
 package com.assemble.backend.controllers.graphql;
 
-import com.assemble.backend.models.db.DocumentGreeting;
-import com.assemble.backend.repositories.DocumentRepository;
+import com.assemble.backend.models.entities.db.DocumentGreeting;
+import com.assemble.backend.repositories.db.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;

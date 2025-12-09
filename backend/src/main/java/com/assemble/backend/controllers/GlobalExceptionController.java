@@ -1,0 +1,75 @@
+package com.assemble.backend.controllers;
+
+import com.assemble.backend.exceptions.auth.PasswordMismatchException;
+import com.assemble.backend.models.dtos.global.ErrorResponse;
+import com.assemble.backend.models.dtos.global.FieldValidationError;
+import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+
+@ControllerAdvice
+public class GlobalExceptionController {
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException() {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .statusCode( HttpStatus.UNAUTHORIZED.value() )
+                .statusText( HttpStatus.UNAUTHORIZED.getReasonPhrase() )
+                .message( "Invalid credentials" )
+                .build();
+        return ResponseEntity.status( HttpStatus.UNAUTHORIZED ).body( errorResponse );
+    }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handlePasswordMismatchException( PasswordMismatchException ex ) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .statusCode( HttpStatus.BAD_REQUEST.value() )
+                .statusText( HttpStatus.BAD_REQUEST.getReasonPhrase() )
+                .message( ex.getMessage() )
+                .build();
+        return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( errorResponse );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
+    public ResponseEntity<ValidationErrorResponse> handleMethodArgumentNotValidException( MethodArgumentNotValidException ex ) {
+        List<FieldValidationError> errors = ex.getFieldErrors().stream()
+                .map( fieldError -> FieldValidationError.builder()
+                        .errorMessage( fieldError.getDefaultMessage() != null ? fieldError.getDefaultMessage() : "Invalid value" )
+                        .fieldName( fieldError.getField() )
+                        .build() )
+                .toList();
+
+        ValidationErrorResponse body = ValidationErrorResponse.builder()
+                .message( "Validation failed" )
+                .statusCode( HttpStatus.BAD_REQUEST.value() )
+                .statusText( HttpStatus.BAD_REQUEST.getReasonPhrase() )
+                .errors( errors )
+                .build();
+
+        return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( body );
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException( EntityNotFoundException ex ) {
+        return ResponseEntity.status( HttpStatus.NOT_FOUND ).body(
+                ErrorResponse.builder()
+                        .message( ex.getMessage() )
+                        .statusCode( HttpStatus.NOT_FOUND.value() )
+                        .statusText( HttpStatus.NOT_FOUND.getReasonPhrase() )
+                        .build()
+        );
+    }
+
+}

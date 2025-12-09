@@ -1,7 +1,7 @@
 package com.assemble.backend.repositories.auth;
 
-import com.assemble.backend.models.auth.User;
-import com.assemble.backend.models.auth.UserRole;
+import com.assemble.backend.models.entities.auth.User;
+import com.assemble.backend.models.entities.auth.UserRole;
 import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 

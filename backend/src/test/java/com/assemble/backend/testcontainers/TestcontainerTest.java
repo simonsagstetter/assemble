@@ -1,9 +1,9 @@
 package com.assemble.backend.testcontainers;
 
-import com.assemble.backend.models.db.DocumentGreeting;
-import com.assemble.backend.models.db.EntityGreeting;
-import com.assemble.backend.repositories.DocumentRepository;
-import com.assemble.backend.repositories.EntityRepository;
+import com.assemble.backend.models.entities.db.DocumentGreeting;
+import com.assemble.backend.models.entities.db.EntityGreeting;
+import com.assemble.backend.repositories.db.DocumentRepository;
+import com.assemble.backend.repositories.db.EntityRepository;
 import com.assemble.backend.services.core.IdService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +51,7 @@ class TestcontainerTest {
                 .contains( given.getMessage(), given.getId() );
 
         assertThat( actual )
-                .extracting( "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
+                .extracting( "version", "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
                 .doesNotContainNull();
 
     }
@@ -76,7 +76,7 @@ class TestcontainerTest {
                 .contains( given.getMessage(), given.getId() );
 
         assertThat( actual )
-                .extracting( "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
+                .extracting( "version", "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
                 .doesNotContainNull();
     }
 

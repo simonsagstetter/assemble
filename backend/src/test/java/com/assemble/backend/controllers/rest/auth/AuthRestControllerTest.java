@@ -1,8 +1,8 @@
 package com.assemble.backend.controllers.rest.auth;
 
-import com.assemble.backend.dtos.auth.LoginRequest;
-import com.assemble.backend.models.auth.User;
-import com.assemble.backend.models.auth.UserRole;
+import com.assemble.backend.models.dtos.auth.LoginRequest;
+import com.assemble.backend.models.entities.auth.User;
+import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
@@ -46,6 +46,7 @@ class AuthRestControllerTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    @DisplayName("POST /api/auth/login should return 401 Unauthorized when credentials are invalid")
     @Test
     void login_ShouldReturn401_WhenCredentialsAreInvalid() throws Exception {
         LoginRequest loginRequest = new LoginRequest(
@@ -71,6 +72,7 @@ class AuthRestControllerTest {
                 );
     }
 
+    @DisplayName("POST /api/auth/login should return 400 Bad Request when request body is invalid")
     @Test
     void login_ShouldReturn400_WhenRequestBodyIsInvalid() throws Exception {
         LoginRequest loginRequest = new LoginRequest(
@@ -96,6 +98,7 @@ class AuthRestControllerTest {
                 );
     }
 
+    @DisplayName("POST /api/auth/login should return 200 OK when credentials are valid")
     @Test
     void login_ShouldReturn200_WhenCredentialsAreValid() throws Exception {
         String rawPassword = "SuperS3curePassword123!";
@@ -103,6 +106,8 @@ class AuthRestControllerTest {
         User user = User.builder()
                 .id( idService.generateIdFor( User.class ) )
                 .username( "mustermannmax" )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
                 .password( passwordEncoder.encode( rawPassword ) )
                 .email( "max.mustermann@example.com" )
                 .roles( List.of( UserRole.USER ) )
@@ -136,6 +141,7 @@ class AuthRestControllerTest {
                 );
     }
 
+    @DisplayName("POST /api/auth/logout should return 204 No Content when user is authenticated")
     @Test
     @WithMockCustomUser
     void logout_ShouldReturn204_WhenUserIsAuthenticated() throws Exception {

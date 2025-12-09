@@ -1,7 +1,7 @@
 package com.assemble.backend.services.auth;
 
-import com.assemble.backend.models.auth.SecurityUser;
-import com.assemble.backend.models.auth.User;
+import com.assemble.backend.models.entities.auth.SecurityUser;
+import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.repositories.auth.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

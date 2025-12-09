@@ -2,8 +2,8 @@ package com.assemble.backend.controllers.graphql;
 
 import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
-import com.assemble.backend.models.db.DocumentGreeting;
-import com.assemble.backend.repositories.DocumentRepository;
+import com.assemble.backend.models.entities.db.DocumentGreeting;
+import com.assemble.backend.repositories.db.DocumentRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

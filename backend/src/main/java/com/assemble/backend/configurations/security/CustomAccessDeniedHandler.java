@@ -1,6 +1,6 @@
 package com.assemble.backend.configurations.security;
 
-import com.assemble.backend.dtos.global.ErrorResponse;
+import com.assemble.backend.models.dtos.global.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
