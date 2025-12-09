@@ -15,6 +15,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @Schema(name = "User", description = "Contains information about a user")
@@ -56,4 +58,13 @@ public class UserDTO {
     )
     @NonNull
     private String lastname;
+
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            example = "Max Mustermann"
+    )
+    @NonNull
+    private String fullname;
+
+
 }

@@ -75,7 +75,8 @@ public class User extends BaseJPAEntity implements Serializable {
     @Builder.Default
     private boolean locked = false;
 
-    public String getFullName() {
+    @Transient
+    public String getFullname() {
         return this.getFirstname() + " " + this.getLastname();
     }
 }
