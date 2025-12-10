@@ -74,7 +74,8 @@ export default function Login() {
                                     <FormLabel>Username</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Type in your username" { ...field }
-                                               disabled={ isSubmitting }/>
+                                               autoComplete={ "username" }
+                                               disabled={ isSubmitting } autoFocus/>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
@@ -90,6 +91,7 @@ export default function Login() {
                                         <Input placeholder="Type in your password"
                                                { ...field }
                                                type={ "password" }
+                                               autoComplete={ "current-password" }
                                                disabled={ isSubmitting }/>
                                     </FormControl>
                                     <FormMessage/>
