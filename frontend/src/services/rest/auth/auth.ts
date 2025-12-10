@@ -10,53 +10,53 @@
 "use server";
 import { login, logout } from "@/api/rest/generated/fetch/authentication/authentication";
 import { LoginRequest } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
-import { cookies } from "next/headers";
-import { parseSetCookie, stringifyCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { me } from "@/api/rest/generated/fetch/users/users";
 import { redirect } from "next/navigation";
 import { LOGOUT_PATH } from "@/config/auth/auth.config";
+import {
+    getCookieHeader,
+    getCsrfTokenHeader, setCookiesFromResponse,
+} from "@/utils/cookieManagement";
 
 const submitLogin = async ( data: LoginRequest ) => {
     const response = await login( data );
 
     if ( response.status === 200 ) {
-        const cookieStore = await cookies();
-        response.headers.getSetCookie().forEach( cookie => {
-            const parsedCookie = parseSetCookie( cookie );
-            if ( parsedCookie ) cookieStore.set( parsedCookie );
-        } );
+        await setCookiesFromResponse( response.headers.getSetCookie() );
     }
 
     return response;
 }
 
 const submitLogout = async () => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieHeader();
+    const csrf = await getCsrfTokenHeader();
     const response = await logout( {
-        credentials: "include",
         headers: {
-            cookie: cookieStore.getAll().map( stringifyCookie ).join( "; " ),
+            ...cookie,
+            ...csrf
         }
     } );
 
+
     if ( response.status === 204 ) {
-        cookieStore.delete( "SESSION" );
+        await setCookiesFromResponse( response.headers.getSetCookie() );
     }
 
     return response;
 }
 
 const getUserDetails = async () => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieHeader();
+    const csrf = await getCsrfTokenHeader();
     const response = await me( {
-        credentials: "include",
         headers: {
-            cookie: cookieStore.getAll().map( stringifyCookie ).join( "; " ),
+            ...cookie,
+            ...csrf
         }
     } )
 
     if ( response.status === 401 ) redirect( LOGOUT_PATH );
-
 
     return response.data;
 }
