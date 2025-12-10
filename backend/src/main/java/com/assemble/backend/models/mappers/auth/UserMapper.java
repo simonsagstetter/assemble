@@ -13,6 +13,7 @@ package com.assemble.backend.models.mappers.auth;
 import com.assemble.backend.models.dtos.auth.UserDTO;
 import com.assemble.backend.models.entities.auth.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
@@ -22,6 +23,7 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface UserMapper {
 
+    @Mapping(target = "fullname", expression = "java(user.getFullname())")
     UserDTO toUserDTO( User user );
 
 }

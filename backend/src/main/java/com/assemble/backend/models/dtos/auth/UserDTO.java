@@ -56,4 +56,13 @@ public class UserDTO {
     )
     @NonNull
     private String lastname;
+
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            example = "Max Mustermann"
+    )
+    @NonNull
+    private String fullname;
+
+
 }

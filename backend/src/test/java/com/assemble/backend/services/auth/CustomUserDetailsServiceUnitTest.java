@@ -78,7 +78,7 @@ class CustomUserDetailsServiceUnitTest {
                 .isEqualTo( givenUser );
 
         assertEquals( authorities, userDetails.getAuthorities() );
-        assertEquals( givenUser.getFirstname() + " " + givenUser.getLastname(), securityUser.getUser().getFullName() );
+        assertEquals( givenUser.getFirstname() + " " + givenUser.getLastname(), securityUser.getUser().getFullname() );
         assertEquals( givenUser.getUsername(), userDetails.getUsername() );
         assertEquals( givenUser.getPassword(), userDetails.getPassword() );
         assertTrue( userDetails.isAccountNonExpired() );
