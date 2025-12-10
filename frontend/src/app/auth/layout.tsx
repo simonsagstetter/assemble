@@ -9,6 +9,11 @@
  */
 import { ReactNode } from "react";
 import { BlocksIcon } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Login | Assemble",
+}
 
 type AuthLayoutProps = {
     children: Readonly<ReactNode>

@@ -80,7 +80,7 @@ public class UserRestController {
             description = "Bad Request",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ValidationErrorResponse.class)
+                    schema = @Schema(oneOf = { ValidationErrorResponse.class, ErrorResponse.class })
             )
     )
     @PostMapping(

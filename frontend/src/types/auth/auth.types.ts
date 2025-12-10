@@ -17,8 +17,17 @@ const LoginFormSchema = z.object( {
 
 type LoginForm = z.infer<typeof LoginFormSchema>;
 
+const ChangePasswordSchema = z.object( {
+    oldPassword: z.string().trim().min( 1, "Old password is required." ),
+    newPassword: z.string().trim().min( 1, "New password is required." ),
+    confirmPassword: z.string().trim().min( 1, "Confirm password is required." ),
+} )
+
+type ChangePasswordForm = z.infer<typeof ChangePasswordSchema>;
 
 export {
     type LoginForm,
     LoginFormSchema,
+    type ChangePasswordForm,
+    ChangePasswordSchema
 }
