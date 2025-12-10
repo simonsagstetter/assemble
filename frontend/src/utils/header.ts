@@ -1,6 +1,6 @@
 /*
  * assemble
- * cookieManagement.ts
+ * header.ts
  *
  * Copyright (c) 2025 Simon Sagstetter
  *
@@ -28,9 +28,8 @@ const getCsrfTokenHeader = async (): Promise<HeadersInit> => {
     const cookieStore = await cookies();
 
     if ( cookieStore.has( "XSRF-TOKEN" ) ) {
-        const XSRFToken = cookieStore.get( "XSRF-TOKEN" )!;
         return {
-            [ XSRFToken.name ]: XSRFToken.value
+            "X-XSRF-TOKEN": cookieStore.get( "XSRF-TOKEN" )!.value
         }
     }
     return {};

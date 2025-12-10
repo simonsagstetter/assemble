@@ -36,7 +36,7 @@ class ExceptionHandlingCustomizerTest {
     MockMvc mockMvc;
 
     @Test
-    @DisplayName("AuthenticationEntryPoint should return 401 when unauthorized user tries to access any resource")
+    @DisplayName("AuthenticationEntryPoint should return 401 when unauthenticated user tries to access any resource")
     void authenticationEntryPoint_ShouldReturnErrorResponse_WhenUnauthenticatedUser() throws Exception {
         mockMvc.perform(
                 post(

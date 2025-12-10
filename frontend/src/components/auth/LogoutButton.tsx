@@ -24,16 +24,15 @@ export default function LogoutButton() {
 
     const handleSubmitLogout = async () => {
         progress.start();
-        const response = await submitLogout();
-        if ( response.status === 204 ) {
+        try {
+            await submitLogout();
             toast.success( "Logout successful" );
             router.push( LOGIN_PATH );
-        } else {
-            toast.error( "Logout failed", {
-                description: response.data.message
-            } );
+        } catch {
+            toast.error( "Logout failed" );
+        } finally {
+            progress.stop();
         }
-        progress.stop();
     }
 
     return <form onSubmit={ form.handleSubmit( handleSubmitLogout ) }>

@@ -15,8 +15,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
-import java.io.Serializable;
-
 @Data
 @Builder
 @Schema(name = "User", description = "Contains information about a user")

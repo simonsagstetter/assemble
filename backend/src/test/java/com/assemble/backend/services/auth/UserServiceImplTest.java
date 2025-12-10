@@ -151,7 +151,7 @@ class UserServiceImplTest {
                         .lastname( user.getLastname() )
                         .email( user.getEmail() )
                         .username( user.getUsername() )
-                        .fullname( user.getFirstname() )
+                        .fullname( user.getFullname() )
                         .build()
         );
 

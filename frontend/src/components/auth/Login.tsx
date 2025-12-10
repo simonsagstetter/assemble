@@ -26,6 +26,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { LOGIN_REDIRECT_PATH } from "@/config/auth/auth.config";
 import { useEffect } from "react";
 import { useProgress } from "@bprogress/next";
+import { isValidRoutePath } from "@/utils/url";
 
 export default function Login() {
     const router = useRouter();
@@ -41,16 +42,28 @@ export default function Login() {
 
     const handleLoginSubmit = async ( formData: LoginForm ) => {
         progress.start();
-        const { data, status } = await submitLogin( formData );
-        if ( status === 200 ) {
-            toast.success( "Login successful" );
-            router.push( searchParams.has( "next" ) ? searchParams.get( "next" )! : LOGIN_REDIRECT_PATH );
-        } else if ( status === 401 ) {
-            form.setError( "root", { message: data.message, type: "manual" } );
-        } else {
-            form.setError( "root", { message: "An unknown error occurred", type: "manual" } );
-            toast.error( "An unknown error occurred" );
+        try {
+            const { data, status } = await submitLogin( formData );
+            if ( status === 200 ) {
+                toast.success( "Login successful" );
+                if ( searchParams.has( "next" ) && isValidRoutePath( searchParams.get( "next" )! ) ) {
+                    router.push( searchParams.get( "next" )! );
+                } else {
+                    router.push( LOGIN_REDIRECT_PATH );
+                }
+            } else if ( status === 401 ) {
+                form.setError( "root", { message: data.message, type: "manual" } );
+            } else {
+                form.setError( "root", { message: "An unknown error occurred.", type: "manual" } );
+                toast.error( "An unknown error occurred" );
+            }
+        } catch {
+            form.setError( "root", { message: "Unable to reach the server. Please try again later.", type: "manual" } );
+            toast.error( "Unable to reach the server. Please try again later." );
+        } finally {
+            progress.stop();
         }
+
         progress.stop();
     }
 

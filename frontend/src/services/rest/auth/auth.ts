@@ -16,7 +16,7 @@ import { LOGOUT_PATH } from "@/config/auth/auth.config";
 import {
     getCookieHeader,
     getCsrfTokenHeader, setCookiesFromResponse,
-} from "@/utils/cookieManagement";
+} from "@/utils/header";
 
 const submitLogin = async ( data: LoginRequest ) => {
     const response = await login( data );
