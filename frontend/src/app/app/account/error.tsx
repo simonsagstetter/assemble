@@ -10,7 +10,6 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { ServerCrashIcon } from "lucide-react";
 

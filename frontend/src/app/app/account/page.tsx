@@ -16,9 +16,9 @@ import { useMe } from "@/api/rest/generated/query/users/users";
 export default function AccountPage() {
     const { data: userDetails, isLoading, isError } = useMe( { axios: { withCredentials: true } } );
 
-    if ( isLoading || !userDetails ) return <Loading/>;
-
     if ( isError ) throw new Error( "Failed to fetch user details" );
+
+    if ( isLoading || !userDetails ) return <Loading/>;
 
     return <div className="p-8">
         <AccountDetail userDetails={ userDetails.data }/>
