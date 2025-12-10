@@ -63,8 +63,6 @@ export default function Login() {
         } finally {
             progress.stop();
         }
-
-        progress.stop();
     }
 
     useEffect( () => {
