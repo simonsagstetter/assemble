@@ -37,8 +37,6 @@ const submitLogout = async () => {
             ...csrf
         }
     } );
-
-
     if ( response.status === 204 ) {
         await setCookiesFromResponse( response.headers.getSetCookie() );
     }

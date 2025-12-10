@@ -7,18 +7,27 @@
  * This software is the property of Simon Sagstetter.
  * All rights reserved.
  */
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { getUserDetails } from "@/services/rest/auth/auth";
+import Loading from "@/components/custom-ui/Loading";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import AppSidebar from "@/components/nav/AppSidebar";
+import { SiteHeader } from "@/components/nav/SiteHeader";
 
 type AppLayoutProps = {
     children: Readonly<ReactNode>
 }
 
 export default async function AppLayout( { children }: AppLayoutProps ) {
-    const userDetail = await getUserDetails();
+    const userDetails = await getUserDetails();
 
-    return <div>
-        <h1>{ userDetail.fullname }</h1>
-        { children }
-    </div>
+    return <Suspense fallback={ <Loading/> }>
+        <SidebarProvider>
+            <AppSidebar userDetails={ userDetails }/>
+            <SidebarInset>
+                <SiteHeader/>
+                { children }
+            </SidebarInset>
+        </SidebarProvider>
+    </Suspense>
 }

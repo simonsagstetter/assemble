@@ -16,6 +16,7 @@ import { LOGIN_PATH } from "@/config/auth/auth.config";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useProgress } from "@bprogress/next";
+import { LogOutIcon } from "lucide-react";
 
 export default function LogoutButton() {
     const router = useRouter();
@@ -36,6 +37,6 @@ export default function LogoutButton() {
     }
 
     return <form onSubmit={ form.handleSubmit( handleSubmitLogout ) }>
-        <Button type={ "submit" } variant={ "default" }>Logout</Button>
+        <Button type={ "submit" } variant={ "outline" }><LogOutIcon/> Logout</Button>
     </form>
 }
