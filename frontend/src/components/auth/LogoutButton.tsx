@@ -15,12 +15,15 @@ import { submitLogout } from "@/services/rest/auth/auth";
 import { LOGIN_PATH } from "@/config/auth/auth.config";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useProgress } from "@bprogress/next";
 
 export default function LogoutButton() {
     const router = useRouter();
+    const progress = useProgress();
     const form = useForm();
 
     const handleSubmitLogout = async () => {
+        progress.start();
         const response = await submitLogout();
         if ( response.status === 204 ) {
             toast.success( "Logout successful" );
@@ -30,6 +33,7 @@ export default function LogoutButton() {
                 description: response.data.message
             } );
         }
+        progress.stop();
     }
 
     return <form onSubmit={ form.handleSubmit( handleSubmitLogout ) }>

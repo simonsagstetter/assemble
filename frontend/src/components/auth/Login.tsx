@@ -22,13 +22,14 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { LOGIN_REDIRECT_PATH } from "@/config/auth/auth.config";
 import { useEffect } from "react";
+import { useProgress } from "@bprogress/next";
 
 export default function Login() {
     const router = useRouter();
+    const progress = useProgress();
     const searchParams = useSearchParams();
     const form = useForm( {
         resolver: zodResolver( LoginFormSchema ),
@@ -39,6 +40,7 @@ export default function Login() {
 
 
     const handleLoginSubmit = async ( formData: LoginForm ) => {
+        progress.start();
         const { data, status } = await submitLogin( formData );
         if ( status === 200 ) {
             toast.success( "Login successful" );
@@ -49,6 +51,7 @@ export default function Login() {
             form.setError( "root", { message: "An unknown error occurred", type: "manual" } );
             toast.error( "An unknown error occurred" );
         }
+        progress.stop();
     }
 
     useEffect( () => {

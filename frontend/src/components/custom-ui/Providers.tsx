@@ -26,6 +26,7 @@ export default function Providers( { children }: ProvidersProps ) {
         } }
         shallowRouting
         disableSameURL
+        startOnLoad
     >
         { children }
     </AppProgressProvider>
