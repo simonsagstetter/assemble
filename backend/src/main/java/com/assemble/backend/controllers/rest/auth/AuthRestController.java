@@ -33,7 +33,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,7 +48,6 @@ public class AuthRestController {
 
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository;
-    private final SecurityContextLogoutHandler securityContextLogoutHandler;
 
     @Operation(
             summary = "Login",
@@ -145,14 +143,7 @@ public class AuthRestController {
     @PostMapping(
             path = "/logout"
     )
-    public ResponseEntity<Void> logout(
-            Authentication authentication,
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) {
-        securityContextLogoutHandler.logout( request, response, authentication );
-        log.info( "User {} logged out successfully", authentication.getName() );
-
+    public ResponseEntity<Void> logout() {
         return ResponseEntity.noContent().build();
     }
 }

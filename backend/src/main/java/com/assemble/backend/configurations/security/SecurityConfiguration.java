@@ -34,6 +34,7 @@ public class SecurityConfiguration {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final ExceptionHandlingCustomizer exceptionHandlingCustomizer;
+    private final LogoutCustomizer logoutCustomizer;
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain( HttpSecurity http ) throws Exception {
@@ -57,7 +58,7 @@ public class SecurityConfiguration {
                                 .requestMatchers( "/graphql/**" ).permitAll()
                                 .anyRequest().authenticated()
                 )
-                .logout( AbstractHttpConfigurer::disable )
+                .logout( logoutCustomizer )
                 .build();
     }
 }
