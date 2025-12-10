@@ -17,8 +17,16 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 import { UserRolesItem } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
+import { useMemo } from "react";
 
-const TEAMS = [
+type Team = {
+    name: string;
+    logo: React.ComponentType<React.ComponentProps<"svg">>;
+    plan: string;
+    roles: UserRolesItem[];
+}
+
+const TEAMS: Team[] = [
     {
         name: "Timetracking",
         logo: ClockIcon,
@@ -45,7 +53,10 @@ type AppSwitcherProps = {
 
 export function AppSwitcher( { userRoles }: AppSwitcherProps ) {
     const { isMobile } = useSidebar()
-    const [ activeTeam, setActiveTeam ] = React.useState( TEAMS[ 0 ] );
+    const accessibleTeams = useMemo( () => TEAMS.filter(
+        team => userRoles.some( role => team.roles.includes( role ) )
+    ), [ userRoles ] );
+    const [ activeTeam, setActiveTeam ] = React.useState( accessibleTeams[ 0 ] );
 
     if ( !activeTeam ) {
         return null
@@ -80,19 +91,18 @@ export function AppSwitcher( { userRoles }: AppSwitcherProps ) {
                         <DropdownMenuLabel className="text-muted-foreground text-xs">
                             App
                         </DropdownMenuLabel>
-                        { TEAMS.filter( team => userRoles.some( role => team.roles.includes( role ) ) )
-                            .map( ( team ) => (
-                                <DropdownMenuItem
-                                    key={ team.name }
-                                    onClick={ () => setActiveTeam( team ) }
-                                    className="gap-2 p-2"
-                                >
-                                    <div className="flex size-6 items-center justify-center rounded-md border">
-                                        <team.logo className="size-3.5 shrink-0"/>
-                                    </div>
-                                    { team.name }
-                                </DropdownMenuItem>
-                            ) ) }
+                        { accessibleTeams.map( ( team ) => (
+                            <DropdownMenuItem
+                                key={ team.name }
+                                onClick={ () => setActiveTeam( team ) }
+                                className="gap-2 p-2"
+                            >
+                                <div className="flex size-6 items-center justify-center rounded-md border">
+                                    <team.logo className="size-3.5 shrink-0"/>
+                                </div>
+                                { team.name }
+                            </DropdownMenuItem>
+                        ) ) }
                     </DropdownMenuContent>
                 </DropdownMenu>
             </SidebarMenuItem>

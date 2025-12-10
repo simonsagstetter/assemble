@@ -28,14 +28,12 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar"
-import { CircleUserRoundIcon, EllipsisVerticalIcon, LogOutIcon, MessageSquareDot } from "lucide-react";
+import { CircleUserRoundIcon, EllipsisVerticalIcon, LogOutIcon } from "lucide-react";
 import { User } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
-import { useRouter } from "next/navigation";
-import { useProgress } from "@bprogress/next";
-import LogoutButton from "@/components/auth/LogoutButton";
 import { submitLogout } from "@/services/rest/auth/auth";
 import { toast } from "sonner";
 import { LOGIN_PATH } from "@/config/auth/auth.config";
+import { useRouter } from "@bprogress/next/app";
 
 type AppSidebarFooterProps = {
     userDetails: User
@@ -43,27 +41,21 @@ type AppSidebarFooterProps = {
 
 export default function AppSidebarFooter( { userDetails }: AppSidebarFooterProps ) {
     const router = useRouter();
-    const progress = useProgress();
     const { firstname, lastname, username, email, fullname } = userDetails;
     const { isMobile } = useSidebar(),
         initials = firstname.substring( 0, 1 ) + lastname.substring( 0, 1 );
 
     const handleNavigate = ( url: string ) => {
-        progress.start();
         router.push( url );
-        progress.stop();
     }
 
     const handleSubmitLogout = async () => {
-        progress.start();
         try {
             await submitLogout();
             toast.success( "Logout successful" );
             router.push( LOGIN_PATH );
         } catch {
             toast.error( "Logout failed" );
-        } finally {
-            progress.stop();
         }
     }
 
@@ -98,7 +90,7 @@ export default function AppSidebarFooter( { userDetails }: AppSidebarFooterProps
                         <DropdownMenuLabel className="p-0 font-normal">
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
-                                    <AvatarFallback className="rounded-lg">SS</AvatarFallback>
+                                    <AvatarFallback className="rounded-lg">{ initials }</AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-medium">{ username }</span>
