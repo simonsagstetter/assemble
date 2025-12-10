@@ -152,6 +152,7 @@ class UserServiceImplTest {
                         .email( user.getEmail() )
                         .username( user.getUsername() )
                         .fullname( user.getFullname() )
+                        .roles( user.getRoles() )
                         .build()
         );
 

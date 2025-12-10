@@ -44,11 +44,11 @@ public class UserCommands {
             User superUser = User.builder()
                     .id( id )
                     .firstname( "Simon" )
-                    .lastname( "Superuser" )
-                    .username( "superuser" )
+                    .lastname( "Sagstetter" )
+                    .username( "sagstettersi" )
                     .email( "test@example.com" )
                     .password( passwordEncoder.encode( rawPassword ) )
-                    .roles( List.of( UserRole.SUPERUSER ) )
+                    .roles( List.of( UserRole.USER, UserRole.ADMIN, UserRole.MANAGER, UserRole.SUPERUSER ) )
                     .build();
 
             userRepository.save( superUser );
