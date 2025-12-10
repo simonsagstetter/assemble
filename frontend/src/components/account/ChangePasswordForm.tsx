@@ -147,7 +147,7 @@ export default function ChangePasswordForm() {
                                 </FormItem>
                             ) }
                         />
-                        { isError && errors.root && (
+                        { !isSuccess && isError && errors.root && (
                             <FieldGroup>
                                 <Alert variant="destructive">
                                     <AlertCircleIcon/>
