@@ -10,10 +10,13 @@
 
 package com.assemble.backend.models.dtos.auth;
 
+import com.assemble.backend.models.entities.auth.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -22,6 +25,7 @@ public class UserDTO {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             format = "uuid",
             example = "6c0a7fd9872e47b29ec68fb10ea251de"
     )
@@ -30,6 +34,7 @@ public class UserDTO {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             example = "maxmustermann"
     )
     @NonNull
@@ -37,6 +42,7 @@ public class UserDTO {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             example = "max.mustermann@example.com",
             format = "email"
     )
@@ -45,6 +51,7 @@ public class UserDTO {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             example = "Max"
     )
     @NonNull
@@ -52,6 +59,7 @@ public class UserDTO {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             example = "Mustermann"
     )
     @NonNull
@@ -59,10 +67,19 @@ public class UserDTO {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             example = "Max Mustermann"
     )
     @NonNull
     private String fullname;
+
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "[USER,ADMIN]"
+    )
+    @NonNull
+    private List<UserRole> roles;
 
 
 }

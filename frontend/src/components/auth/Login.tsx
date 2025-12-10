@@ -22,15 +22,14 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 import { LOGIN_REDIRECT_PATH } from "@/config/auth/auth.config";
 import { useEffect } from "react";
-import { useProgress } from "@bprogress/next";
 import { isValidRoutePath } from "@/utils/url";
+import { useSearchParams } from "next/navigation";
 
 export default function Login() {
     const router = useRouter();
-    const progress = useProgress();
     const searchParams = useSearchParams();
     const form = useForm( {
         resolver: zodResolver( LoginFormSchema ),
@@ -41,7 +40,6 @@ export default function Login() {
 
 
     const handleLoginSubmit = async ( formData: LoginForm ) => {
-        progress.start();
         try {
             const { data, status } = await submitLogin( formData );
             if ( status === 200 ) {
@@ -60,8 +58,6 @@ export default function Login() {
         } catch {
             form.setError( "root", { message: "Unable to reach the server. Please try again later.", type: "manual" } );
             toast.error( "Unable to reach the server. Please try again later." );
-        } finally {
-            progress.stop();
         }
     }
 

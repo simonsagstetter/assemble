@@ -18,11 +18,11 @@ export default async function proxy( request: NextRequest ) {
     const params = request.nextUrl.searchParams;
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get( "SESSION" );
-
     // AUTO LOGOUT
     if ( pathName === LOGOUT_PATH ) {
         try {
             await submitLogout();
+            if ( cookieStore.has( "SESSION" ) ) cookieStore.delete( "SESSION" );
 
         } catch {
             cookieStore.delete( "SESSION" );
