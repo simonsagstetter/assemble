@@ -14,18 +14,14 @@ export default defineConfig( {
             target: "./src/api/rest/generated/query/",
             client: "react-query",
             baseUrl: "http://localhost:8080",
+            headers: true,
             override: {
                 query: {
                     useQuery: true,
                     useMutation: true,
-                    useSuspenseQuery: true,
-                    useInfiniteQueryParam: "nextId",
-                    useInfinite: true,
+                    useInvalidate: true,
                     version: 5,
-                    options: {
-                        staleTime: 3600
-                    }
-                }
+                },
             }
         }
     },

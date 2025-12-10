@@ -27,11 +27,12 @@ import { LOGIN_REDIRECT_PATH } from "@/config/auth/auth.config";
 import { useEffect } from "react";
 import { isValidRoutePath } from "@/utils/url";
 import { useSearchParams } from "next/navigation";
+import { LoginRequest } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
 
 export default function Login() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const form = useForm( {
+    const form = useForm<LoginRequest>( {
         resolver: zodResolver( LoginFormSchema ),
         defaultValues: { username: "", password: "" }
     } )
