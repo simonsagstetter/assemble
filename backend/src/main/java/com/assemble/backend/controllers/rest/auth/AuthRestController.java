@@ -132,14 +132,6 @@ public class AuthRestController {
             responseCode = "204",
             description = "Logout successful"
     )
-    @ApiResponse(
-            responseCode = "401",
-            description = "Not authenticated",
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorResponse.class)
-            )
-    )
     @PostMapping(
             path = "/logout"
     )

@@ -126,7 +126,7 @@ class UserServiceImplTest {
     @DisplayName("findMe() should throw when user not found")
     @Test
     void findMe_ShouldThrow_WhenUserNotFound() {
-        when( userRepository.findByUsername( Mockito.any( String.class ) ) )
+        when( userRepository.findByUsername( Mockito.anyString() ) )
                 .thenReturn( Optional.empty() );
 
         SecurityUser securityUser = new SecurityUser( user );
@@ -151,6 +151,7 @@ class UserServiceImplTest {
                         .lastname( user.getLastname() )
                         .email( user.getEmail() )
                         .username( user.getUsername() )
+                        .fullname( user.getFirstname() )
                         .build()
         );
 
