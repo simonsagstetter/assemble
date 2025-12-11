@@ -18,7 +18,6 @@ import { Separator } from "@/components/ui/separator";
 type AccountDetailProps = {
     userDetails: User;
 }
-
 export default function AccountDetail( { userDetails: { firstname, lastname, username, email } }: AccountDetailProps ) {
     return <Card>
         <CardHeader>
