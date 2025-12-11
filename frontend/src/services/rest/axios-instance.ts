@@ -20,8 +20,8 @@ export const instance =async <T>(
 ): Promise<T> => {
     return AXIOS_INSTANCE({
         ...config,
+        ...options,
         withCredentials: true,
         withXSRFToken: config.method !== "GET",
-        ...options,
     }).then(({ data }) => data);
 };
