@@ -33,7 +33,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                         AccessDeniedException accessDeniedException
     ) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String message = authentication.isAuthenticated() ? "Already authenticated" : "Not authenticated";
+        String message = authentication != null && authentication.isAuthenticated() ? "Already authenticated" : "Not authenticated";
         response.setStatus( HttpServletResponse.SC_FORBIDDEN );
         response.setContentType( MediaType.APPLICATION_JSON_VALUE );
         ErrorResponse responseBody = ErrorResponse.builder()

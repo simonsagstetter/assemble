@@ -1,7 +1,7 @@
 import { defineConfig } from 'orval';
 
 export default defineConfig( {
-    restApi: {
+    clientApi: {
         input: {
             target: "http://localhost:8080/v3/api-docs",
             filters: {
@@ -16,10 +16,15 @@ export default defineConfig( {
             baseUrl: "http://localhost:8080",
             headers: true,
             override: {
+                mutator: {
+                    path: "./src/services/rest/axios-instance.ts",
+                    name: "instance"
+                },
                 query: {
                     useQuery: true,
                     useMutation: true,
                     useInvalidate: true,
+                    useSuspenseQuery: true,
                     version: 5,
                 },
             }

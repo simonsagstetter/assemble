@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -158,10 +159,24 @@ class AuthRestControllerTest {
         mockMvc.perform(
                         post(
                                 "/api/auth/logout"
-                        )
+                        ).with(csrf())
                 )
                 .andExpect(
                         status().isNoContent()
+                );
+    }
+
+    @DisplayName("POST /api/auth/logout should return 403 if csrf token is invalid")
+    @Test
+    @WithMockCustomUser
+    void logout_ShouldReturn403_WhenCsrfTokenIsInvalid() throws Exception {
+        mockMvc.perform(
+                        post(
+                                "/api/auth/logout"
+                        ).with(csrf().useInvalidToken())
+                )
+                .andExpect(
+                        status().isForbidden()
                 );
     }
 }

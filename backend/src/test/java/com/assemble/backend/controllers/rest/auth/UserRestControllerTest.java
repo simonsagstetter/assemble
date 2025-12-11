@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -135,6 +136,7 @@ class UserRestControllerTest {
                         .contentType( MediaType.APPLICATION_JSON_VALUE )
                         .accept( MediaType.APPLICATION_JSON_VALUE )
                         .content( jsonContent )
+                        .with( csrf() )
         ).andExpect(
                 status().isNotFound()
         ).andExpect(
@@ -162,6 +164,7 @@ class UserRestControllerTest {
                         .contentType( MediaType.APPLICATION_JSON_VALUE )
                         .accept( MediaType.APPLICATION_JSON_VALUE )
                         .content( jsonContent )
+                        .with( csrf() )
         ).andExpect(
                 status().isBadRequest()
         ).andExpect(
@@ -189,6 +192,7 @@ class UserRestControllerTest {
                         .contentType( MediaType.APPLICATION_JSON_VALUE )
                         .accept( MediaType.APPLICATION_JSON_VALUE )
                         .content( jsonContent )
+                        .with( csrf() )
         ).andExpect(
                 status().isBadRequest()
         ).andExpect(
@@ -216,6 +220,7 @@ class UserRestControllerTest {
                         .contentType( MediaType.APPLICATION_JSON_VALUE )
                         .accept( MediaType.APPLICATION_JSON_VALUE )
                         .content( jsonContent )
+                        .with( csrf() )
         ).andExpect(
                 status().isNoContent()
         );

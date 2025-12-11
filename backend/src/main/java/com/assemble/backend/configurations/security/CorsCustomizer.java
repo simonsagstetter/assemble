@@ -34,7 +34,7 @@ public class CorsCustomizer implements Customizer<CorsConfigurer<HttpSecurity>> 
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsCustomizer = new CorsConfiguration();
         corsCustomizer.addAllowedOrigin( "http://localhost:3000" );
-        corsCustomizer.setAllowedHeaders( List.of( "Cookie", "Content-Type", "Accept", "Origin", "X-Requested-With" ) );
+        corsCustomizer.setAllowedHeaders( List.of( "Cookie", "Content-Type", "Accept", "Origin", "X-XSRF-TOKEN" ) );
         corsCustomizer.setAllowedMethods( List.of( "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE" ) );
         corsCustomizer.setAllowCredentials( true );
         corsCustomizer.setMaxAge( 3600L );
