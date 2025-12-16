@@ -40,6 +40,7 @@ public class UserCommands {
     public String createSuperUser() {
         if ( userRepository.countDistinctByRolesContaining( UserRole.SUPERUSER ) == 0 ) {
             String id = idService.generateIdFor( User.class );
+
             String rawPassword = UUID.randomUUID().toString().replace( "-", "" );
             User superUser = User.builder()
                     .id( id )
