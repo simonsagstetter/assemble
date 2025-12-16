@@ -10,28 +10,30 @@
 
 package com.assemble.backend.services.auth;
 
-import com.assemble.backend.models.entities.auth.User;
+import com.assemble.backend.models.dtos.auth.admin.*;
 import com.assemble.backend.models.entities.auth.UserRole;
 
 import java.util.List;
 
 public interface UserAdminService {
 
-    List<User> getAllUsers();
+    List<UserAdminDTO> getAllUsers();
 
-    User findUserByUsername( String username );
+    UserAdminDTO getUserById( String id );
 
-    User setUserStatus( String username, Boolean enabled );
+    List<UserAdminDTO> getUnlinkedUsers();
 
-    User setUserLocked( String username, Boolean locked );
+    UserAdminDTO setUserStatus( String id, UserUpdateStatusDTO userUpdateStatusDTO );
 
-    User setUserRoles( String username, List<UserRole> roles );
+    UserAdminDTO setUserRoles( String id, List<UserRole> roles );
 
-    User createUser( User user );
+    UserAdminDTO setUserEmployee( String userId, UserUpdateEmployeeDTO userUpdateEmployeeDTO );
 
-    User updateUser( User user );
+    UserAdminDTO createUser( UserCreateDTO user );
 
-    Boolean setPassword( String username, String password );
+    UserAdminDTO updateUser( String id, UserUpdateDTO user );
 
-    Boolean deleteUser( String username );
+    void setUserPassword( String id, String newPassword, Boolean invalidateAllSessions );
+
+    void deleteUser( String id );
 }

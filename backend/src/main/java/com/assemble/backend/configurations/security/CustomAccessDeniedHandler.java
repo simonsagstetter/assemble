@@ -17,8 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
@@ -32,14 +30,12 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                         HttpServletResponse response,
                         AccessDeniedException accessDeniedException
     ) throws IOException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String message = authentication != null && authentication.isAuthenticated() ? "Already authenticated" : "Not authenticated";
         response.setStatus( HttpServletResponse.SC_FORBIDDEN );
         response.setContentType( MediaType.APPLICATION_JSON_VALUE );
         ErrorResponse responseBody = ErrorResponse.builder()
                 .statusCode( HttpStatus.FORBIDDEN.value() )
                 .statusText( HttpStatus.FORBIDDEN.getReasonPhrase() )
-                .message( message )
+                .message( accessDeniedException.getMessage() )
                 .build();
         new ObjectMapper().writeValue( response.getWriter(), responseBody );
     }

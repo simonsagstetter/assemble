@@ -37,9 +37,12 @@ public class UserCommands {
     @ShellMethod(
             key = "create-superuser"
     )
+    // Note: This command is for initial admin setup only. Password is returned in plaintext for
+    // one-time configuration and should not be used as a pattern in production auth flows.
     public String createSuperUser() {
         if ( userRepository.countDistinctByRolesContaining( UserRole.SUPERUSER ) == 0 ) {
             String id = idService.generateIdFor( User.class );
+
             String rawPassword = UUID.randomUUID().toString().replace( "-", "" );
             User superUser = User.builder()
                     .id( id )

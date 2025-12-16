@@ -11,6 +11,8 @@
 package com.assemble.backend.models.entities.auth;
 
 import com.assemble.backend.models.entities.core.BaseJPAEntity;
+import com.assemble.backend.models.entities.employee.Employee;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -27,7 +29,6 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Entity
 @Table(name = "USERS")
@@ -56,7 +57,7 @@ public class User extends BaseJPAEntity implements Serializable {
 
     @NonNull
     @Email(message = "Please provide a valid email address")
-    @Column(unique = true, nullable = false, name = "EMAIL")
+    @Column(nullable = false, name = "EMAIL")
     private String email;
 
     @NonNull
@@ -74,6 +75,10 @@ public class User extends BaseJPAEntity implements Serializable {
     @Column(nullable = false, name = "IS_LOCKED")
     @Builder.Default
     private boolean locked = false;
+
+    @OneToOne(mappedBy = "user")
+    @JsonBackReference
+    private Employee employee;
 
     @Transient
     public String getFullname() {
