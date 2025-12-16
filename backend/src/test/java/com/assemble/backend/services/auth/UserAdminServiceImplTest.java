@@ -1,0 +1,689 @@
+/*
+ * assemble
+ * UserAdminServiceImplTest.java
+ *
+ * Copyright (c) 2025 Simon Sagstetter
+ *
+ * This software is the property of Simon Sagstetter.
+ * All rights reserved.
+ */
+
+package com.assemble.backend.services.auth;
+
+import com.assemble.backend.models.dtos.auth.admin.*;
+import com.assemble.backend.models.dtos.employee.EmployeeRefDTO;
+import com.assemble.backend.models.entities.auth.User;
+import com.assemble.backend.models.entities.auth.UserAudit;
+import com.assemble.backend.models.entities.auth.UserRole;
+import com.assemble.backend.models.entities.employee.Employee;
+import com.assemble.backend.models.mappers.auth.UserAdminMapper;
+import com.assemble.backend.repositories.auth.UserRepository;
+import com.assemble.backend.repositories.employee.EmployeeRepository;
+import com.assemble.backend.services.core.IdService;
+import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.security.InvalidParameterException;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
+@DisplayName("UserAdminServiceIml Unit Test")
+@ExtendWith(MockitoExtension.class)
+class UserAdminServiceImplTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private UserAdminMapper userAdminMapper;
+
+    @Mock
+    private EmployeeRepository employeeRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private IdService idService;
+
+    @Mock
+    private SessionService sessionService;
+
+    @InjectMocks
+    private UserAdminServiceImpl userAdminServiceImpl;
+
+    private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+    private static User user;
+    private static UserAdminDTO userAdminDTO;
+
+    @BeforeAll
+    static void setUp() {
+        user = User.builder()
+                .id( "1" )
+                .username( "testuser" )
+                .firstname( "Test" )
+                .lastname( "User" )
+                .email( "test@example.com" )
+                .roles( List.of( UserRole.USER ) )
+                .password( PASSWORD_ENCODER.encode( "secret" ) )
+                .createdDate( Instant.now() )
+                .lastModifiedDate( Instant.now() )
+                .createdBy( new UserAudit( null, "SYSTEM" ) )
+                .lastModifiedBy( new UserAudit( null, "SYSTEM" ) )
+                .build();
+
+        userAdminDTO = UserAdminDTO.builder()
+                .id( "1" )
+                .username( "testuser" )
+                .firstname( "Test" )
+                .lastname( "User" )
+                .email( "test@example.com" )
+                .roles( List.of( UserRole.USER ) )
+                .enabled( true )
+                .locked( false )
+                .createdDate( user.getCreatedDate() )
+                .lastModifiedDate( user.getLastModifiedDate() )
+                .createdBy( user.getCreatedBy() )
+                .lastModifiedBy( user.getLastModifiedBy() )
+                .employee( null )
+                .fullname( user.getFullname() )
+                .build();
+    }
+
+    @BeforeEach
+    void resetMocks() {
+        Mockito.reset( userRepository, userAdminMapper, employeeRepository, passwordEncoder, idService, sessionService );
+        user.setEmployee( null );
+        userAdminDTO.setEmployee( null );
+    }
+
+    @Test
+    @DisplayName("getAllUsers should return an empty list when no users in database")
+    void getAllUsers_ShouldReturnAnEmptyList_WhenNoUsersInDatabase() {
+        when( userRepository.findAll() ).thenReturn( List.of() );
+
+        List<UserAdminDTO> users = userAdminServiceImpl.getAllUsers();
+
+        assertThat( users ).isEmpty();
+
+        verify( userRepository, times( 1 ) ).findAll();
+    }
+
+    @Test
+    @DisplayName("getAllUsers should return a list containing one user")
+    void getAllUsers_ShouldReturnAListContainingOneUser() {
+        when( userRepository.save( user ) ).thenReturn( user );
+        userRepository.save( user );
+        when( userRepository.findAll() ).thenReturn( List.of( user ) );
+        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
+
+        List<UserAdminDTO> users = userAdminServiceImpl.getAllUsers();
+
+        System.out.println( users );
+        assertThat( users )
+                .isNotEmpty()
+                .hasSize( 1 )
+                .containsExactly( userAdminDTO );
+
+        verify( userRepository, times( 1 ) ).save( user );
+        verify( userRepository, times( 1 ) ).findAll();
+    }
+
+    @Test
+    @DisplayName("getUserById should throw EntityNotFoundException when user does not exist")
+    void getUserById_ShouldThrowEntityNotFoundException_WhenUserDoesNotExist() {
+        when( userRepository.findById( "not-existing-user-id" ) ).thenReturn( Optional.empty() );
+
+        assertThrows( EntityNotFoundException.class, () -> userAdminServiceImpl.getUserById( "not-existing-user-id" ) );
+
+        verify( userRepository, times( 1 ) ).findById( "not-existing-user-id" );
+    }
+
+    @Test
+    @DisplayName("getUserById should return AdminUserDTO instance when user exists")
+    void getUserById_ShouldReturnAdminUserDTO_WhenUserExists() {
+        String userID = user.getId();
+        assert userID != null;
+        when( userRepository.save( user ) ).thenReturn( user );
+        userRepository.save( user );
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
+
+        UserAdminDTO actual = assertDoesNotThrow( () -> userAdminServiceImpl.getUserById( userID ) );
+
+        assertThat( actual )
+                .isNotNull()
+                .isEqualTo( userAdminDTO );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( userRepository, times( 1 ) ).save( user );
+        verify( userAdminMapper, times( 1 ) ).toUserAdminDTO( user );
+    }
+
+    @Test
+    @DisplayName("getUnlinkedUsers should return empty list when no users exist where employee field is null")
+    void getUnlinkedUsers_ShouldReturnEmptyList_WhenNoUsersExistWhereEmployeeFieldIsNull() {
+        when( userRepository.findAllByEmployeeIsNull() ).thenReturn( List.of() );
+
+        List<UserAdminDTO> actual = userAdminServiceImpl.getUnlinkedUsers();
+
+        assertThat( actual ).isEmpty();
+        verify( userRepository, times( 1 ) ).findAllByEmployeeIsNull();
+    }
+
+    @Test
+    @DisplayName("getUnlinkedUsers should return a User list when user exist with employee null field")
+    void getUnlinkedUsers_ShouldReturnAUserList_WhenUserExistWithEmployeeNullField() {
+        when( userRepository.findAllByEmployeeIsNull() ).thenReturn( List.of( user ) );
+        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
+
+        List<UserAdminDTO> actual = userAdminServiceImpl.getUnlinkedUsers();
+
+        assertThat( actual )
+                .isNotEmpty()
+                .isNotEmpty()
+                .containsExactly( userAdminDTO );
+
+        verify( userRepository, times( 1 ) ).findAllByEmployeeIsNull();
+    }
+
+
+    @Test
+    @DisplayName("createUser should throw EntityNotFoundException when invalid employeeId was passed")
+    void createUser_ShouldThrowEntityNotFoundException_WhenInvalidEmployeeIdWasPassed() {
+        UserCreateDTO userCreateDTO = UserCreateDTO.builder()
+                .employeeId( "invalid-employee-id" )
+                .username( "testuser" )
+                .firstname( "Test" )
+                .lastname( "User" )
+                .password( "" )
+                .email( "test@example.com" )
+                .roles( List.of( UserRole.USER ) )
+                .build();
+
+        String employeeId = userCreateDTO.getEmployeeId();
+        assert employeeId != null;
+        when( employeeRepository.findById( employeeId ) ).thenReturn( Optional.empty() );
+
+        assertThrows( EntityNotFoundException.class, () -> userAdminServiceImpl.createUser( userCreateDTO ) );
+
+        verify( employeeRepository, times( 1 ) ).findById( employeeId );
+    }
+
+    @Test
+    @DisplayName("createUser should throw InvalidParameterException when employee is already linked")
+    void createUser_ShouldThrowInvalidParameterException_WhenEmployeeIsAlreadyLinked() {
+        Employee employee = Employee.builder()
+                .id( "test-id" )
+                .user( user )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
+                .email( "max.mustermann@example.com" )
+                .build();
+        String employeeId = employee.getId();
+        assert employeeId != null;
+        when( employeeRepository.findById( employeeId ) ).thenReturn( Optional.of( employee ) );
+
+        UserCreateDTO userCreateDTO = UserCreateDTO.builder()
+                .employeeId( employeeId )
+                .username( "testuser" )
+                .firstname( "Test" )
+                .lastname( "User" )
+                .password( "" )
+                .email( "test@example.com" )
+                .roles( List.of( UserRole.USER ) )
+                .build();
+
+        assertThrows( InvalidParameterException.class, () -> userAdminServiceImpl.createUser( userCreateDTO ) );
+
+        verify( employeeRepository, times( 1 ) ).findById( employeeId );
+    }
+
+    @Test
+    @DisplayName("createUser should return new user when dto is valid")
+    void createUser_ShouldReturnNewUser_WhenDtoIsValid() {
+        Employee employee = Employee.builder()
+                .id( "test-id" )
+                .user( null )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
+                .email( "max.mustermann@example.com" )
+                .build();
+        String employeeId = employee.getId();
+        assert employeeId != null;
+
+        UserCreateDTO userCreateDTO = UserCreateDTO.builder()
+                .employeeId( employeeId )
+                .username( "testuser" )
+                .firstname( "Test" )
+                .lastname( "User" )
+                .password( "secret" )
+                .email( "test@example.com" )
+                .roles( List.of( UserRole.USER ) )
+                .build();
+
+        when( employeeRepository.findById( employeeId ) ).thenReturn( Optional.of( employee ) );
+        when( idService.generateIdFor( User.class ) ).thenReturn( "new-user-id" );
+        when( passwordEncoder.encode( userCreateDTO.getPassword() ) ).thenReturn( "secret" );
+        user.setEmployee( employee );
+        when( userAdminMapper.toUser( userCreateDTO, "new-user-id" ) ).thenReturn( user );
+        when( userRepository.save( user ) ).thenReturn( user );
+        userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( employeeId ).fullname( employee.getFullname() ).build() );
+        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
+        when( userRepository.save( user ) ).thenReturn( user );
+
+        UserAdminDTO actual = assertDoesNotThrow( () -> userAdminServiceImpl.createUser( userCreateDTO ) );
+
+        assertThat( actual ).isEqualTo( userAdminDTO );
+
+        verify( employeeRepository, times( 1 ) ).findById( employeeId );
+        verify( idService, times( 1 ) ).generateIdFor( User.class );
+        verify( passwordEncoder, times( 1 ) ).encode( userCreateDTO.getPassword() );
+        verify( userAdminMapper, times( 1 ) ).toUser( userCreateDTO, "new-user-id" );
+        verify( userRepository, times( 1 ) ).save( user );
+        verify( userAdminMapper, times( 1 ) ).toUserAdminDTO( user );
+        verify( userRepository, times( 1 ) ).save( user );
+    }
+
+    @Test
+    @DisplayName("createUser should return new user with generated password when dto is valid")
+    void createUser_ShouldReturnNewUserWithGeneratedPassword_WhenDtoIsValid() {
+        Employee employee = Employee.builder()
+                .id( "test-id" )
+                .user( null )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
+                .email( "max.mustermann@example.com" )
+                .build();
+        String employeeId = employee.getId();
+        assert employeeId != null;
+
+        UserCreateDTO userCreateDTO = UserCreateDTO.builder()
+                .employeeId( employeeId )
+                .username( "testuser" )
+                .firstname( "Test" )
+                .lastname( "User" )
+                .email( "test@example.com" )
+                .roles( List.of( UserRole.USER ) )
+                .build();
+
+        when( employeeRepository.findById( employeeId ) ).thenReturn( Optional.of( employee ) );
+        when( idService.generateIdFor( User.class ) ).thenReturn( "new-user-id" );
+        when( passwordEncoder.encode( anyString() ) ).thenReturn( "UUID" );
+        user.setEmployee( employee );
+        when( userAdminMapper.toUser( userCreateDTO, "new-user-id" ) ).thenReturn( user );
+        when( userRepository.save( user ) ).thenReturn( user );
+        userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( employeeId ).fullname( employee.getFullname() ).build() );
+        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
+        when( userRepository.save( user ) ).thenReturn( user );
+
+        UserAdminDTO actual = assertDoesNotThrow( () -> userAdminServiceImpl.createUser( userCreateDTO ) );
+
+        assertThat( actual ).isEqualTo( userAdminDTO );
+
+        verify( employeeRepository, times( 1 ) ).findById( employeeId );
+        verify( idService, times( 1 ) ).generateIdFor( User.class );
+        verify( passwordEncoder, times( 1 ) ).encode( anyString() );
+        verify( userAdminMapper, times( 1 ) ).toUser( userCreateDTO, "new-user-id" );
+        verify( userRepository, times( 1 ) ).save( user );
+        verify( userAdminMapper, times( 1 ) ).toUserAdminDTO( user );
+        verify( userRepository, times( 1 ) ).save( user );
+    }
+
+    @Test
+    @DisplayName("setUserStatus should throw EntityNotFoundException when user does not exist")
+    void setUserStatus_ShouldThrowEntityNotFoundException_WhenUserDoesNotExist() {
+        String userID = "non-existing-id";
+        when( userRepository.findById( userID ) ).thenReturn( Optional.empty() );
+
+        assertThrows( EntityNotFoundException.class, () -> userAdminServiceImpl.setUserStatus(
+                        userID,
+                        UserUpdateStatusDTO.builder()
+                                .enabled( true )
+                                .locked( false )
+                                .build()
+                )
+        );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+    }
+
+    @Test
+    @DisplayName("setUserStatus should update UserRoles when DTO is valid")
+    void setUserStatus_ShouldUpdateUserAdminDTO_WhenDtoIsValid() {
+        String userID = user.getId();
+        assert userID != null;
+
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+        userAdminDTO.setEnabled( true );
+        userAdminDTO.setLocked( true );
+
+        when( userRepository.save( user ) ).thenReturn( user );
+        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
+
+        UserUpdateStatusDTO userUpdateStatusDTO = UserUpdateStatusDTO.builder()
+                .enabled( true )
+                .locked( true )
+                .build();
+
+        UserAdminDTO actual = assertDoesNotThrow( () -> userAdminServiceImpl.setUserStatus(
+                        userID,
+                        userUpdateStatusDTO
+                )
+        );
+
+        assertThat( actual ).isEqualTo( userAdminDTO );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( userRepository, times( 1 ) ).save( user );
+    }
+
+    @Test
+    @DisplayName("setUserRoles should throw EntityNotFoundException when user does not exist")
+    void setUserRoles_ShouldThrowEntityNotFoundException_WhenUserDoesNotExist() {
+        String userID = "non-existing-id";
+        when( userRepository.findById( userID ) ).thenReturn( Optional.empty() );
+
+        assertThrows( EntityNotFoundException.class, () -> userAdminServiceImpl.setUserRoles(
+                        userID,
+                        List.of( UserRole.USER )
+                )
+        );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+    }
+
+    @Test
+    @DisplayName("setUserRoles should update UserRoles when DTO is valid")
+    void setUserRoles_ShouldUpdateUserAdminDTO_WhenDtoIsValid() {
+        String userID = user.getId();
+        assert userID != null;
+
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+        List<UserRole> roles = List.of( UserRole.USER, UserRole.ADMIN );
+
+        userAdminDTO.setRoles( roles );
+
+        when( userRepository.save( user ) ).thenReturn( user );
+        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
+
+        UserAdminDTO actual = assertDoesNotThrow( () -> userAdminServiceImpl.setUserRoles(
+                        userID,
+                        roles
+                )
+        );
+
+        assertThat( actual ).isEqualTo( userAdminDTO );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( userRepository, times( 1 ) ).save( user );
+    }
+
+    @Test
+    @DisplayName("setUserEmployee should throw EntityNotFoundException when user does not exist")
+    void setUserEmployee_ShouldThrowEntityNotFoundException_WhenUserDoesNotExist() {
+        String userID = "non-existing-id";
+        when( userRepository.findById( userID ) ).thenReturn( Optional.empty() );
+
+        assertThrows( EntityNotFoundException.class, () -> userAdminServiceImpl.setUserEmployee(
+                        userID,
+                        UserUpdateEmployeeDTO.builder().employeeId( "test" ).build()
+                )
+        );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+    }
+
+    @Test
+    @DisplayName("setUserEmployee should throw EntityNotFoundException when employee does not exist")
+    void setUserEmployee_ShouldThrowEntityNotFoundException_WhenEmployeeDoesNotExist() {
+        String userID = user.getId();
+        assert userID != null;
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+
+        UserUpdateEmployeeDTO userUpdateEmployeeDTO = UserUpdateEmployeeDTO.builder()
+                .employeeId( "non-existing-employee-id" )
+                .build();
+
+        assertThrows( EntityNotFoundException.class, () -> userAdminServiceImpl.setUserEmployee( userID, userUpdateEmployeeDTO ) );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( employeeRepository, times( 1 ) ).findById( "non-existing-employee-id" );
+    }
+
+    @Test
+    @DisplayName("setUserEmployee should throw InvalidParamterException when employee is already linked")
+    void setUserEmployee_ShouldThrowInvalidParamterException_WhenEmployeeIsAlreadyLinked() {
+        Employee employee = Employee.builder()
+                .id( "test-id" )
+                .user( user )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
+                .email( "max.mustermann@example.com" )
+                .build();
+        String employeeId = employee.getId();
+        assert employeeId != null;
+        when( employeeRepository.findById( employeeId ) ).thenReturn( Optional.of( employee ) );
+
+
+        String userID = user.getId();
+        assert userID != null;
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+
+        user.setEmployee( employee );
+
+        UserUpdateEmployeeDTO userUpdateEmployeeDTO = UserUpdateEmployeeDTO.builder()
+                .employeeId( employeeId )
+                .build();
+
+        assertThrows( InvalidParameterException.class, () -> userAdminServiceImpl.setUserEmployee( userID, userUpdateEmployeeDTO ) );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( employeeRepository, times( 1 ) ).findById( employeeId );
+    }
+
+    @Test
+    @DisplayName("setUserEmployee should return UserAdminDTO with Valid DTO and no employee linked")
+    void setUserEmployee_ShouldReturnUserAdminDTOWithValidDtoAndNoEmployeeLinked() {
+        Employee employee = Employee.builder()
+                .id( "test-id" )
+                .user( user )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
+                .email( "max.mustermann@example.com" )
+                .build();
+
+        user.setEmployee( employee );
+
+        String userID = user.getId();
+        assert userID != null;
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+        when( employeeRepository.save( employee ) ).thenReturn( employee );
+        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
+
+        UserUpdateEmployeeDTO userUpdateEmployeeDTO = UserUpdateEmployeeDTO.builder()
+                .employeeId( null )
+                .build();
+
+        UserAdminDTO actual = assertDoesNotThrow( () -> userAdminServiceImpl.setUserEmployee( userID, userUpdateEmployeeDTO ) );
+
+        assertThat( actual ).isEqualTo( userAdminDTO );
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( employeeRepository, times( 1 ) ).save( employee );
+    }
+
+    @Test
+    @DisplayName("setUserEmployee should return UserAdminDTO with Valid DTO and new employee linked")
+    void setUserEmployee_ShouldReturnUserAdminDTOWithValidDtoAndNewEmployeeLinked() {
+        Employee employee = Employee.builder()
+                .id( "test-id" )
+                .user( null )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
+                .email( "max.mustermann@example.com" )
+                .build();
+
+        String employeeId = employee.getId();
+        assert employeeId != null;
+
+        String userID = user.getId();
+        assert userID != null;
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+
+        when( employeeRepository.findById( employeeId ) ).thenReturn( Optional.of( employee ) );
+        when( employeeRepository.save( employee ) ).thenReturn( employee );
+        user.setEmployee( employee );
+        userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( employeeId ).fullname( employee.getFullname() ).build() );
+        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
+
+        UserUpdateEmployeeDTO userUpdateEmployeeDTO = UserUpdateEmployeeDTO.builder()
+                .employeeId( employeeId )
+                .build();
+
+        UserAdminDTO actual = assertDoesNotThrow( () -> userAdminServiceImpl.setUserEmployee( userID, userUpdateEmployeeDTO ) );
+
+        assertThat( actual ).isEqualTo( userAdminDTO );
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( employeeRepository, times( 1 ) ).findById( employeeId );
+        verify( employeeRepository, times( 1 ) ).save( employee );
+    }
+
+    @Test
+    @DisplayName("setUserPassword should throw EntityNotFoundException when user does not exist")
+    void setUserPassword_ShouldThrowEntityNotFoundException_WhenUserDoesNotExist() {
+        String userID = "non-existing-id";
+        when( userRepository.findById( userID ) ).thenReturn( Optional.empty() );
+
+        assertThrows( EntityNotFoundException.class, () -> userAdminServiceImpl.setUserPassword(
+                        userID,
+                        "test",
+                        false
+                )
+        );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+    }
+
+    @Test
+    @DisplayName("setUserPassword should change password")
+    void setUserPassword_ShouldChangePassword_WhenCalled() {
+        String userID = user.getId();
+        assert userID != null;
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+        when( passwordEncoder.encode( "test" ) ).thenReturn( "encodede-test" );
+        assertDoesNotThrow( () -> userAdminServiceImpl.setUserPassword(
+                        userID,
+                        "test",
+                        false
+                )
+        );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( passwordEncoder, times( 1 ) ).encode( "test" );
+    }
+
+    @Test
+    @DisplayName("setUserPassword should invalidate sessions when called")
+    void setUserPassword_ShouldInvalidateSessions_WhenCalled() {
+        String userID = user.getId();
+        assert userID != null;
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+        when( passwordEncoder.encode( "test" ) ).thenReturn( "encodede-test" );
+
+        assertDoesNotThrow( () -> userAdminServiceImpl.setUserPassword(
+                        userID,
+                        "test",
+                        true
+                )
+        );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( passwordEncoder, times( 1 ) ).encode( "test" );
+        verify( sessionService, times( 1 ) ).invalidateUserSessions( user.getUsername() );
+    }
+
+    @Test
+    @DisplayName("updateUser should throw EntityNotFoundException when user does not exist")
+    void updateUser_ShouldThrowEntityNotFoundException_WhenUserDoesNotExist() {
+        String userID = "non-existing-id";
+        when( userRepository.findById( userID ) ).thenReturn( Optional.empty() );
+
+        assertThrows( EntityNotFoundException.class, () -> userAdminServiceImpl.updateUser(
+                        userID,
+                        UserUpdateDTO.builder().build()
+                )
+        );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+    }
+
+    @Test
+    @DisplayName("updateUser should return UserAdminDTO when UserUpdateDTO is valid")
+    void updateUser_ShouldReturnUserAdminDTO_WhenUserUpdateDTOIsValid() {
+        String userID = user.getId();
+        assert userID != null;
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+
+        UserUpdateDTO userUpdateDTO = UserUpdateDTO.builder()
+                .email( "test@updated.com" )
+                .build();
+
+        user.setEmail( userUpdateDTO.getEmail() );
+        when( userAdminMapper.toUser( userUpdateDTO, user ) ).thenReturn( user );
+        when( userRepository.save( user ) ).thenReturn( user );
+        userAdminDTO.setEmail( userUpdateDTO.getEmail() );
+        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
+
+        UserAdminDTO actual = assertDoesNotThrow( () -> userAdminServiceImpl.updateUser(
+                        userID,
+                        userUpdateDTO
+                )
+        );
+
+        assertThat( actual ).isEqualTo( userAdminDTO );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( userAdminMapper, times( 1 ) ).toUser( userUpdateDTO, user );
+        verify( userRepository, times( 1 ) ).save( user );
+        verify( userAdminMapper, times( 1 ) ).toUserAdminDTO( user );
+    }
+
+    @Test
+    @DisplayName("deleteUser should delete user when user exists")
+    void deleteUser_ShouldDeleteUser_WhenUserExists() {
+        String userID = user.getId();
+        assert userID != null;
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+
+        assertDoesNotThrow( () -> userAdminServiceImpl.deleteUser( userID ) );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( userRepository, times( 1 ) ).delete( user );
+    }
+
+    @Test
+    @DisplayName("deleteUser should throw EntityNotFoundException when user does not exist")
+    void deleteUser_ShouldThrowEntityNotFoundException_WhenUserDoesNotExist() {
+        String userID = "non-existing-id";
+        when( userRepository.findById( userID ) ).thenReturn( Optional.empty() );
+
+        assertThrows( EntityNotFoundException.class, () -> userAdminServiceImpl.deleteUser( userID ) );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+    }
+}
