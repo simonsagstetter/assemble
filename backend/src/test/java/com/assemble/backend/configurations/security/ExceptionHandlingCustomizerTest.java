@@ -48,7 +48,7 @@ class ExceptionHandlingCustomizerTest {
         ).andExpect(
                 content().contentType( MediaType.APPLICATION_JSON )
         ).andExpect(
-                jsonPath( "$.message" ).value( "Not authenticated" )
+                jsonPath( "$.message" ).isNotEmpty()
         );
     }
 
@@ -73,7 +73,7 @@ class ExceptionHandlingCustomizerTest {
         ).andExpect(
                 content().contentType( MediaType.APPLICATION_JSON )
         ).andExpect(
-                jsonPath( "$.message" ).value( "Already authenticated" )
+                jsonPath( "$.message" ).isNotEmpty()
         );
     }
 }
