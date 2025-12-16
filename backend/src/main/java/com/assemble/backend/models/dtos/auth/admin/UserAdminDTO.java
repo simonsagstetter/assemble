@@ -1,6 +1,6 @@
 /*
  * assemble
- * UserDTO.java
+ * UserAdminDTO.java
  *
  * Copyright (c) 2025 Simon Sagstetter
  *
@@ -8,22 +8,26 @@
  * All rights reserved.
  */
 
-package com.assemble.backend.models.dtos.auth;
+package com.assemble.backend.models.dtos.auth.admin;
 
+import com.assemble.backend.models.dtos.employee.EmployeeDTO;
+import com.assemble.backend.models.dtos.employee.EmployeeRefDTO;
+import com.assemble.backend.models.entities.auth.UserAudit;
 import com.assemble.backend.models.entities.auth.UserRole;
-import com.assemble.backend.models.entities.employee.Employee;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.time.Instant;
 import java.util.List;
 
 @Data
 @Builder
-@Schema(name = "User", description = "Contains information about a user")
-public class UserDTO {
-
+@Schema(name = "UserAdmin", description = "Contains all information about a user including administrative fields")
+public class UserAdminDTO {
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
             requiredMode = Schema.RequiredMode.REQUIRED,
@@ -81,4 +85,52 @@ public class UserDTO {
     )
     @NonNull
     private List<UserRole> roles;
+
+    @NonNull
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private Boolean enabled;
+
+    @NonNull
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private Boolean locked;
+
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+    )
+    private EmployeeRefDTO employee;
+
+    @NonNull
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private Instant createdDate;
+
+    @NonNull
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private UserAudit createdBy;
+
+    @NonNull
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private Instant lastModifiedDate;
+
+    @NonNull
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private UserAudit lastModifiedBy;
 }

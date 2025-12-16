@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 @ControllerAdvice
@@ -42,6 +43,17 @@ public class GlobalExceptionController {
     @ExceptionHandler(PasswordMismatchException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handlePasswordMismatchException( PasswordMismatchException ex ) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .statusCode( HttpStatus.BAD_REQUEST.value() )
+                .statusText( HttpStatus.BAD_REQUEST.getReasonPhrase() )
+                .message( ex.getMessage() )
+                .build();
+        return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( errorResponse );
+    }
+
+    @ExceptionHandler(InvalidParameterException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleInvalidParameterException( InvalidParameterException ex ) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .statusCode( HttpStatus.BAD_REQUEST.value() )
                 .statusText( HttpStatus.BAD_REQUEST.getReasonPhrase() )
