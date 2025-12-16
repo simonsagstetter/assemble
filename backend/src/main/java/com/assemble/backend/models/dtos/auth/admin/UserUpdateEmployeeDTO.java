@@ -21,7 +21,8 @@ import lombok.Data;
 public class UserUpdateEmployeeDTO {
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+            format = "uuid"
     )
     @Nullable
     private String employeeId;

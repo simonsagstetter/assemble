@@ -581,8 +581,6 @@ class UserAdminRestControllerTest {
         );
     }
 
-    //TODO: Tests für setRoles, setUserStatus, updateUserEmployee
-
     @Test
     @WithMockCustomUser(roles = { UserRole.ADMIN })
     @DisplayName("/GET getAllUnlinkedUsers should return 200")

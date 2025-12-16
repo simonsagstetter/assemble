@@ -10,13 +10,10 @@
 
 package com.assemble.backend.models.dtos.auth.admin;
 
-import com.assemble.backend.models.dtos.employee.EmployeeDTO;
 import com.assemble.backend.models.dtos.employee.EmployeeRefDTO;
 import com.assemble.backend.models.entities.auth.UserAudit;
 import com.assemble.backend.models.entities.auth.UserRole;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;

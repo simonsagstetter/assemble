@@ -134,7 +134,7 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    @DisplayName("getAllEmployees should return a list of EmployeeDT if employee exists")
+    @DisplayName("getAllEmployees should return a list of EmployeeDTO if employee exists")
     void getAllEmployees_ShouldReturnListOfEmployeeDTO_WhenEmployeeExists() {
         when( employeeRepository.findAll() ).thenReturn( List.of( employee ) );
         when( employeeMapper.employeeToEmployeeDTO( employee ) ).thenReturn( employeeDTO );

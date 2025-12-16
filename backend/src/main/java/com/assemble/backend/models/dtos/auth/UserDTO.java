@@ -11,7 +11,6 @@
 package com.assemble.backend.models.dtos.auth;
 
 import com.assemble.backend.models.entities.auth.UserRole;
-import com.assemble.backend.models.entities.employee.Employee;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;

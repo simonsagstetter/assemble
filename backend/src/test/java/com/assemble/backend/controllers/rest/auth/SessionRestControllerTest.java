@@ -116,9 +116,9 @@ class SessionRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.USER, UserRole.ADMIN, UserRole.SUPERUSER })
-    @DisplayName("/POST invalidateUserSessions should not throw and return 204")
+    @DisplayName("/DELETE invalidateUserSessions should return 204")
     @SuppressWarnings("unchecked")
-    void getActiveUserSessionCount_ShouldReturn1_WhenCalled() throws Exception {
+    void getActiveUserSessionCount_ShouldReturn204WhenCalled() throws Exception {
         userRepository.save( testUser );
         Session session = sessionRepository.createSession();
         session.setAttribute(

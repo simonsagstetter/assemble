@@ -47,7 +47,7 @@ public class EmployeeCommands {
             @ShellOption(defaultValue = "") String u
     ) {
         if ( u.isEmpty() ) {
-            throw new InvalidParameterException( "u paramter cannot be empty" );
+            throw new InvalidParameterException( "u parameter cannot be empty" );
         }
 
         Optional<User> response = userRepository.findByUsername( u );

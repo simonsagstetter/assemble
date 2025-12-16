@@ -127,20 +127,16 @@ class UserAdminServiceImplTest {
     @Test
     @DisplayName("getAllUsers should return a list containing one user")
     void getAllUsers_ShouldReturnAListContainingOneUser() {
-        when( userRepository.save( user ) ).thenReturn( user );
-        userRepository.save( user );
         when( userRepository.findAll() ).thenReturn( List.of( user ) );
         when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
 
         List<UserAdminDTO> users = userAdminServiceImpl.getAllUsers();
 
-        System.out.println( users );
         assertThat( users )
                 .isNotEmpty()
                 .hasSize( 1 )
                 .containsExactly( userAdminDTO );
 
-        verify( userRepository, times( 1 ) ).save( user );
         verify( userRepository, times( 1 ) ).findAll();
     }
 
@@ -195,7 +191,7 @@ class UserAdminServiceImplTest {
         List<UserAdminDTO> actual = userAdminServiceImpl.getUnlinkedUsers();
 
         assertThat( actual )
-                .isNotEmpty()
+                .isNotNull()
                 .isNotEmpty()
                 .containsExactly( userAdminDTO );
 

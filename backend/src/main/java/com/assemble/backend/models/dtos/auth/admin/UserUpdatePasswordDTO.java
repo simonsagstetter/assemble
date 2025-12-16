@@ -13,6 +13,7 @@ package com.assemble.backend.models.dtos.auth.admin;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -28,7 +29,8 @@ public class UserUpdatePasswordDTO {
             requiredMode = Schema.RequiredMode.NOT_REQUIRED,
             accessMode = Schema.AccessMode.READ_WRITE
     )
-    @Nullable
+    @NonNull
+    @NotNull
     @Builder.Default
     Boolean invalidateAllSessions = false;
 

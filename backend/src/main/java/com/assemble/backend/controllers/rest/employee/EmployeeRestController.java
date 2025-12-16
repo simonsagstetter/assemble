@@ -92,8 +92,8 @@ public class EmployeeRestController {
             summary = "Create Employee"
     )
     @ApiResponse(
-            responseCode = "200",
-            description = "OK",
+            responseCode = "201",
+            description = "Created",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = EmployeeDTO.class)

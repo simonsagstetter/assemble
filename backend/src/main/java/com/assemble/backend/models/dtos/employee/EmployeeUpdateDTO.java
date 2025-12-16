@@ -32,7 +32,7 @@ public class EmployeeUpdateDTO {
     @NonNull
     @NotBlank
     @Schema(
-            accessMode = Schema.AccessMode.READ_ONLY,
+            accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.REQUIRED,
             example = "Max"
     )
@@ -41,7 +41,7 @@ public class EmployeeUpdateDTO {
     @NonNull
     @NotBlank
     @Schema(
-            accessMode = Schema.AccessMode.READ_ONLY,
+            accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.REQUIRED,
             example = "Mustermann"
     )
@@ -49,6 +49,7 @@ public class EmployeeUpdateDTO {
 
 
     @Email
+    @Nullable
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED,

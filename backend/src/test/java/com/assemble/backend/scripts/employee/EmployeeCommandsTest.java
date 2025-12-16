@@ -53,7 +53,7 @@ class EmployeeCommandsTest {
     private EmployeeRepository employeeRepository;
 
     @Test
-    @DisplayName("Create-Employee should fail if username paramter is empty")
+    @DisplayName("Create-Employee should fail if username parameter is empty")
     void createEmployee_ShouldThrowInvalidParameterException_IfUIsEmpty() {
         assertThrows( InvalidParameterException.class, () -> employeeCommands.createEmployee( "" ) );
     }

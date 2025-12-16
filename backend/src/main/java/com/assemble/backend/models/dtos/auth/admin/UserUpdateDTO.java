@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.lang.Nullable;
 
 @Data
 @Builder
@@ -27,6 +28,7 @@ public class UserUpdateDTO {
             maximum = "20",
             example = "mustermannmax"
     )
+    @Nullable
     @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters long")
     private String username;
 
@@ -35,6 +37,7 @@ public class UserUpdateDTO {
             requiredMode = Schema.RequiredMode.REQUIRED,
             example = "Max"
     )
+    @Nullable
     @Size(min = 1)
     private String firstname;
 
@@ -43,6 +46,7 @@ public class UserUpdateDTO {
             requiredMode = Schema.RequiredMode.REQUIRED,
             example = "Musterperson"
     )
+    @Nullable
     @Size(min = 1)
     private String lastname;
 
@@ -52,6 +56,7 @@ public class UserUpdateDTO {
             format = "email",
             example = "max.musterperson@example.com"
     )
+    @Nullable
     @Email(message = "Please provide a valid email address")
     private String email;
 

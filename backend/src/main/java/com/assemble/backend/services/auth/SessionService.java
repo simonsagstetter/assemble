@@ -12,14 +12,15 @@ package com.assemble.backend.services.auth;
 
 import com.assemble.backend.models.dtos.auth.admin.SessionCountDTO;
 import com.assemble.backend.models.dtos.auth.admin.SessionDTO;
+import lombok.NonNull;
 
 import java.util.List;
 
 public interface SessionService {
 
-    void invalidateUserSessions( String username );
+    void invalidateUserSessions( @NonNull String username );
 
-    SessionCountDTO getActiveUserSessionsCount( String username );
+    SessionCountDTO getActiveUserSessionsCount( @NonNull String username );
 
-    List<SessionDTO> getUserSessionDetails( String username );
+    List<SessionDTO> getUserSessionDetails( @NonNull String username );
 }

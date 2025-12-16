@@ -24,5 +24,5 @@ public class SessionCountDTO {
             accessMode = Schema.AccessMode.READ_ONLY,
             requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private Integer count;
+    private Long count;
 }

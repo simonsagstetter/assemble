@@ -25,7 +25,7 @@ public interface UserAdminService {
 
     UserAdminDTO setUserStatus( String id, UserUpdateStatusDTO userUpdateStatusDTO );
 
-    UserAdminDTO setUserRoles( String username, List<UserRole> roles );
+    UserAdminDTO setUserRoles( String id, List<UserRole> roles );
 
     UserAdminDTO setUserEmployee( String userId, UserUpdateEmployeeDTO userUpdateEmployeeDTO );
 

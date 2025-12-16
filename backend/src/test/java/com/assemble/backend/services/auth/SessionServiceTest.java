@@ -40,7 +40,7 @@ class SessionServiceTest {
 
 
     @Test
-    @DisplayName("getActiveUserSessionsCount should return 1 sesion")
+    @DisplayName("getActiveUserSessionsCount should return 1 session")
     void getActiveUserSessionsCount_ShouldReturn1Session_WhenCalled() {
         MapSession session = mock( MapSession.class );
         when( sessionRepository.findByPrincipalName( "admin" ) ).thenReturn( Map.of(
@@ -61,7 +61,6 @@ class SessionServiceTest {
         MapSession session = new MapSession();
         session.setCreationTime( now );
         session.setLastAccessedTime( now );
-        session.setCreationTime( now );
 
         when( sessionRepository.findByPrincipalName( "admin" ) ).thenReturn( Map.of(
                 "session-id", session
@@ -91,7 +90,6 @@ class SessionServiceTest {
         session.setId( "test-id" );
         session.setCreationTime( now );
         session.setLastAccessedTime( now );
-        session.setCreationTime( now );
 
         when( sessionRepository.findByPrincipalName( "admin" ) ).thenReturn( Map.of(
                 "session-id", session

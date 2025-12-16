@@ -87,22 +87,20 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .findById( employeeUpdateUserDTO.getUserId() )
                 .orElseThrow(
                         () -> new EntityNotFoundException(
-                                "Could not find employee with id: " + employeeUpdateUserDTO.getUserId()
+                                "Could not find user with id: " + employeeUpdateUserDTO.getUserId()
                         )
                 )
                 : null;
 
         if ( user == null ) {
             employee.setUser( null );
-            employeeRepository.save( employee );
         } else {
             if ( user.getEmployee() != null ) throw new InvalidParameterException(
                     "User is already linked to employee " + user.getEmployee().getFullname()
             );
-
             employee.setUser( user );
-            employeeRepository.save( employee );
         }
+        employeeRepository.save( employee );
 
         return employeeMapper.employeeToEmployeeDTO( employee );
     }

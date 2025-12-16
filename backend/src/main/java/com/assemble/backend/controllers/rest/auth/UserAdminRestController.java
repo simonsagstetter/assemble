@@ -11,6 +11,7 @@
 package com.assemble.backend.controllers.rest.auth;
 
 import com.assemble.backend.models.dtos.auth.admin.*;
+import com.assemble.backend.models.dtos.global.ErrorResponse;
 import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import com.assemble.backend.services.auth.UserAdminService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

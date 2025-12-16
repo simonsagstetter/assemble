@@ -12,7 +12,6 @@ package com.assemble.backend.models.entities.employee;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.lang.Nullable;

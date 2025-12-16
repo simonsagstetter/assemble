@@ -34,10 +34,10 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionCountDTO getActiveUserSessionsCount( String username ) {
-        int count = sessionRepository.findByPrincipalName( username )
+        long count = sessionRepository.findByPrincipalName( username )
                 .values().stream()
                 .filter( session -> !session.isExpired() )
-                .toList().size();
+                .count();
 
         return SessionCountDTO.builder().count( count ).build();
     }
