@@ -53,7 +53,7 @@ export function MultiCombobox( {
                 <Button
                     variant="outline"
                     role="combobox"
-                    className="justify-between font-normal w-fulls"
+                    className="justify-between font-normal w-full"
                     disabled={ disabled }
                 >
                     { field.value && field.value.length > 0

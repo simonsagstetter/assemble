@@ -55,7 +55,7 @@ public class SessionRestController {
         return ResponseEntity.ok( sessionService.getActiveUserSessionsCount( principalName ) );
     }
 
-    @Operation(summary = "Get User Sessionn details")
+    @Operation(summary = "Get User Session details")
     @ApiResponse(
             responseCode = "200",
             description = "OK",

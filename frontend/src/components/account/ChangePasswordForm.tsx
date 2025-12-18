@@ -158,7 +158,7 @@ export default function ChangePasswordForm() {
                         <FieldGroup>
                             <Alert variant="destructive">
                                 <AlertCircleIcon/>
-                                <AlertTitle>Failed to changed password</AlertTitle>
+                                <AlertTitle>Failed to change password</AlertTitle>
                                 <AlertDescription>
                                     { errors.root.message }
                                 </AlertDescription>

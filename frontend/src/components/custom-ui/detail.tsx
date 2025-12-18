@@ -29,6 +29,6 @@ export function DetailLabel( { children }: { children: string } ) {
 }
 
 export function DetailValue( { children }: { children: Readonly<ReactNode> } ) {
-    return <span className={ "border-b-1 block pt-2 pb1 text-zinc-900 text-sm" }>{ children }</span>
+    return <span className={ "border-b-1 block pt-2 pb-1 text-zinc-900 text-sm" }>{ children }</span>
 }
 

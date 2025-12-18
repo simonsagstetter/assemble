@@ -112,7 +112,7 @@ export default function UserResetPasswordForm( { user, modal = false }: UserRese
             else router.replace( "/app/admin/users" );
         }
     }
-    return <form id={ "user-rest-password-form" } onSubmit={ form.handleSubmit( handleUpdateUserPassword ) }
+    return <form id={ "user-reset-password-form" } onSubmit={ form.handleSubmit( handleUpdateUserPassword ) }
                  className="space-y-8">
         <ScrollArea className={ `${ modal ? "my-0" : "" }` }>
             <FieldGroup className={ "py-4 px-8" }>
@@ -135,7 +135,7 @@ export default function UserResetPasswordForm( { user, modal = false }: UserRese
                                     />
                                     <FieldDescription>
                                         This field is required.<br/><br/>
-                                        Passwort Requirements:<br/>
+                                        Password Requirements:<br/>
                                         - Between 8 and 20 characters<br/>
                                         - At least one digit<br/>
                                         - At least one lowercase letter<br/>
@@ -210,7 +210,7 @@ export default function UserResetPasswordForm( { user, modal = false }: UserRese
                 { isSuccess ? "Go back" : "Cancel" }
             </Button>
             <Button type="submit"
-                    form={ "user-rest-password-form" }
+                    form={ "user-reset-password-form" }
                     variant="default"
                     disabled={ isPending || isSubmitting }
                     className={ "flex-2/3 grow cursor-pointer" }

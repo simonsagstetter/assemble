@@ -22,7 +22,7 @@ type RequireRoleProps = {
 function RequireRole( { roles, children }: RequireRoleProps ) {
     const ctx = useUserContext();
 
-    if ( ctx.user?.roles && !ctx.user.roles.some( role => roles.includes( role ) ) )
+    if ( !ctx?.user?.roles.some( role => roles.includes( role ) ) )
         throw new Error( "Unauthorized" );
 
     return children;

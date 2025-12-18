@@ -20,7 +20,7 @@ function DeleteUserPage() {
     const { data: userDetails } = useGetUserByIdSuspense( id );
     return <FormPageHeader title={ "Delete" } description={ "Confirm the action below to delete this user." }
                            entity={ "user" }>
-        <UserDeleteForm user={ userDetails }/>;
+        <UserDeleteForm user={ userDetails }/>
     </FormPageHeader>
 
 }

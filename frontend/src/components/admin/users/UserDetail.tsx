@@ -250,11 +250,11 @@ export default function UserDetail( { userDetails }: UserDetailProps ) {
                                     </DetailRow>
                                     <DetailRow>
                                         <Detail>
-                                            <DetailLabel>Created Date</DetailLabel>
+                                            <DetailLabel>Last Modified Date</DetailLabel>
                                             <DetailValue>{ format( userDetails.lastModifiedDate, "dd.MM.yyyy - HH:mm:ss" ) }</DetailValue>
                                         </Detail>
                                         <Detail>
-                                            <DetailLabel>Created By</DetailLabel>
+                                            <DetailLabel>Last Modified By</DetailLabel>
                                             <DetailValue>
                                                 { userDetails.lastModifiedBy.id != null ?
                                                     <Link

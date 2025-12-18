@@ -80,7 +80,7 @@ export default function Login() {
                         control={ form.control }
                         render={ ( { field, fieldState } ) => (
                             <Field data-invalid={ fieldState.invalid }>
-                                <FieldLabel htmlFor={ "username-field" }>Password</FieldLabel>
+                                <FieldLabel htmlFor={ "username-field" }>Username</FieldLabel>
                                 <Input
                                     { ...field }
                                     id={ "username-field" }
@@ -107,7 +107,7 @@ export default function Login() {
                                     aria-invalid={ fieldState.invalid }
                                     placeholder="Type in your password"
                                     type={ "password" }
-                                    autoComplete={ "current-password-password" }
+                                    autoComplete={ "current-password" }
                                     disabled={ isSubmitting }
                                 />
                                 { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>

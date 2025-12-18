@@ -144,7 +144,7 @@ export default function UserEditForm( { user, modal = false }: UserEditFormProps
                                         disabled={ isPending || isSubmitting }
                                     />
                                     <FieldDescription>
-                                        This field is required and must be a unique
+                                        This field is required and must have a unique value
                                     </FieldDescription>
                                     { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
                                     </FieldError> }

@@ -602,6 +602,7 @@ class UserAdminServiceImplTest {
         verify( userRepository, times( 1 ) ).findById( userID );
         verify( employeeRepository, times( 1 ) ).findById( newEmployee.getId() );
         verify( employeeRepository, times( 1 ) ).save( newEmployee );
+        verify( employeeRepository, times( 1 ) ).save( oldEmployee );
     }
 
     @Test

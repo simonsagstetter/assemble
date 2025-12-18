@@ -247,7 +247,7 @@ export default function UserCreateForm( { modal = false }: UserCreateFormProps )
                                     <EmployeeSearch field={ field }
                                                     disabled={ isPending || isSubmitting || isSuccess }/>
                                     <FieldDescription>
-                                        Connect a user to a an employee. Leave this field empty if you want to
+                                        Connect a user to an employee. Leave this field empty if you want to
                                         assign a employee later.
                                     </FieldDescription>
                                     { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
@@ -270,7 +270,7 @@ export default function UserCreateForm( { modal = false }: UserCreateFormProps )
                                     <FieldContent>
                                         <FieldLabel htmlFor={ "enabled-field" }>Enabled Status</FieldLabel>
                                         <FieldDescription>
-                                            Enable oder disable the new user account
+                                            Enable or disable the new user account
                                         </FieldDescription>
                                         { fieldState.invalid &&
                                             <FieldError errors={ [ fieldState.error ] }>
@@ -305,7 +305,7 @@ export default function UserCreateForm( { modal = false }: UserCreateFormProps )
                                     />
                                     <FieldDescription>
                                         Leave this field empty if you want the password to be generated.
-                                        Passwort Requirements:<br/>
+                                        Password Requirements:<br/>
                                         - Between 8 and 20 characters<br/>
                                         - At least one digit<br/>
                                         - At least one lowercase letter<br/>

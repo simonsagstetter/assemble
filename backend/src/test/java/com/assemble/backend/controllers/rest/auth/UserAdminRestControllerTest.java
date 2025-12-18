@@ -578,7 +578,7 @@ class UserAdminRestControllerTest {
         );
 
         Integer size = sessionRepository.findByPrincipalName( testUser.getUsername() ).size();
-        assertThat( size ).isEqualTo( 0 );
+        assertThat( size ).isZero();
     }
 
     @Test
@@ -711,7 +711,7 @@ class UserAdminRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.ADMIN })
-    @DisplayName("/Patch updateUserStatus should return 200 when user does exist")
+    @DisplayName("/Patch updateUserStatus should return 200 and invalidate sessions when user does exist")
     @SuppressWarnings("unchecked")
     void updateUserStatus_ShouldReturn200AndInvalidateSessions_WhenUserDoesExist() throws Exception {
         userRepository.save( testUser );
@@ -758,7 +758,7 @@ class UserAdminRestControllerTest {
         );
 
         Integer size = sessionRepository.findByPrincipalName( testUser.getUsername() ).size();
-        assertThat( size ).isEqualTo( 0 );
+        assertThat( size ).isZero();
     }
 
     @Test

@@ -1,6 +1,6 @@
 /*
  * assemble
- * page.ts
+ * page.tsx
  *
  * Copyright (c) 2025 Simon Sagstetter
  *

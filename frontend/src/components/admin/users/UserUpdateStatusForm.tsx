@@ -126,7 +126,7 @@ export default function UserUpdateStatusForm( { user, modal = false }: UserStatu
                                     <FieldContent>
                                         <FieldLabel htmlFor={ "enabled-field" }>Enabled Status</FieldLabel>
                                         <FieldDescription>
-                                            Enable oder disable the new user account
+                                            Enable or disable the new user account
                                         </FieldDescription>
                                         { fieldState.invalid &&
                                             <FieldError errors={ [ fieldState.error ] }>

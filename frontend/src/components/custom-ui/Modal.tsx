@@ -33,14 +33,14 @@ export default function Modal( { children }: ModalProps ) {
     const [ open, setOpen ] = useState<boolean>( true );
     const router = useRouter();
 
-    const hanldeOpenChange = ( open: boolean ) => {
+    const handleOpenChange = ( open: boolean ) => {
         if ( !open ) router.back();
     }
 
     const value: ModalContext = { open, setOpen };
 
     return <ModalContext.Provider value={ value }>
-        <Dialog open={ open } onOpenChange={ hanldeOpenChange }>
+        <Dialog open={ open } onOpenChange={ handleOpenChange }>
             <DialogContent className={ "min-w-[80%] overflow-hidden p-0 gap-0" }>
                 <VisuallyHidden asChild>
                     <DialogTitle></DialogTitle>
