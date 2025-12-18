@@ -10,10 +10,7 @@
 
 package com.assemble.backend.services.employee;
 
-import com.assemble.backend.models.dtos.employee.EmployeeCreateDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeUpdateDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeUpdateUserDTO;
+import com.assemble.backend.models.dtos.employee.*;
 
 import java.util.List;
 
@@ -24,6 +21,8 @@ public interface EmployeeService {
     EmployeeDTO getEmployeeById( String id );
 
     EmployeeDTO setEmployeeUser( String employeeId, EmployeeUpdateUserDTO employeeUpdateUserDTO );
+
+    List<EmployeeRefDTO> searchUnlinkedEmployees( String searchTerm );
 
     EmployeeDTO createEmployee( EmployeeCreateDTO employeeCreateDTO );
 

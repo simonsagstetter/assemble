@@ -10,10 +10,7 @@
 
 package com.assemble.backend.services.employee;
 
-import com.assemble.backend.models.dtos.employee.EmployeeCreateDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeUpdateDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeUpdateUserDTO;
+import com.assemble.backend.models.dtos.employee.*;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.mappers.employee.EmployeeMapper;
@@ -36,6 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeMapper employeeMapper;
     private final IdService idService;
 
+    @Override
     public List<EmployeeDTO> getAllEmployees() {
         return employeeRepository.findAll()
                 .stream()
@@ -43,12 +41,23 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .toList();
     }
 
+    @Override
     public EmployeeDTO getEmployeeById( String id ) {
         Employee employee = employeeRepository.findById( id )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find employee with id: " + id )
                 );
         return employeeMapper.employeeToEmployeeDTO( employee );
+    }
+
+    @Override
+    public List<EmployeeRefDTO> searchUnlinkedEmployees( String searchTerm ) {
+        String normalizedSearchTerm = searchTerm == null ? "" : searchTerm.toLowerCase();
+        return employeeRepository
+                .search( normalizedSearchTerm )
+                .stream()
+                .map( employeeMapper::employeeToEmployeeRefDTO )
+                .toList();
     }
 
     @Override

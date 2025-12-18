@@ -10,10 +10,7 @@
 
 package com.assemble.backend.controllers.rest.employee;
 
-import com.assemble.backend.models.dtos.employee.EmployeeCreateDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeUpdateDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeUpdateUserDTO;
+import com.assemble.backend.models.dtos.employee.*;
 import com.assemble.backend.models.dtos.global.ErrorResponse;
 import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import com.assemble.backend.services.employee.EmployeeService;
@@ -86,6 +83,27 @@ public class EmployeeRestController {
     )
     public ResponseEntity<EmployeeDTO> getEmployee( @PathVariable String id ) {
         return ResponseEntity.ok( employeeService.getEmployeeById( id ) );
+    }
+
+    @Operation(
+            summary = "Search unlinked employees by fullname"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = EmployeeRefDTO.class))
+            )
+    )
+    @GetMapping(
+            path = "/search/{searchTerm}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<EmployeeRefDTO>> searchUnlinkedEmployees(
+            @PathVariable String searchTerm
+    ) {
+        return ResponseEntity.ok( employeeService.searchUnlinkedEmployees( searchTerm ) );
     }
 
     @Operation(
