@@ -11,7 +11,8 @@
 package com.assemble.backend.models.entities.db;
 
 import com.assemble.backend.models.entities.core.BaseJPAEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
