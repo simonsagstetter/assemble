@@ -14,8 +14,8 @@ import { useSelectedLayoutSegments } from "next/navigation";
 import {
     Breadcrumb,
     BreadcrumbItem,
-    BreadcrumbList,
     BreadcrumbLink,
+    BreadcrumbList,
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
@@ -48,12 +48,11 @@ export function SiteHeader() {
                                     { index === 0 ? <BreadcrumbSeparator/> : null }
                                     <BreadcrumbItem>
                                         <BreadcrumbLink asChild>
-                                            <Link href={ `/app/${ segements.join( "/" ) }` }>{ segment }</Link>
+                                            <Link href={ `/app/${ segements.slice( 0, index + 1 ).join("/") }` }>{ segment }</Link>
                                         </BreadcrumbLink>
                                     </BreadcrumbItem>
                                     { index !== array.length - 1 ? <BreadcrumbSeparator/> : null }
                                 </Fragment>
-
                             ) ) }
                         </>
                     </BreadcrumbList>

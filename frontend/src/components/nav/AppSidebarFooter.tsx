@@ -9,10 +9,7 @@
  */
 "use client"
 
-import {
-    Avatar,
-    AvatarFallback,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, } from "@/components/ui/avatar"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -22,12 +19,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar,
-} from "@/components/ui/sidebar"
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar, } from "@/components/ui/sidebar"
 import { CircleUserRoundIcon, EllipsisVerticalIcon, LogOutIcon } from "lucide-react";
 import { User } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
 import { submitLogout } from "@/services/rest/auth/auth";
