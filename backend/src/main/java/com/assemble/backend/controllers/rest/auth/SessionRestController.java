@@ -13,9 +13,15 @@ package com.assemble.backend.controllers.rest.auth;
 import com.assemble.backend.models.dtos.auth.admin.SessionCountDTO;
 import com.assemble.backend.models.dtos.auth.admin.SessionDTO;
 import com.assemble.backend.services.auth.SessionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +39,15 @@ public class SessionRestController {
 
     private final SessionService sessionService;
 
+    @Operation(summary = "Get Active User Sessions Count")
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = SessionCountDTO.class)
+            )
+    )
     @GetMapping("/{principalName}/count")
     public ResponseEntity<SessionCountDTO> getActiveUserSessionCount(
             @PathVariable @NotBlank String principalName
@@ -40,7 +55,17 @@ public class SessionRestController {
         return ResponseEntity.ok( sessionService.getActiveUserSessionsCount( principalName ) );
     }
 
-
+    @Operation(summary = "Get User Sessionn details")
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(
+                            schema = @Schema(implementation = SessionDTO.class)
+                    )
+            )
+    )
     @GetMapping("/{principalName}")
     public ResponseEntity<List<SessionDTO>> getUserSessionDetails(
             @PathVariable @NotBlank String principalName
@@ -48,6 +73,11 @@ public class SessionRestController {
         return ResponseEntity.ok( sessionService.getUserSessionDetails( principalName ) );
     }
 
+    @Operation(summary = "Invalidate all user sessions")
+    @ApiResponse(
+            responseCode = "204",
+            description = "No Content"
+    )
     @DeleteMapping("/{principalName}")
     public ResponseEntity<Void> invalidateUserSessions(
             @PathVariable @NotBlank String principalName
