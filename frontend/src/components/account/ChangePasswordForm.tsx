@@ -9,25 +9,29 @@
  */
 "use client";
 
-import { FieldDescription, FieldGroup, FieldLegend, FieldSet } from "@/components/ui/field";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangePasswordSchema } from "@/types/auth/auth.types";
-import { useChangePassword } from "@/api/rest/generated/query/users/users";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import {
-    ChangePassword,
-    FieldValidationError,
-} from "@/api/rest/generated/query/openAPIDefinition.schemas";
+    Field,
+    FieldDescription,
+    FieldError,
+    FieldGroup,
+    FieldLabel,
+    FieldLegend,
+    FieldSet
+} from "@/components/ui/field";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ChangePasswordFormData, ChangePasswordSchema } from "@/types/auth/auth.types";
+import { ChangePassword, FieldValidationError, } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon, CheckCircle2Icon } from "lucide-react";
+import { useChangePassword } from "@/api/rest/generated/query/users/users";
 
 export default function ChangePasswordForm() {
-    const form = useForm( {
+    const form = useForm<ChangePasswordFormData>( {
         resolver: zodResolver( ChangePasswordSchema ),
         defaultValues: {
             oldPassword: "",
@@ -38,13 +42,11 @@ export default function ChangePasswordForm() {
 
     const { isSubmitting, isValid, errors } = form.formState;
 
-    const changePassword = useChangePassword( {
-        axios: { withCredentials: true },
-    } );
+    const changePassword = useChangePassword();
 
     const { isPending, isError, isSuccess } = changePassword;
 
-    const onSubmit = ( data: ChangePassword & { confirmPassword: string } ) => {
+    const onSubmit = ( data: ChangePasswordFormData & { confirmPassword: string } ) => {
         const { oldPassword, newPassword, confirmPassword } = data;
         if ( newPassword !== confirmPassword ) {
             form.setError( "confirmPassword", { message: "Passwords do not match", type: "manual" } );
@@ -87,101 +89,104 @@ export default function ChangePasswordForm() {
     }
 
     return (
-        <Form { ...form }>
-            <form onSubmit={ form.handleSubmit( onSubmit ) }>
-                <FieldSet>
-                    <FieldLegend>Change Password</FieldLegend>
-                    <FieldDescription>Change your password for this application.</FieldDescription>
-                    <FieldGroup>
-                        <FormField
-                            control={ form.control }
-                            name="oldPassword"
-                            render={ ( { field } ) => (
-                                <FormItem>
-                                    <FormLabel>Old password</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Type in your current password"
-                                               { ...field }
-                                               type={ "password" }
-                                               autoComplete={ "current-password" }
-                                               disabled={ isSubmitting || isPending }
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            ) }
-                        />
-                        <FormField
-                            control={ form.control }
-                            name="newPassword"
-                            render={ ( { field } ) => (
-                                <FormItem>
-                                    <FormLabel>New Password</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Type in your new password"
-                                               { ...field }
-                                               type={ "password" }
-                                               autoComplete={ "new-password" }
-                                               disabled={ isSubmitting || isPending }
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            ) }
-                        />
-                        <FormField
-                            control={ form.control }
-                            name="confirmPassword"
-                            render={ ( { field } ) => (
-                                <FormItem>
-                                    <FormLabel>Confirm Password</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Confirm your new password"
-                                               { ...field }
-                                               type={ "password" }
-                                               autoComplete={ "new-password" }
-                                               disabled={ isSubmitting || isPending }
-                                        />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            ) }
-                        />
-                        { !isSuccess && isError && errors.root && (
-                            <FieldGroup>
-                                <Alert variant="destructive">
-                                    <AlertCircleIcon/>
-                                    <AlertTitle>Failed to changed password</AlertTitle>
-                                    <AlertDescription>
-                                        { errors.root.message }
-                                    </AlertDescription>
-                                </Alert>
-                            </FieldGroup>
+        <form onSubmit={ form.handleSubmit( onSubmit ) }>
+            <FieldSet>
+                <FieldLegend>Change Password</FieldLegend>
+                <FieldDescription>Change your password for this application.</FieldDescription>
+                <FieldGroup>
+                    <Controller
+                        name={ "oldPassword" }
+                        control={ form.control }
+                        render={ ( { field, fieldState } ) => (
+                            <Field data-invalid={ fieldState.invalid }>
+                                <FieldLabel htmlFor={ "oldPassword-field" }>Old password</FieldLabel>
+                                <Input
+                                    { ...field }
+                                    id={ "oldPassword-field" }
+                                    aria-invalid={ fieldState.invalid }
+                                    placeholder="Type in your current password"
+                                    type={ "password" }
+                                    autoComplete={ "current-password" }
+                                    disabled={ isSubmitting || isPending }
+                                />
+                                { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
+                                </FieldError> }
+                            </Field>
                         ) }
-                        { isSuccess && (
-                            <FieldGroup>
-                                <Alert variant="default">
-                                    <CheckCircle2Icon/>
-                                    <AlertTitle>
-                                        Password changed
-                                    </AlertTitle>
-                                </Alert>
-                            </FieldGroup>
+                    />
+                    <Controller
+                        name={ "newPassword" }
+                        control={ form.control }
+                        render={ ( { field, fieldState } ) => (
+                            <Field data-invalid={ fieldState.invalid }>
+                                <FieldLabel htmlFor={ "newPassword-field" }>New password</FieldLabel>
+                                <Input
+                                    { ...field }
+                                    id={ "newPassword-field" }
+                                    aria-invalid={ fieldState.invalid }
+                                    placeholder="Type in your new password"
+                                    type={ "password" }
+                                    autoComplete={ "new-password" }
+                                    disabled={ isSubmitting || isPending }
+                                />
+                                { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
+                                </FieldError> }
+                            </Field>
                         ) }
-                        { !isValid ? null :
-                            <Button type="submit" variant="default"
-                                    disabled={ isSubmitting || isPending || isSuccess }>
-                                { isSubmitting || isPending ?
-                                    <>
-                                        { "Processing" }
-                                        <Spinner/>
-                                    </> : "Change Password" }
-                            </Button>
-                        }
-                    </FieldGroup>
-                </FieldSet>
-            </form>
-
-        </Form>
+                    />
+                    <Controller
+                        name={ "confirmPassword" }
+                        control={ form.control }
+                        render={ ( { field, fieldState } ) => (
+                            <Field data-invalid={ fieldState.invalid }>
+                                <FieldLabel htmlFor={ "confirmPassword-field" }>Confirm password</FieldLabel>
+                                <Input
+                                    { ...field }
+                                    id={ "confirmPassword-field" }
+                                    aria-invalid={ fieldState.invalid }
+                                    placeholder="Confirm your new password"
+                                    type={ "password" }
+                                    autoComplete={ "new-password" }
+                                    disabled={ isSubmitting || isPending }
+                                />
+                                { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
+                                </FieldError> }
+                            </Field>
+                        ) }
+                    />
+                    { !isSuccess && isError && errors.root && (
+                        <FieldGroup>
+                            <Alert variant="destructive">
+                                <AlertCircleIcon/>
+                                <AlertTitle>Failed to changed password</AlertTitle>
+                                <AlertDescription>
+                                    { errors.root.message }
+                                </AlertDescription>
+                            </Alert>
+                        </FieldGroup>
+                    ) }
+                    { isSuccess && (
+                        <FieldGroup>
+                            <Alert variant="default">
+                                <CheckCircle2Icon/>
+                                <AlertTitle>
+                                    Password changed
+                                </AlertTitle>
+                            </Alert>
+                        </FieldGroup>
+                    ) }
+                    { !isValid ? null :
+                        <Button type="submit" variant="default"
+                                disabled={ isSubmitting || isPending || isSuccess }>
+                            { isSubmitting || isPending ?
+                                <>
+                                    { "Processing" }
+                                    <Spinner/>
+                                </> : "Change Password" }
+                        </Button>
+                    }
+                </FieldGroup>
+            </FieldSet>
+        </form>
     )
 }
