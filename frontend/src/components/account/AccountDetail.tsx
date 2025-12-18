@@ -9,17 +9,16 @@
  */
 "use client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { FieldDescription, FieldLegend, FieldSet } from "@/components/ui/field";
 import { User } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
 import ChangePasswordForm from "@/components/account/ChangePasswordForm";
-import { Separator } from "@/components/ui/separator";
+import { Detail, DetailLabel, DetailRow, DetailSection, DetailValue } from "@/components/custom-ui/detail";
 
 type AccountDetailProps = {
     userDetails: User;
 }
 export default function AccountDetail( { userDetails: { firstname, lastname, username, email } }: AccountDetailProps ) {
-    return <Card>
+    return <Card className={ "p-0 border-0 shadow-none rounded-none" }>
         <CardHeader>
             <CardTitle>Account</CardTitle>
             <CardDescription>Manage your account.</CardDescription>
@@ -28,28 +27,29 @@ export default function AccountDetail( { userDetails: { firstname, lastname, use
             <FieldSet>
                 <FieldLegend>User Details</FieldLegend>
                 <FieldDescription>These details are managed by your organization.</FieldDescription>
-                <FieldGroup className={ "flex flex-row " }>
-                    <Field>
-                        <FieldLabel>First name</FieldLabel>
-                        <Input type={ "text" } defaultValue={ firstname } readOnly disabled/>
-                    </Field>
-                    <Field>
-                        <FieldLabel>Last name</FieldLabel>
-                        <Input type={ "text" } defaultValue={ lastname } readOnly disabled/>
-                    </Field>
-                </FieldGroup>
-                <FieldGroup className={ "flex flex-row" }>
-                    <Field>
-                        <FieldLabel>Username</FieldLabel>
-                        <Input type={ "text" } defaultValue={ username } readOnly disabled/>
-                    </Field>
-                    <Field>
-                        <FieldLabel>Email</FieldLabel>
-                        <Input type={ "email" } defaultValue={ email } readOnly disabled/>
-                    </Field>
-                </FieldGroup>
+                <DetailSection>
+                    <DetailRow>
+                        <Detail>
+                            <DetailLabel>Firstname</DetailLabel>
+                            <DetailValue>{ firstname }</DetailValue>
+                        </Detail>
+                        <Detail>
+                            <DetailLabel>Lastname</DetailLabel>
+                            <DetailValue>{ lastname }</DetailValue>
+                        </Detail>
+                    </DetailRow>
+                    <DetailRow>
+                        <Detail>
+                            <DetailLabel>Username</DetailLabel>
+                            <DetailValue>{ username }</DetailValue>
+                        </Detail>
+                        <Detail>
+                            <DetailLabel>E-Mail</DetailLabel>
+                            <DetailValue>{ email }</DetailValue>
+                        </Detail>
+                    </DetailRow>
+                </DetailSection>
             </FieldSet>
-            <Separator/>
             <ChangePasswordForm/>
         </CardContent>
     </Card>

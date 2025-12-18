@@ -71,6 +71,10 @@ public class UserAdminServiceImpl implements UserAdminService {
                         () -> new EntityNotFoundException( "Could not find user with id: " + id )
                 );
 
+        if ( !userUpdateStatusDTO.getEnabled() || userUpdateStatusDTO.getLocked() ) {
+            sessionService.invalidateUserSessions( user.getUsername() );
+        }
+
         user.setEnabled( userUpdateStatusDTO.getEnabled() );
         user.setLocked( userUpdateStatusDTO.getLocked() );
 
@@ -114,10 +118,15 @@ public class UserAdminServiceImpl implements UserAdminService {
             if ( employee.getUser() != null ) throw new InvalidParameterException(
                     "Employee is already linked to username " + employee.getUser().getUsername()
             );
+            Employee currentEmployee = user.getEmployee();
+            if ( currentEmployee != null ) {
+                currentEmployee.setUser( null );
+                employeeRepository.save( currentEmployee );
+            }
 
             employee.setUser( user );
-            user.setEmployee( employee );
             employeeRepository.save( employee );
+            user.setEmployee( employee );
         }
 
         return userAdminMapper.toUserAdminDTO( user );
@@ -199,6 +208,12 @@ public class UserAdminServiceImpl implements UserAdminService {
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find user with id: " + id )
                 );
+
+        if ( user.getEmployee() != null ) {
+            Employee employee = user.getEmployee();
+            employee.setUser( null );
+            employeeRepository.save( employee );
+        }
 
         userRepository.delete( user );
     }

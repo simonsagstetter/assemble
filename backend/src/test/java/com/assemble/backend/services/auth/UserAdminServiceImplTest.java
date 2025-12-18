@@ -543,7 +543,6 @@ class UserAdminServiceImplTest {
 
         when( employeeRepository.findById( employeeId ) ).thenReturn( Optional.of( employee ) );
         when( employeeRepository.save( employee ) ).thenReturn( employee );
-        user.setEmployee( employee );
         userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( employeeId ).fullname( employee.getFullname() ).build() );
         when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
 
@@ -557,6 +556,53 @@ class UserAdminServiceImplTest {
         verify( userRepository, times( 1 ) ).findById( userID );
         verify( employeeRepository, times( 1 ) ).findById( employeeId );
         verify( employeeRepository, times( 1 ) ).save( employee );
+    }
+
+    @Test
+    @DisplayName("setUserEmployee should return UserAdminDTO, unlink old employee and link new employee")
+    void setUserEmployee_ShouldReturnUserAdminDTOWithValidDtoAndUnlinkOldEmployeeAndLinkNewEmployee() {
+        Employee oldEmployee = Employee.builder()
+                .id( "test-id" )
+                .user( null )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
+                .email( "max.mustermann@example.com" )
+                .build();
+
+        user.setEmployee( oldEmployee );
+
+        Employee newEmployee = Employee.builder()
+                .id( "test-id2" )
+                .user( null )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
+                .email( "max.mustermann@example.com" )
+                .build();
+
+
+        String userID = user.getId();
+        assert userID != null;
+
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+
+        when( employeeRepository.findById( newEmployee.getId() ) ).thenReturn( Optional.of( newEmployee ) );
+
+        when( employeeRepository.save( oldEmployee ) ).thenReturn( oldEmployee );
+        when( employeeRepository.save( newEmployee ) ).thenReturn( newEmployee );
+        userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( newEmployee.getId() ).fullname( newEmployee.getFullname() ).build() );
+        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
+
+        UserUpdateEmployeeDTO userUpdateEmployeeDTO = UserUpdateEmployeeDTO.builder()
+                .employeeId( newEmployee.getId() )
+                .build();
+
+        UserAdminDTO actual = assertDoesNotThrow( () -> userAdminServiceImpl.setUserEmployee( userID, userUpdateEmployeeDTO ) );
+
+        assertThat( actual ).isEqualTo( userAdminDTO );
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( employeeRepository, times( 1 ) ).findById( newEmployee.getId() );
+        verify( employeeRepository, times( 1 ) ).save( newEmployee );
+        verify( employeeRepository, times( 1 ) ).save( oldEmployee );
     }
 
     @Test
@@ -681,5 +727,32 @@ class UserAdminServiceImplTest {
         assertThrows( EntityNotFoundException.class, () -> userAdminServiceImpl.deleteUser( userID ) );
 
         verify( userRepository, times( 1 ) ).findById( userID );
+    }
+
+    @Test
+    @DisplayName("deleteUser should delete user and update employee relationship when user exists")
+    void deleteUser_ShouldDeleteUserAndUpdateEmployeeRelationship_WhenUserExists() {
+        Employee employee = Employee.builder()
+                .id( "test-id" )
+                .user( user )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
+                .email( "max.mustermann@mail.de" )
+                .build();
+
+        user.setEmployee( employee );
+
+        String userID = user.getId();
+        assert userID != null;
+
+
+        when( userRepository.findById( userID ) ).thenReturn( Optional.of( user ) );
+        when( employeeRepository.save( employee ) ).thenReturn( employee );
+
+        assertDoesNotThrow( () -> userAdminServiceImpl.deleteUser( userID ) );
+
+        verify( userRepository, times( 1 ) ).findById( userID );
+        verify( userRepository, times( 1 ) ).delete( user );
+        verify( employeeRepository, times( 1 ) ).save( employee );
     }
 }

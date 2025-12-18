@@ -32,7 +32,7 @@ public interface UserAdminMapper {
     @Mapping(target = "firstname", expression = "java(userCreateDTO.getFirstname())")
     @Mapping(target = "lastname", expression = "java(userCreateDTO.getLastname())")
     @Mapping(target = "email", expression = "java(userCreateDTO.getEmail())")
-    @Mapping(target = "enabled", expression = "java(true)")
+    @Mapping(target = "enabled", expression = "java(userCreateDTO.isEnabled())")
     User toUser( UserCreateDTO userCreateDTO, String id );
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

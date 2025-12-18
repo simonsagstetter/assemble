@@ -15,6 +15,7 @@ import { AppProgressProvider } from "@bprogress/next";
 import { isServer, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import UserProvider from "@/store/userStore";
 
 type ProvidersProps = {
     children: Readonly<ReactNode>
@@ -55,7 +56,9 @@ export default function Providers( { children }: ProvidersProps ) {
     >
         <QueryClientProvider client={ queryClient }>
             <ReactQueryStreamedHydration>
-                { children }
+                <UserProvider>
+                    { children }
+                </UserProvider>
             </ReactQueryStreamedHydration>
             <ReactQueryDevtools/>
         </QueryClientProvider>

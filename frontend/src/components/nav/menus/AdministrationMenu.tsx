@@ -1,6 +1,6 @@
 /*
  * assemble
- * AppSidebarMenu.tsx
+ * AdministrationMenu.tsx
  *
  * Copyright (c) 2025 Simon Sagstetter
  *
@@ -10,13 +10,9 @@
 
 "use client"
 
-import { CalendarIcon, ChevronRight } from "lucide-react"
+import { ChevronRight, UserIcon } from "lucide-react"
 
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger, } from "@/components/ui/collapsible"
 import {
     SidebarGroup,
     SidebarGroupLabel,
@@ -29,28 +25,24 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link";
 
-export function AppSidebarMenu() {
+export function AdministrationMenu() {
     const items = [
         {
-            title: "Working Times",
-            url: "#",
-            icon: CalendarIcon,
+            title: "Users",
+            url: "/app/admin/users",
+            icon: UserIcon,
             isActive: true,
             items: [
                 {
-                    title: "Calendar",
-                    url: "/app/timetracking/calendar",
-                },
-                {
                     title: "List View",
-                    url: "/app/timetracking/list",
+                    url: "/app/admin/users",
                 },
             ],
         }
     ];
     return (
         <SidebarGroup>
-            <SidebarGroupLabel>Timetracking</SidebarGroupLabel>
+            <SidebarGroupLabel>Administration</SidebarGroupLabel>
             <SidebarMenu>
                 { items.map( ( item ) => (
                     <Collapsible

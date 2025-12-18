@@ -93,9 +93,8 @@ public class UserCreateDTO {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @Nullable
     @Builder.Default
     private boolean enabled = true;
 

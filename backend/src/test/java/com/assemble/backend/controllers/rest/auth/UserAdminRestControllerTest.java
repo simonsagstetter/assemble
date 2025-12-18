@@ -195,6 +195,38 @@ class UserAdminRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.ADMIN })
+    @DisplayName("/POST createUser should return 409 when username is not unique")
+    void createUser_ShouldReturn409_WhenUserNameIsNotUnique() throws Exception {
+        userRepository.save( testUser );
+
+        UserCreateDTO userCreateDTO = UserCreateDTO.builder()
+                .username( "testuser" )
+                .password( "SuperSaf3Passw0rd!" )
+                .firstname( "Max" )
+                .lastname( "Musterperson" )
+                .email( "max@example.com" )
+                .roles( List.of( UserRole.USER ) )
+                .build();
+
+        String jsonContent = objectMapper.writeValueAsString( userCreateDTO );
+
+        mockMvc.perform(
+                post( "/api/admin/users" )
+                        .with( csrf() )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .content( jsonContent )
+        ).andExpect(
+                status().isConflict()
+        ).andExpect(
+                content().contentType( MediaType.APPLICATION_JSON )
+        ).andExpect(
+                jsonPath( "$.message" ).isNotEmpty()
+
+        );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.ADMIN })
     @DisplayName("/POST createUser should return 201 when request body is valid")
     void createUser_ShouldReturn201_WhenRequestBodyIsValid() throws Exception {
         userRepository.save( testUser );
@@ -546,7 +578,7 @@ class UserAdminRestControllerTest {
         );
 
         Integer size = sessionRepository.findByPrincipalName( testUser.getUsername() ).size();
-        assertThat( size ).isEqualTo( 0 );
+        assertThat( size ).isZero();
     }
 
     @Test
@@ -579,6 +611,25 @@ class UserAdminRestControllerTest {
         ).andExpect(
                 status().isNoContent()
         );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.ADMIN })
+    @DisplayName("/DELETE deleteUser should return 204 and update related employee")
+    void deleteUser_ShouldReturn204AndUpdateRelatedEmployee_WhenCalled() throws Exception {
+        userRepository.save( testUser );
+        testEmployee.setUser( testUser );
+        employeeRepository.save( testEmployee );
+
+        mockMvc.perform(
+                delete( "/api/admin/users/" + testUser.getId() )
+                        .with( csrf() )
+        ).andExpect(
+                status().isNoContent()
+        );
+
+        Employee updatedEmployee = employeeRepository.findById( testEmployee.getId() ).orElseThrow();
+        assertThat( updatedEmployee.getUser() ).isNull();
     }
 
     @Test
@@ -656,6 +707,58 @@ class UserAdminRestControllerTest {
         ).andExpect(
                 jsonPath( "$.locked" ).value( userUpdateStatusDTO.getLocked() )
         );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.ADMIN })
+    @DisplayName("/Patch updateUserStatus should return 200 and invalidate sessions when user does exist")
+    @SuppressWarnings("unchecked")
+    void updateUserStatus_ShouldReturn200AndInvalidateSessions_WhenUserDoesExist() throws Exception {
+        userRepository.save( testUser );
+
+        Session session = sessionRepository.createSession();
+        session.setAttribute(
+                FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME,
+                testUser.getUsername()
+        );
+        session.setMaxInactiveInterval( Duration.ofSeconds( 7200 ) );
+
+        sessionRepository.save( session );
+
+        SessionInformation sessionInformation = new SessionInformation(
+                testUser.getUsername(),
+                session.getId(),
+                new Date()
+        );
+
+        sessionRegistry.registerNewSession( session.getId(), sessionInformation );
+
+        UserUpdateStatusDTO userUpdateStatusDTO = UserUpdateStatusDTO.builder()
+                .enabled( false )
+                .locked( true )
+                .build();
+
+        String jsonContent = objectMapper.writeValueAsString( userUpdateStatusDTO );
+
+        mockMvc.perform(
+                patch( "/api/admin/users/" + testUser.getId() + "/status" )
+                        .with( csrf() )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .content( jsonContent )
+        ).andExpect(
+                status().isOk()
+        ).andExpect(
+                content().contentType( MediaType.APPLICATION_JSON )
+        ).andExpect(
+                jsonPath( "$.id" ).value( testUser.getId() )
+        ).andExpect(
+                jsonPath( "$.enabled" ).value( userUpdateStatusDTO.getEnabled() )
+        ).andExpect(
+                jsonPath( "$.locked" ).value( userUpdateStatusDTO.getLocked() )
+        );
+
+        Integer size = sessionRepository.findByPrincipalName( testUser.getUsername() ).size();
+        assertThat( size ).isZero();
     }
 
     @Test

@@ -14,7 +14,10 @@ import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.core.BaseJPAEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -86,7 +89,7 @@ public class Employee extends BaseJPAEntity implements Serializable {
     @Column(name = "TAX_IDENTIFICATION_NUMBER", length = 100)
     @Size(min = 1, max = 100)
     private String taxIdentificationNumber;
-    
+
     @Transient
     public String getFullname() {
         return this.getFirstname() + " " + this.getLastname();

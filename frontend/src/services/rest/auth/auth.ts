@@ -13,10 +13,7 @@ import { LoginRequest } from "@/api/rest/generated/fetch/openAPIDefinition.schem
 import { me } from "@/api/rest/generated/fetch/users/users";
 import { redirect } from "next/navigation";
 import { LOGOUT_PATH } from "@/config/auth/auth.config";
-import {
-    getCookieHeader,
-    getCsrfTokenHeader, setCookiesFromResponse,
-} from "@/utils/header";
+import { getCookieHeader, getCsrfTokenHeader, setCookiesFromResponse, } from "@/utils/header";
 
 const submitLogin = async ( data: LoginRequest ) => {
     const response = await login( data );
@@ -54,7 +51,7 @@ const getUserDetails = async () => {
         }
     } )
 
-    if ( response.status === 401 ) redirect( LOGOUT_PATH );
+    if ( response.status === 401 || response.status === 404 ) redirect( LOGOUT_PATH );
 
     return response.data;
 }

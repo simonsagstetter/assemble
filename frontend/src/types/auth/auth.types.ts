@@ -23,11 +23,11 @@ const ChangePasswordSchema = z.object( {
     confirmPassword: z.string().trim().min( 1, "Confirm password is required." ),
 } )
 
-type ChangePasswordForm = z.infer<typeof ChangePasswordSchema>;
+type ChangePasswordFormData = z.infer<typeof ChangePasswordSchema>;
 
 export {
     type LoginForm,
     LoginFormSchema,
-    type ChangePasswordForm,
+    type ChangePasswordFormData,
     ChangePasswordSchema
 }

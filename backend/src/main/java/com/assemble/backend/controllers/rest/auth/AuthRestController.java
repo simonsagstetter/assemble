@@ -10,9 +10,9 @@
 
 package com.assemble.backend.controllers.rest.auth;
 
-import com.assemble.backend.models.dtos.global.ErrorResponse;
 import com.assemble.backend.models.dtos.auth.LoginRequest;
 import com.assemble.backend.models.dtos.auth.LoginResponse;
+import com.assemble.backend.models.dtos.global.ErrorResponse;
 import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -80,6 +80,14 @@ public class AuthRestController {
     @ApiResponse(
             responseCode = "403",
             description = "Access Denied",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "423",
+            description = "Locked",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ErrorResponse.class)

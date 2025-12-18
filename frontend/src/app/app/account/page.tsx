@@ -13,13 +13,18 @@ import dynamic from "next/dynamic";
 import AccountDetail from "@/components/account/AccountDetail";
 
 function AccountPage() {
-    const {data} = useMeSuspense();
+    const { data } = useMeSuspense( {
+        query: {
+            staleTime: 0
+        }
+    } );
 
-    return <div className="p-8">
+
+    return <div className="px-4 py-8">
         <AccountDetail userDetails={ data }/>
     </div>
 }
 
-export default dynamic(() => Promise.resolve(AccountPage), {
+export default dynamic( () => Promise.resolve( AccountPage ), {
     ssr: false,
-});
+} );
