@@ -9,13 +9,12 @@
  */
 "use client";
 
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { LoginForm, LoginFormSchema } from "@/types/auth/auth.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { submitLogin } from "@/services/rest/auth/auth";
 import { toast } from "sonner";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { FieldGroup } from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,7 +49,7 @@ export default function Login() {
                 } else {
                     router.push( LOGIN_REDIRECT_PATH );
                 }
-            } else if ( status === 401 ) {
+            } else if ( status === 401 || status === 403 || status === 400 || status === 423 ) {
                 form.setError( "root", { message: data.message, type: "manual" } );
             } else {
                 form.setError( "root", { message: "An unknown error occurred.", type: "manual" } );
@@ -74,62 +73,68 @@ export default function Login() {
             <CardDescription>Log into your account</CardDescription>
         </CardHeader>
         <CardContent>
-            <Form { ...form }>
-                <form onSubmit={ form.handleSubmit( handleLoginSubmit ) }>
-                    <FieldGroup>
-                        <FormField
-                            control={ form.control }
-                            name="username"
-                            render={ ( { field } ) => (
-                                <FormItem>
-                                    <FormLabel>Username</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Type in your username" { ...field }
-                                               autoComplete={ "username" }
-                                               disabled={ isSubmitting } autoFocus/>
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            ) }
-                        />
-                        <FormField
-                            control={ form.control }
-                            name="password"
-                            render={ ( { field } ) => (
-                                <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Type in your password"
-                                               { ...field }
-                                               type={ "password" }
-                                               autoComplete={ "current-password" }
-                                               disabled={ isSubmitting }/>
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            ) }
-                        />
-                        { errors.root && (
-                            <FieldGroup>
-                                <Alert variant="destructive">
-                                    <AlertCircleIcon/>
-                                    <AlertTitle>Login failed!</AlertTitle>
-                                    <AlertDescription>
-                                        { errors.root.message }
-                                    </AlertDescription>
-                                </Alert>
-                            </FieldGroup>
+            <form onSubmit={ form.handleSubmit( handleLoginSubmit ) }>
+                <FieldGroup>
+                    <Controller
+                        name={ "username" }
+                        control={ form.control }
+                        render={ ( { field, fieldState } ) => (
+                            <Field data-invalid={ fieldState.invalid }>
+                                <FieldLabel htmlFor={ "username-field" }>Password</FieldLabel>
+                                <Input
+                                    { ...field }
+                                    id={ "username-field" }
+                                    aria-invalid={ fieldState.invalid }
+                                    placeholder="Type in your username"
+                                    type={ "text" }
+                                    autoComplete={ "username" }
+                                    disabled={ isSubmitting }
+                                />
+                                { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
+                                </FieldError> }
+                            </Field>
                         ) }
-                        <Button type="submit" variant="default" disabled={ isSubmitting }>
-                            { isSubmitting ?
-                                <>
-                                    { "Processing" }
-                                    <Spinner/>
-                                </> : "Login" }
-                        </Button>
-                    </FieldGroup>
-                </form>
-            </Form>
+                    />
+                    <Controller
+                        name={ "password" }
+                        control={ form.control }
+                        render={ ( { field, fieldState } ) => (
+                            <Field data-invalid={ fieldState.invalid }>
+                                <FieldLabel htmlFor={ "password-field" }>Password</FieldLabel>
+                                <Input
+                                    { ...field }
+                                    id={ "password-field" }
+                                    aria-invalid={ fieldState.invalid }
+                                    placeholder="Type in your password"
+                                    type={ "password" }
+                                    autoComplete={ "current-password-password" }
+                                    disabled={ isSubmitting }
+                                />
+                                { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
+                                </FieldError> }
+                            </Field>
+                        ) }
+                    />
+                    { errors.root && (
+                        <FieldGroup>
+                            <Alert variant="destructive">
+                                <AlertCircleIcon/>
+                                <AlertTitle>Login failed!</AlertTitle>
+                                <AlertDescription>
+                                    { errors.root.message }
+                                </AlertDescription>
+                            </Alert>
+                        </FieldGroup>
+                    ) }
+                    <Button type="submit" variant="default" disabled={ isSubmitting }>
+                        { isSubmitting ?
+                            <>
+                                { "Processing" }
+                                <Spinner/>
+                            </> : "Login" }
+                    </Button>
+                </FieldGroup>
+            </form>
         </CardContent>
     </Card>
 }
