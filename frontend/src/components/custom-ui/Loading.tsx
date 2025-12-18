@@ -9,25 +9,28 @@
  */
 
 
-import { Empty, EmptyHeader, EmptyMedia, EmptyDescription, EmptyTitle } from "@/components/ui/empty";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Spinner } from "@/components/ui/spinner";
 
 type LoadingProps = {
     title?: string;
     message?: string;
     customClassName?: string;
+    hideMessage?: boolean;
 }
 
-export default function Loading( { title, message, customClassName }: LoadingProps ) {
+export default function Loading( { title, message, customClassName, hideMessage = false }: LoadingProps ) {
     return <Empty className={ customClassName || "w-full h-full" }>
         <EmptyHeader>
             <EmptyMedia variant="default">
                 <Spinner className="size-8"/>
             </EmptyMedia>
             <EmptyTitle>{ title || "App is loading" }</EmptyTitle>
-            <EmptyDescription>
-                { message || "Getting everything ready for you. Do not refresh the page." }
-            </EmptyDescription>
+            { !hideMessage ?
+                <EmptyDescription>
+                    { message || "Getting everything ready for you. Do not refresh the page." }
+                </EmptyDescription>
+                : null }
         </EmptyHeader>
     </Empty>
 }
