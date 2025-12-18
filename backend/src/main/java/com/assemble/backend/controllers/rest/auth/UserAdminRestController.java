@@ -131,6 +131,14 @@ public class UserAdminRestController {
                     schema = @Schema(oneOf = { ErrorResponse.class, ValidationErrorResponse.class })
             )
     )
+    @ApiResponse(
+            responseCode = "409",
+            description = "Conflict",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorResponse.class)
+            )
+    )
     @PostMapping(
             path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,
