@@ -40,7 +40,7 @@ public class EmployeeCreateDTO {
     @NonNull
     @NotBlank
     @Schema(
-            accessMode = Schema.AccessMode.READ_ONLY,
+            accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.REQUIRED,
             example = "Max"
     )
@@ -49,7 +49,7 @@ public class EmployeeCreateDTO {
     @NonNull
     @NotBlank
     @Schema(
-            accessMode = Schema.AccessMode.READ_ONLY,
+            accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.REQUIRED,
             example = "Mustermann"
     )
