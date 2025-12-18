@@ -9,19 +9,21 @@
  */
 
 
-import Axios, { AxiosRequestConfig } from 'axios';
+import Axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
-export const AXIOS_INSTANCE = Axios.create({ baseURL: process.env.BACKEND_DEV_URL });
+export const AXIOS_INSTANCE = Axios.create( { baseURL: process.env.BACKEND_DEV_URL } );
 
 
-export const instance =async <T>(
+export const instance = async <T>(
     config: AxiosRequestConfig,
     options?: AxiosRequestConfig,
 ): Promise<T> => {
-    return AXIOS_INSTANCE({
+    return AXIOS_INSTANCE( {
         ...config,
         ...options,
         withCredentials: true,
         withXSRFToken: config.method !== "GET",
-    }).then(({ data }) => data);
+    } ).then( ( { data } ) => data );
 };
+
+export type ErrorType<Error> = AxiosError<Error>;
