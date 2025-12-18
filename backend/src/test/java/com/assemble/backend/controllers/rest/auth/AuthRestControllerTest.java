@@ -109,6 +109,89 @@ class AuthRestControllerTest {
                 );
     }
 
+    @DisplayName("POST /api/auth/login should return 423 when user is blocked")
+    @Test
+    void login_ShouldReturn423_WhenUserIsLocked() throws Exception {
+        String rawPassword = "SuperS3curePassword123!";
+
+        User user = User.builder()
+                .id( idService.generateIdFor( User.class ) )
+                .username( "mustermannmax" )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
+                .password( passwordEncoder.encode( rawPassword ) )
+                .email( "max.mustermann@example.com" )
+                .roles( List.of( UserRole.USER ) )
+                .locked( true )
+                .build();
+
+        User saved = userRepository.save( user );
+
+        LoginRequest loginRequest = new LoginRequest(
+                saved.getUsername(),
+                rawPassword
+        );
+
+        mockMvc.perform(
+                        post(
+                                "/api/auth/login"
+                        )
+                                .contentType( MediaType.APPLICATION_JSON_VALUE )
+                                .content( objectMapper.writeValueAsString( loginRequest ) )
+                )
+                .andExpect(
+                        status().isLocked()
+                )
+                .andExpect(
+                        content().contentType( MediaType.APPLICATION_JSON_VALUE )
+                )
+                .andExpect(
+                        jsonPath( "$.message" ).isNotEmpty()
+                );
+    }
+
+    @DisplayName("POST /api/auth/login should return 403 when user is not enabled")
+    @Test
+    void login_ShouldReturn403_WhenUserIsNotEnabled() throws Exception {
+        String rawPassword = "SuperS3curePassword123!";
+
+        User user = User.builder()
+                .id( idService.generateIdFor( User.class ) )
+                .username( "mustermannmax" )
+                .firstname( "Max" )
+                .lastname( "Mustermann" )
+                .password( passwordEncoder.encode( rawPassword ) )
+                .email( "max.mustermann@example.com" )
+                .roles( List.of( UserRole.USER ) )
+                .locked( false )
+                .enabled( false )
+                .build();
+
+        User saved = userRepository.save( user );
+
+        LoginRequest loginRequest = new LoginRequest(
+                saved.getUsername(),
+                rawPassword
+        );
+
+        mockMvc.perform(
+                        post(
+                                "/api/auth/login"
+                        )
+                                .contentType( MediaType.APPLICATION_JSON_VALUE )
+                                .content( objectMapper.writeValueAsString( loginRequest ) )
+                )
+                .andExpect(
+                        status().isForbidden()
+                )
+                .andExpect(
+                        content().contentType( MediaType.APPLICATION_JSON_VALUE )
+                )
+                .andExpect(
+                        jsonPath( "$.message" ).isNotEmpty()
+                );
+    }
+
     @DisplayName("POST /api/auth/login should return 200 OK when credentials are valid")
     @Test
     void login_ShouldReturn200_WhenCredentialsAreValid() throws Exception {
@@ -159,7 +242,7 @@ class AuthRestControllerTest {
         mockMvc.perform(
                         post(
                                 "/api/auth/logout"
-                        ).with(csrf())
+                        ).with( csrf() )
                 )
                 .andExpect(
                         status().isNoContent()
@@ -173,7 +256,7 @@ class AuthRestControllerTest {
         mockMvc.perform(
                         post(
                                 "/api/auth/logout"
-                        ).with(csrf().useInvalidToken())
+                        ).with( csrf().useInvalidToken() )
                 )
                 .andExpect(
                         status().isForbidden()

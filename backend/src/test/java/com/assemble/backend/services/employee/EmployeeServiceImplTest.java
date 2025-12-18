@@ -10,10 +10,7 @@
 
 package com.assemble.backend.services.employee;
 
-import com.assemble.backend.models.dtos.employee.EmployeeCreateDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeUpdateDTO;
-import com.assemble.backend.models.dtos.employee.EmployeeUpdateUserDTO;
+import com.assemble.backend.models.dtos.employee.*;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserAudit;
 import com.assemble.backend.models.entities.auth.UserRole;
@@ -172,6 +169,28 @@ class EmployeeServiceImplTest {
 
         verify( employeeRepository, times( 1 ) ).findById( id );
         verify( employeeMapper, times( 1 ) ).employeeToEmployeeDTO( employee );
+    }
+
+    @Test
+    @DisplayName("searchUnlinkedEmployees should return a list of EmployeeRefDTO if employee found")
+    void searchUnlinkedEmployees_ShouldReturnListOfEmployeeRefDTO_WhenEmployeeFound() {
+        when( employeeRepository.search( anyString() ) )
+                .thenReturn( List.of( employee ) );
+
+        EmployeeRefDTO employeeRefDTO = EmployeeRefDTO.builder()
+                .id( employee.getId() )
+                .fullname( employee.getFullname() )
+                .build();
+
+        when( employeeMapper.employeeToEmployeeRefDTO( employee ) ).thenReturn( employeeRefDTO );
+
+        List<EmployeeRefDTO> actual = assertDoesNotThrow( () -> service.searchUnlinkedEmployees( "Max" ) );
+
+        assertEquals( 1, actual.size() );
+        assertThat( actual ).contains( employeeRefDTO );
+
+        verify( employeeRepository, times( 1 ) ).search( anyString() );
+        verify( employeeMapper, times( 1 ) ).employeeToEmployeeRefDTO( employee );
     }
 
     @Test
