@@ -15,9 +15,12 @@ import com.assemble.backend.models.dtos.global.ErrorResponse;
 import com.assemble.backend.models.dtos.global.FieldValidationError;
 import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,37 +32,44 @@ import java.util.List;
 @ControllerAdvice
 public class GlobalExceptionController {
 
+    private ResponseEntity<ErrorResponse> createErrorResponse( String message, HttpStatus status ) {
+        return ResponseEntity.status( status ).body(
+                ErrorResponse.builder()
+                        .statusCode( status.value() )
+                        .statusText( status.getReasonPhrase() )
+                        .message( message )
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(LockedException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleLockedException( LockedException ex ) {
+        return createErrorResponse( ex.getMessage(), HttpStatus.LOCKED );
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleDisabledException( DisabledException ex ) {
+        return createErrorResponse( ex.getMessage(), HttpStatus.FORBIDDEN );
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleBadCredentialsException() {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .statusCode( HttpStatus.UNAUTHORIZED.value() )
-                .statusText( HttpStatus.UNAUTHORIZED.getReasonPhrase() )
-                .message( "Invalid credentials" )
-                .build();
-        return ResponseEntity.status( HttpStatus.UNAUTHORIZED ).body( errorResponse );
+        return createErrorResponse( "Invalid credentials", HttpStatus.UNAUTHORIZED );
     }
 
     @ExceptionHandler(PasswordMismatchException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handlePasswordMismatchException( PasswordMismatchException ex ) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .statusCode( HttpStatus.BAD_REQUEST.value() )
-                .statusText( HttpStatus.BAD_REQUEST.getReasonPhrase() )
-                .message( ex.getMessage() )
-                .build();
-        return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( errorResponse );
+        return createErrorResponse( ex.getMessage(), HttpStatus.BAD_REQUEST );
     }
 
     @ExceptionHandler(InvalidParameterException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleInvalidParameterException( InvalidParameterException ex ) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .statusCode( HttpStatus.BAD_REQUEST.value() )
-                .statusText( HttpStatus.BAD_REQUEST.getReasonPhrase() )
-                .message( ex.getMessage() )
-                .build();
-        return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( errorResponse );
+        return createErrorResponse( ex.getMessage(), HttpStatus.BAD_REQUEST );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -85,13 +95,13 @@ public class GlobalExceptionController {
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException( EntityNotFoundException ex ) {
-        return ResponseEntity.status( HttpStatus.NOT_FOUND ).body(
-                ErrorResponse.builder()
-                        .message( ex.getMessage() )
-                        .statusCode( HttpStatus.NOT_FOUND.value() )
-                        .statusText( HttpStatus.NOT_FOUND.getReasonPhrase() )
-                        .build()
-        );
+        return createErrorResponse( ex.getMessage(), HttpStatus.NOT_FOUND );
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException( DataIntegrityViolationException ex ) {
+        return createErrorResponse( ex.getMessage(), HttpStatus.CONFLICT );
     }
 
 }
