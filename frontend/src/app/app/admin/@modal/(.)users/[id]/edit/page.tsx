@@ -20,7 +20,7 @@ function EditUserModal() {
 
     return <ModalHeader title={ "Edit" } description={ "Update the fields and click save to update the user." }
                         entity={ "User" }>
-        <UserEditForm user={ userDetails } modal/>
+        <UserEditForm user={ userDetails }/>
     </ModalHeader>
 }
 

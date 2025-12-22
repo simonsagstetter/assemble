@@ -22,7 +22,7 @@ function UpdateRolesModal() {
     return <ModalHeader title={ "Update Roles" }
                         description={ "Configure the authorization roles for this user." }
                         entity={ "user" }>
-        <UserUpdateRolesForm user={ userDetails } modal></UserUpdateRolesForm>
+        <UserUpdateRolesForm user={ userDetails }></UserUpdateRolesForm>
     </ModalHeader>
 }
 
