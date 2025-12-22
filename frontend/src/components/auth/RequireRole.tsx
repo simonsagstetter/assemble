@@ -10,7 +10,7 @@
 "use client";
 
 import { UserRolesItem } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import useUserContext from "@/hooks/use-user";
+import useUserContext from "@/hooks/useUserContext";
 import { ReactNode } from "react";
 import dynamic from "next/dynamic";
 
