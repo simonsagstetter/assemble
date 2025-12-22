@@ -80,6 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeMapper.toEmployee( employeeCreateDTO, id );
         employee.setUser( user );
 
+
         return employeeMapper.employeeToEmployeeDTO(
                 employeeRepository.save( employee )
         );
@@ -135,6 +136,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find employee with id: " + id )
                 );
+        
+        if ( employee.getUser() != null ) {
+            User user = employee.getUser();
+            user.setEmployee( null );
+            userRepository.save( user );
+        }
+
         employeeRepository.delete( employee );
     }
 }
