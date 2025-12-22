@@ -174,7 +174,7 @@ class UserAdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("searchUnlinkedUsers should return empty lust when search term had no match")
+    @DisplayName("searchUnlinkedUsers should return empty list when search term had no match")
     void searchUnlinkedUsers_ShouldReturnEmptyList_WhenSearchTermHadNoMatch() {
         String searchTerm = "not-existing-user";
         when( userRepository.search( searchTerm ) ).thenReturn( List.of() );

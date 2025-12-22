@@ -77,6 +77,7 @@ function IdentityFragment() {
                 />
                 <CalendarField fieldName={ "dateOfBirth" }
                                formControl={ form.control }
+                               placeholder={ "Select birth date" }
                                label={ "Date of Birth" }
                                disabled={ disabled }
                 />
@@ -91,7 +92,7 @@ function IdentityFragment() {
                 <SelectField fieldName={ "maritalStatus" }
                              formControl={ form.control }
                              label={ "Marital Status" }
-                             placeholder={ "Choose a martial status" }
+                             placeholder={ "Choose a marital status" }
                              options={ [
                                  { label: "Single", value: EmployeeMaritalStatus.SINGLE },
                                  { label: "Civil Partnership", value: EmployeeMaritalStatus.CIVIL },
