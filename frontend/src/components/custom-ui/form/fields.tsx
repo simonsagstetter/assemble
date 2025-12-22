@@ -42,7 +42,6 @@ function CustomField<TFieldValues extends FieldValues, TTransformedValues extend
     {
         fieldName: Path<TFieldValues>,
         formControl: Control<TFieldValues, any, TTransformedValues>,
-        disabled: boolean,
         renderAction: ( { field, fieldState, formState }: {
             field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>,
             fieldState: ControllerFieldState,
@@ -132,10 +131,11 @@ function SwitchField<TFieldValues extends FieldValues, TTransformedValues extend
 }
 
 function CalendarField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
-    { fieldName, formControl, label, children, ...props }:
+    { fieldName, formControl, label, placeholder, children, ...props }:
         {
             fieldName: Path<TFieldValues>,
             formControl: Control<TFieldValues, any, TTransformedValues>,
+            placeholder: string,
             label: string,
             children?: ReactNode,
             disabled: boolean
@@ -156,7 +156,7 @@ function CalendarField<TFieldValues extends FieldValues, TTransformedValues exte
                             className="w-48 justify-between font-normal"
                             { ...props }
                         >
-                            { field.value ? field.value.toLocaleDateString() : "Select birthdate" }
+                            { field.value ? field.value.toLocaleDateString() : placeholder }
                             <ChevronDownIcon/>
                         </Button>
                     </PopoverTrigger>
@@ -194,7 +194,7 @@ function SelectField<TFieldValues extends FieldValues, TTransformedValues extend
             formControl: Control<TFieldValues, any, TTransformedValues>,
             label: string,
             placeholder: string,
-            options: Record<string, string>[],
+            options: { label: string, value: string }[],
             children?: ReactNode,
             disabled: boolean
         } & ComponentProps<FC<SelectProps>>

@@ -45,7 +45,7 @@ export default function UserUpdateEmployeeForm( { user }: UpdateEmployeeFormProp
             employeeId: ""
         }
     } );
-    const { errors, isSubmitting } = form.formState;
+    const { isSubmitting } = form.formState;
     const { mutate, isPending, isSuccess, isError } = useUpdateUserEmployee();
 
     const handleUpdateEmployee = ( data: UserUpdateEmpployeeFormData ) => {

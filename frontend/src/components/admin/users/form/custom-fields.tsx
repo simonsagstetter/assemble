@@ -27,7 +27,6 @@ function EmployeeLookupField<TFieldValues extends FieldValues, TTransformedValue
     return <CustomField
         fieldName={ fieldName }
         formControl={ formControl }
-        disabled={ disabled }
         renderAction={ ( { field, fieldState } ) => (
             <Field data-invalid={ fieldState.invalid }>
                 <FieldLabel htmlFor={ `${ fieldName }-field` }>Employee</FieldLabel>
@@ -35,7 +34,7 @@ function EmployeeLookupField<TFieldValues extends FieldValues, TTransformedValue
                                 disabled={ disabled }/>
                 <FieldDescription>
                     Connect an employee to user. Leave this field empty if you want to
-                    assign a employee later.
+                    assign an employee later.
                 </FieldDescription>
                 { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
                 </FieldError> }
@@ -55,7 +54,6 @@ function RolesLookupField<TFieldValues extends FieldValues, TTransformedValues e
     return <CustomField
         fieldName={ fieldName }
         formControl={ formControl }
-        disabled={ disabled }
         renderAction={ ( { field, fieldState } ) => (
             <Field data-invalid={ fieldState.invalid }>
                 <FieldLabel htmlFor={ `${ fieldName }-field` }>Roles</FieldLabel>

@@ -90,7 +90,7 @@ function IdentityFragment() {
                 />
                 <SelectField fieldName={ "maritalStatus" }
                              formControl={ form.control }
-                             label={ "Martial Status" }
+                             label={ "Marital Status" }
                              placeholder={ "Choose a martial status" }
                              options={ [
                                  { label: "Single", value: EmployeeMaritalStatus.SINGLE },

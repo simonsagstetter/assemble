@@ -10,13 +10,13 @@
 
 import { z } from "zod";
 import { EmployeeMaritalStatus } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import { optionalString } from "@/utils/zod";
+import { optionalString, past } from "@/utils/zod";
 
 const AddressSchema = z.object( {
     street: optionalString( z.string().trim()
         .max( 100, "Street cannot be longer than 100 characters." ) ),
     number: optionalString( z.string().trim()
-        .max( 20, "Street cannot be longer than 20 characters." ) ),
+        .max( 20, "Number cannot be longer than 20 characters." ) ),
     postalCode: optionalString( z.string().trim()
         .max( 20, "Postal code cannot be longer than 20 characters." ) ),
     city: optionalString( z.string().trim()
@@ -64,9 +64,7 @@ const EmployeeCreateSchema = z.object( {
         z.string()
             .max( 100, "Tax ID cannot be longer than 100 characters." )
     ),
-    dateOfBirth: z.date()
-        .max( new Date(), "Date must be in the past" )
-        .optional(),
+    dateOfBirth: past.optional(),
     address: AddressSchema.optional(),
     bankAccount: BankAccountSchema.optional(),
 } )

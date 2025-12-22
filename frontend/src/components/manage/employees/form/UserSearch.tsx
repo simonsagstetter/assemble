@@ -28,12 +28,12 @@ const initialState = {
     selectedValue: null
 }
 
-type EmployeeSearchProps = {
+type UserSearchProps = {
     field: ControllerRenderProps<FieldValues, string>,
     disabled: boolean
 }
 
-export default function UserSearch( { field, disabled }: EmployeeSearchProps ) {
+export default function UserSearch( { field, disabled }: UserSearchProps ) {
     const [ state, setState ] = useState<SearchState>( initialState );
     const { data, isError, isLoading } = useSearchUnlinkedUsers(
         state.searchTerm,

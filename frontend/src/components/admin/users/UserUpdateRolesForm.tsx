@@ -46,7 +46,7 @@ export default function UserUpdateRolesForm( { user }: UserUpdateRolesFormProps 
             roles: [ ...roles ]
         }
     } );
-    const { errors, isSubmitting } = form.formState;
+    const { isSubmitting } = form.formState;
     const { mutate, isPending, isSuccess, isError } = useUpdateUserRoles();
 
     const handleUpdateRoles = ( data: UserUpdateRolesFormData ) => {

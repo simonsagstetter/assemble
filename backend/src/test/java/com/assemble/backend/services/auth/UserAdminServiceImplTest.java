@@ -151,6 +151,44 @@ class UserAdminServiceImplTest {
     }
 
     @Test
+    @DisplayName("searchUnlinkedUsers should return a list of User when search term had a match")
+    void searchUnlinkedUsers_ShouldReturnListOfUsers_WhenSearchTermHadAMatch() {
+        String searchTerm = user.getFirstname().toLowerCase();
+        UserRefDTO userRefDTO = UserRefDTO.builder()
+                .id( user.getId() )
+                .username( user.getUsername() )
+                .build();
+
+        when( userRepository.search( searchTerm ) ).thenReturn( List.of( user ) );
+        when( userAdminMapper.userToUserRefDTO( user ) ).thenReturn( userRefDTO );
+
+        List<UserRefDTO> actual = userAdminServiceImpl.searchUnlinkedUsers( searchTerm );
+
+        assertThat( actual )
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize( 1 )
+                .containsExactly( userRefDTO );
+
+        verify( userRepository, times( 1 ) ).search( searchTerm );
+    }
+
+    @Test
+    @DisplayName("searchUnlinkedUsers should return empty lust when search term had no match")
+    void searchUnlinkedUsers_ShouldReturnEmptyList_WhenSearchTermHadNoMatch() {
+        String searchTerm = "not-existing-user";
+        when( userRepository.search( searchTerm ) ).thenReturn( List.of() );
+
+        List<UserRefDTO> actual = userAdminServiceImpl.searchUnlinkedUsers( searchTerm );
+
+        assertThat( actual )
+                .isNotNull()
+                .isEmpty();
+
+        verify( userRepository, times( 1 ) ).search( searchTerm );
+    }
+
+    @Test
     @DisplayName("getUserById should return AdminUserDTO instance when user exists")
     void getUserById_ShouldReturnAdminUserDTO_WhenUserExists() {
         String userID = user.getId();

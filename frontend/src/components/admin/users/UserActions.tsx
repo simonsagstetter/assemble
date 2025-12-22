@@ -34,7 +34,7 @@ export default function UserActions(
         <DropdownMenuGroup>
             <DropdownMenuItem
                 onSelect={ () => router.push( `/app/admin/users/${ id }/employee` ) }>
-                <IdCardIcon/> { hasEmployee ? "Connect Employee" : "Update Employee" }
+                <IdCardIcon/> { hasEmployee ? "Update Employee" : "Connect Employee" }
             </DropdownMenuItem>
             <DropdownMenuItem
                 onSelect={ () => router.push( `/app/admin/users/${ id }/status` ) }>

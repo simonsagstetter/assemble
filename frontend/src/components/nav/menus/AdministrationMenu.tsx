@@ -34,7 +34,7 @@ export function AdministrationMenu() {
     const { isMobile } = useSidebar();
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Adminnistration</SidebarGroupLabel>
+            <SidebarGroupLabel>Administration</SidebarGroupLabel>
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton asChild>

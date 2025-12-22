@@ -25,14 +25,13 @@ function UserLookupField<TFieldValues extends FieldValues, TTransformedValues ex
     return <CustomField
         fieldName={ fieldName }
         formControl={ formControl }
-        disabled={ disabled }
         renderAction={ ( { field, fieldState } ) => (
             <Field data-invalid={ fieldState.invalid }>
                 <FieldLabel htmlFor={ `${ fieldName }-field` }>Users</FieldLabel>
                 <UserSearch field={ field } disabled={ disabled }/>
                 <FieldDescription>
-                    Connect an user to this employee. Leave this field empty if you want to
-                    assign an user later.
+                    Connect a user to this employee. Leave this field empty if you want to
+                    assign a user later.
                 </FieldDescription>
                 { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
                 </FieldError> }

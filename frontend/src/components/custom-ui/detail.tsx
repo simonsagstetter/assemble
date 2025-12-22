@@ -10,7 +10,6 @@
 
 import { ReactNode, useState } from "react";
 import { EyeClosedIcon, EyeIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export function DetailSection( { children }: { children: Readonly<ReactNode> } ) {
     return <div className={ "flex flex-col gap-4" }>{ children }</div>
@@ -42,15 +41,19 @@ export function SensitiveDetailValue( { children }: { children: Readonly<ReactNo
         { isHidden ?
             <div className={ "relative" }>
                 <span>{ "*****************" }</span>
-                <button type={ "button" } onClick={ () => setIsHidden( false ) }
-                        className={ "cursor-pointer absolute right-2" }>
+                <button type={ "button" }
+                        onClick={ () => setIsHidden( false ) }
+                        className={ "cursor-pointer absolute right-2" }
+                        aria-label={ "Show sensitive data" }>
                     <EyeClosedIcon className={ "text-zinc-500 size-4" }/>
                 </button>
             </div>
             : <div className={ "relative" }>
                 <span>{ children ? children : "-" }</span>
-                <button type={ "button" } onClick={ () => setIsHidden( true ) }
-                        className={ "cursor-pointer absolute right-2" }>
+                <button type={ "button" }
+                        onClick={ () => setIsHidden( true ) }
+                        className={ "cursor-pointer absolute right-2" }
+                        aria-label={ "Hide sensitive data" }>
                     <EyeIcon className={ "text-zinc-500 size-4" }/>
                 </button>
             </div> }

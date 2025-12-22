@@ -88,7 +88,7 @@ export default function EmployeeEditForm( { employee }: EmployeeEditFormProps ) 
                 id: employee.id,
                 data: {
                     ...data,
-                    dateOfBirth: data.dateOfBirth?.toISOString() ?? undefined
+                    dateOfBirth: data.dateOfBirth?.toLocaleDateString() ?? undefined
                 }
             },
             {

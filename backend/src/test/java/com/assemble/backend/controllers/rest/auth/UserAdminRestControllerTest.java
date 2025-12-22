@@ -163,6 +163,25 @@ class UserAdminRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.ADMIN })
+    @DisplayName("/GET searchUnlinkedUsers should return 200")
+    void searchUnlinkedUsers_ShouldReturn200_WhenCalled() throws Exception {
+        userRepository.save( testUser );
+
+        mockMvc.perform(
+                get( "/api/admin/users/search/" + testUser.getFirstname().toLowerCase() )
+        ).andExpect(
+                status().isOk()
+        ).andExpect(
+                content().contentType( MediaType.APPLICATION_JSON )
+        ).andExpect(
+                jsonPath( "$[0].id" ).value( testUser.getId() )
+
+        );
+    }
+
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.ADMIN })
     @DisplayName("/POST createUser should return 400 when request body is invalid")
     void createUser_ShouldReturn400_WhenRequestBodyIsInvalid() throws Exception {
         userRepository.save( testUser );

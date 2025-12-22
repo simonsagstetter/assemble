@@ -15,4 +15,6 @@ const optionalString = <T extends z.ZodTypeAny>( schema: T ) =>
         schema.optional()
     );
 
-export { optionalString }
+const past = z.date().refine( date => date < new Date(), { message: "Date must be in the past" } );
+
+export { optionalString, past }

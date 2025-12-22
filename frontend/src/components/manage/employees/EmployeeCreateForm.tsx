@@ -77,7 +77,7 @@ export default function EmployeeCreateForm() {
             {
                 data: {
                     ...data,
-                    dateOfBirth: data.dateOfBirth?.toISOString() ?? undefined
+                    dateOfBirth: data.dateOfBirth?.toLocaleDateString() ?? undefined
                 }
             },
             {

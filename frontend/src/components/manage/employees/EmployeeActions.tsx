@@ -33,7 +33,7 @@ export default function EmployeeActions(
         <DropdownMenuGroup>
             <DropdownMenuItem
                 onSelect={ () => router.push( `/app/manage/employees/${ id }/user` ) }>
-                <UserIcon/> { hasUser ? "Connect User" : "Update User" }
+                <UserIcon/> { hasUser ? "Update User" : "Connect User" }
             </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator/>

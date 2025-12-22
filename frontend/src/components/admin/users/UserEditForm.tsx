@@ -9,7 +9,7 @@
  */
 "use client";
 import { useQueryClient } from "@tanstack/react-query";
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type UserUpdateFormData, UserUpdateSchema } from "@/types/users/user.types";
 import {
@@ -17,18 +17,11 @@ import {
     getGetUserByIdQueryKey,
     useUpdateUser
 } from "@/api/rest/generated/query/user-management/user-management";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { FieldGroup, FieldSet } from "@/components/ui/field";
 import { Separator } from "@/components/ui/separator";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircleIcon, CheckCircle2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { FieldValidationError, UserAdmin } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "@bprogress/next/app";
-import { use } from "react";
-import { ModalContext } from "@/components/custom-ui/Modal";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { FormActionContext } from "@/store/formActionStore";
 import useModalContext from "@/hooks/useModalContext";
