@@ -56,11 +56,14 @@ public class UserAdminServiceImpl implements UserAdminService {
         );
     }
 
+
     @Override
-    public List<UserAdminDTO> getUnlinkedUsers() {
-        return userRepository.findAllByEmployeeIsNull()
+    public List<UserRefDTO> searchUnlinkedUsers( String searchTerm ) {
+        String normalizedSearchTerm = searchTerm == null ? "" : searchTerm.toLowerCase();
+        return userRepository
+                .search( normalizedSearchTerm )
                 .stream()
-                .map( userAdminMapper::toUserAdminDTO )
+                .map( userAdminMapper::userToUserRefDTO )
                 .toList();
     }
 

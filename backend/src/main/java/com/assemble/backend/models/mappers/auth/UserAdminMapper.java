@@ -12,6 +12,7 @@ package com.assemble.backend.models.mappers.auth;
 
 import com.assemble.backend.models.dtos.auth.admin.UserAdminDTO;
 import com.assemble.backend.models.dtos.auth.admin.UserCreateDTO;
+import com.assemble.backend.models.dtos.auth.admin.UserRefDTO;
 import com.assemble.backend.models.dtos.auth.admin.UserUpdateDTO;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.mappers.employee.EmployeeMapper;
@@ -23,6 +24,9 @@ import org.mapstruct.*;
         uses = EmployeeMapper.class
 )
 public interface UserAdminMapper {
+
+    @Named("userToUserRefDTO")
+    UserRefDTO userToUserRefDTO( User user );
 
     @Mapping(target = "fullname", expression = "java(user.getFullname())")
     @Mapping(target = "employee", source = "employee", qualifiedByName = "employeeToEmployeeRefDTO")
