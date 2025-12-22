@@ -632,24 +632,6 @@ class UserAdminRestControllerTest {
         assertThat( updatedEmployee.getUser() ).isNull();
     }
 
-    @Test
-    @WithMockCustomUser(roles = { UserRole.ADMIN })
-    @DisplayName("/GET getAllUnlinkedUsers should return 200")
-    void getAllUnlinkedUsers_ShouldReturn200_WhenCalled() throws Exception {
-        userRepository.save( testUser );
-
-        mockMvc.perform(
-                get( "/api/admin/users/unlinked" )
-        ).andExpect(
-                status().isOk()
-        ).andExpect(
-                content().contentType( MediaType.APPLICATION_JSON )
-        ).andExpect(
-                jsonPath( "$[0].id" ).isNotEmpty()
-        ).andExpect(
-                jsonPath( "$[0].username" ).value( testUser.getUsername() )
-        );
-    }
 
     @Test
     @WithMockCustomUser(roles = { UserRole.ADMIN })

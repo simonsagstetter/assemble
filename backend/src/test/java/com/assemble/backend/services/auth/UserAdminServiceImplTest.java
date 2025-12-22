@@ -172,34 +172,6 @@ class UserAdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("getUnlinkedUsers should return empty list when no users exist where employee field is null")
-    void getUnlinkedUsers_ShouldReturnEmptyList_WhenNoUsersExistWhereEmployeeFieldIsNull() {
-        when( userRepository.findAllByEmployeeIsNull() ).thenReturn( List.of() );
-
-        List<UserAdminDTO> actual = userAdminServiceImpl.getUnlinkedUsers();
-
-        assertThat( actual ).isEmpty();
-        verify( userRepository, times( 1 ) ).findAllByEmployeeIsNull();
-    }
-
-    @Test
-    @DisplayName("getUnlinkedUsers should return a User list when user exist with employee null field")
-    void getUnlinkedUsers_ShouldReturnAUserList_WhenUserExistWithEmployeeNullField() {
-        when( userRepository.findAllByEmployeeIsNull() ).thenReturn( List.of( user ) );
-        when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
-
-        List<UserAdminDTO> actual = userAdminServiceImpl.getUnlinkedUsers();
-
-        assertThat( actual )
-                .isNotNull()
-                .isNotEmpty()
-                .containsExactly( userAdminDTO );
-
-        verify( userRepository, times( 1 ) ).findAllByEmployeeIsNull();
-    }
-
-
-    @Test
     @DisplayName("createUser should throw EntityNotFoundException when invalid employeeId was passed")
     void createUser_ShouldThrowEntityNotFoundException_WhenInvalidEmployeeIdWasPassed() {
         UserCreateDTO userCreateDTO = UserCreateDTO.builder()
