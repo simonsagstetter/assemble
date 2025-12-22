@@ -15,7 +15,7 @@ import ModalHeader from "@/components/custom-ui/ModalHeader";
 function CreateUserModal() {
     return <ModalHeader title={ "New" } description={ "Fill out the fields and click new to create a new user." }
                         entity={ "user" }>
-        <UserCreateForm modal/>
+        <UserCreateForm/>
     </ModalHeader>;
 }
 

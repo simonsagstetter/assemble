@@ -21,7 +21,7 @@ function UpdateEmployeeModal() {
     return <ModalHeader title={ "Update Employee" }
                         description={ "Update the connected employee of this user." }
                         entity={ "user" }>
-        <UserUpdateEmployeeForm user={ userDetails } modal></UserUpdateEmployeeForm>
+        <UserUpdateEmployeeForm user={ userDetails }></UserUpdateEmployeeForm>
     </ModalHeader>
 }
 

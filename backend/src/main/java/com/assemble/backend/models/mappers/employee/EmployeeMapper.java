@@ -19,7 +19,8 @@ import org.mapstruct.*;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = { AddressMapper.class, BankAccountMapper.class, MaritalStatusMapper.class }
 )
 public interface EmployeeMapper {
 
@@ -33,6 +34,8 @@ public interface EmployeeMapper {
     @Mapping(target = "firstname", expression = "java(employeeCreateDTO.getFirstname())")
     @Mapping(target = "lastname", expression = "java(employeeCreateDTO.getLastname())")
     @Mapping(target = "email", expression = "java(employeeCreateDTO.getEmail())")
+    @Mapping(target = "address", source = "employeeCreateDTO", qualifiedByName = "addressFromEmployeeCreateDTO")
+    @Mapping(target = "bankAccount", source = "employeeCreateDTO", qualifiedByName = "bankAccountFromEmployeeCreateDTO")
     Employee toEmployee( EmployeeCreateDTO employeeCreateDTO, String id );
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)

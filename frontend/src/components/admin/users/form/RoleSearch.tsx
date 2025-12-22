@@ -9,7 +9,7 @@
  */
 
 import { UserRolesItem } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import { MultiCombobox } from "@/components/custom-ui/MultiCombobox";
+import { MultiCombobox } from "@/components/custom-ui/form/MultiCombobox";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
 import { UserCogIcon } from "lucide-react";
 

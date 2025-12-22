@@ -9,13 +9,9 @@
  */
 "use client";
 
-import { Field, FieldGroup } from "@/components/ui/field";
+import { FieldGroup } from "@/components/ui/field";
 import { Separator } from "@/components/ui/separator";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircleIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import {
     getGetAllUsersQueryKey,
     getGetUserByIdQueryKey,
@@ -25,20 +21,20 @@ import { UserAdmin } from "@/api/rest/generated/query/openAPIDefinition.schemas"
 import { useRouter } from "@bprogress/next/app";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { use } from "react";
-import { ModalContext } from "@/components/custom-ui/Modal";
+import useModalContext from "@/hooks/useModalContext";
+import { ErrorMessage } from "@/components/custom-ui/form/messages";
+import { FormActionContext } from "@/store/formActionStore";
+import { FormActions } from "@/components/custom-ui/form/actions";
 
 type UserDeleteFormProps = {
-    user: UserAdmin,
-    modal?: boolean
+    user: UserAdmin
 }
 
-export default function UserDeleteForm( { user, modal }: UserDeleteFormProps ) {
-    const modalContext = use( ModalContext );
+export default function UserDeleteForm( { user }: UserDeleteFormProps ) {
+    const modalContext = useModalContext()
     const queryClient = useQueryClient();
     const router = useRouter();
     const form = useForm();
-    const { isSubmitting, errors } = form.formState;
     const deleteUser = useDeleteUserById();
     const { isPending, isError, isSuccess } = deleteUser;
 
@@ -52,22 +48,15 @@ export default function UserDeleteForm( { user, modal }: UserDeleteFormProps ) {
                     toast.success( "Success", {
                         description: "User " + user.username + " was deleted",
                     } )
-                    await queryClient.invalidateQueries(
-                        {
-                            queryKey:
-                                getGetAllUsersQueryKey(),
-                            refetchType: "all"
-
-                        }
-                    )
-                    await queryClient.invalidateQueries(
-                        {
-                            queryKey:
-                                getGetUserByIdQueryKey( user.id ),
-                            refetchType: "none"
-                        }
-                    );
-                    if ( modal ) {
+                    await queryClient.invalidateQueries( {
+                        queryKey: getGetAllUsersQueryKey(),
+                        refetchType: "all"
+                    } )
+                    await queryClient.invalidateQueries( {
+                        queryKey: getGetUserByIdQueryKey( user.id ),
+                        refetchType: "none"
+                    } );
+                    if ( modalContext ) {
                         modalContext.setOpen( false );
                     }
                     setTimeout( () => router.push( "/app/admin/users" ), 200 );
@@ -88,54 +77,25 @@ export default function UserDeleteForm( { user, modal }: UserDeleteFormProps ) {
     }
 
     const handleCancel = () => {
-        if ( modal ) {
+        if ( modalContext ) {
             modalContext.setOpen( false );
             router.back();
         }
-        router.back();
     }
 
-    return <form id={ "user-delete-form" } onSubmit={ form.handleSubmit( handleDeleteUser ) } className="space-y-8">
-        <FieldGroup className={ "p-8 my-0" }>
-            <p className={ "text-xl font-semibold text-center" }>
-                Are you sure you want to delete the user <strong>{ user.username }</strong>?
-            </p>
-            { isError && errors.root && (
-                <FieldGroup>
-                    <Alert variant="destructive">
-                        <AlertCircleIcon/>
-                        <AlertTitle>Oops! We encountered an error.</AlertTitle>
-                        <AlertDescription>
-                            { errors.root.message }
-                        </AlertDescription>
-                    </Alert>
+    return <FormActionContext.Provider
+        value={ { isSuccess, isPending, isError, handleCancel, disableOnSuccess: true } }>
+        <FormProvider { ...form }>
+            <form id={ "user-delete-form" } onSubmit={ form.handleSubmit( handleDeleteUser ) } className="space-y-8">
+                <FieldGroup className={ "p-8 my-0" }>
+                    <p className={ "text-xl font-semibold text-center" }>
+                        Are you sure you want to delete the user <strong>{ user.username }</strong>?
+                    </p>
+                    <ErrorMessage/>
                 </FieldGroup>
-            ) }
-        </FieldGroup>
-        <Separator className={ "my-0" }/>
-        <Field orientation={ "horizontal" } className={ "p-8" }>
-            <Button type="button"
-                    variant="secondary"
-                    className={ "flex-2/3 grow cursor-pointer" }
-                    onClick={ handleCancel }
-                    disabled={ isPending || isSubmitting || isSuccess }
-            >
-                Cancel
-            </Button>
-            <Button type="submit"
-                    form={ "user-delete-form" }
-                    variant="destructive"
-                    disabled={ isPending || isSubmitting || isSuccess }
-                    className={ "flex-1/3 grow cursor-pointer" }
-            >
-                { isPending ?
-                    <>
-                        { "Processing" }
-                        <Spinner/>
-                    </>
-                    : "Delete"
-                }
-            </Button>
-        </Field>
-    </form>;
+                <Separator className={ "my-0" }/>
+                <FormActions formId={ "user-delete-form" } label={ "Delete" } variant={ "destructive" }/>
+            </form>
+        </FormProvider>
+    </FormActionContext.Provider>
 }

@@ -442,4 +442,20 @@ class EmployeeServiceImplTest {
         verify( employeeRepository, times( 1 ) ).findById( id );
         verify( employeeRepository, times( 1 ) ).delete( employee );
     }
+
+    @Test
+    @DisplayName("deleteEmployee should unlink user before deletion")
+    void deleteEmployee_ShouldUnlinkUserBeforeDeletion_WhenEmployeeExists() {
+        employee.setUser( user );
+        user.setEmployee( null );
+        String id = employee.getId();
+        assert id != null;
+        when( employeeRepository.findById( id ) ).thenReturn( Optional.of( employee ) );
+
+        assertDoesNotThrow( () -> service.deleteEmployee( id ) );
+
+        verify( employeeRepository, times( 1 ) ).findById( id );
+        verify( userRepository, times( 1 ) ).save( user );
+        verify( employeeRepository, times( 1 ) ).delete( employee );
+    }
 }

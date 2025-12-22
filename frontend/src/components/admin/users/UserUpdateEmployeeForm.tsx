@@ -11,11 +11,9 @@
 "use client";
 
 import { UserAdmin } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import { use } from "react";
-import { ModalContext } from "@/components/custom-ui/Modal";
 import { useRouter } from "@bprogress/next/app";
 import { useQueryClient } from "@tanstack/react-query";
-import { Controller, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import {
     getGetAllUsersQueryKey,
     getGetUserByIdQueryKey,
@@ -24,22 +22,21 @@ import {
 import { UserUpdateEmpployeeFormData, UserUpdateEmpployeeSchema, } from "@/types/users/user.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircleIcon, CheckCircle2Icon } from "lucide-react";
+import { FieldGroup, FieldSet } from "@/components/ui/field";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
-import EmployeeSearch from "@/components/admin/users/EmployeeSearch";
+import { EmployeeLookupField } from "@/components/admin/users/form/custom-fields";
+import useModalContext from "@/hooks/useModalContext";
+import { FormActionContext } from "@/store/formActionStore";
+import { ErrorMessage, SuccessMessage } from "@/components/custom-ui/form/messages";
+import { FormActions } from "@/components/custom-ui/form/actions";
 
 type UpdateEmployeeFormProps = {
-    user: UserAdmin,
-    modal?: boolean
+    user: UserAdmin
 }
 
-export default function UserUpdateEmployeeForm( { user, modal = false }: UpdateEmployeeFormProps ) {
-    const modalContext = use( ModalContext );
+export default function UserUpdateEmployeeForm( { user }: UpdateEmployeeFormProps ) {
+    const modalContext = useModalContext();
     const router = useRouter();
     const queryClient = useQueryClient();
     const form = useForm<UserUpdateEmpployeeFormData>( {
@@ -48,7 +45,7 @@ export default function UserUpdateEmployeeForm( { user, modal = false }: UpdateE
             employeeId: ""
         }
     } );
-    const { errors, isSubmitting } = form.formState;
+    const { isSubmitting } = form.formState;
     const { mutate, isPending, isSuccess, isError } = useUpdateUserEmployee();
 
     const handleUpdateEmployee = ( data: UserUpdateEmpployeeFormData ) => {
@@ -77,7 +74,7 @@ export default function UserUpdateEmployeeForm( { user, modal = false }: UpdateE
                             onClick: () => router.push( "/app/admin/users/" + user.id )
                         }
                     } );
-                    if ( modal ) {
+                    if ( modalContext ) {
                         handleCancel();
                     }
                 },
@@ -96,7 +93,7 @@ export default function UserUpdateEmployeeForm( { user, modal = false }: UpdateE
     }
 
     const handleCancel = () => {
-        if ( modal ) {
+        if ( modalContext ) {
             modalContext.setOpen( false );
             router.back();
         } else {
@@ -105,80 +102,27 @@ export default function UserUpdateEmployeeForm( { user, modal = false }: UpdateE
         }
     }
 
-    return <form id={ "user-update-employee-form" } onSubmit={ form.handleSubmit( handleUpdateEmployee ) }
-                 className="space-y-8">
-        <ScrollArea className={ `${ modal ? "my-0" : "" }` }>
-            <FieldGroup className={ "py-4 px-8" }>
-                <FieldSet>
-                    <FieldGroup>
-                        <Controller
-                            name={ "employeeId" }
-                            control={ form.control }
-                            render={ ( { field, fieldState } ) => (
-                                <Field data-invalid={ fieldState.invalid }>
-                                    <FieldLabel htmlFor={ "employeeId-field" }>Employee</FieldLabel>
-                                    <EmployeeSearch field={ field }
-                                                    disabled={ isPending || isSubmitting || isSuccess }/>
-                                    <FieldDescription>
-                                        Connect a user to a an employee. Leave this field empty if you want to
-                                        disconnect
-                                        the current employee.
-                                    </FieldDescription>
-                                    { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
-                                    </FieldError> }
-                                </Field>
-                            ) }
-                        />
+    return <FormActionContext.Provider
+        value={ { isPending, isError, isSuccess, handleCancel, disableOnSuccess: false } }>
+        <FormProvider { ...form }>
+            <form id={ "user-update-employee-form" } onSubmit={ form.handleSubmit( handleUpdateEmployee ) }
+                  className="space-y-8">
+                <ScrollArea className={ `${ modalContext ? "my-0" : "" }` }>
+                    <FieldGroup className={ "py-4 px-8" }>
+                        <FieldSet>
+                            <FieldGroup>
+                                <EmployeeLookupField fieldName={ "employeeId" } formControl={ form.control }
+                                                     disabled={ isPending || isSubmitting || isSuccess }/>
+                            </FieldGroup>
+                        </FieldSet>
+                        <ErrorMessage/>
+                        <SuccessMessage message={ "User was updated successfully" }/>
                     </FieldGroup>
-                </FieldSet>
-                { isError && errors.root && (
-                    <FieldGroup>
-                        <Alert variant="destructive">
-                            <AlertCircleIcon/>
-                            <AlertTitle>Oops! We encountered an error.</AlertTitle>
-                            <AlertDescription>
-                                { errors.root.message }
-                            </AlertDescription>
-                        </Alert>
-                    </FieldGroup>
-                ) }
-                { isSuccess && (
-                    <FieldGroup>
-                        <Alert variant="default">
-                            <CheckCircle2Icon/>
-                            <AlertTitle>
-                                { "User was updated successfully" }
-                            </AlertTitle>
-                        </Alert>
-                    </FieldGroup>
-                ) }
-            </FieldGroup>
-        </ScrollArea>
-        <Separator className={ "my-0" }/>
-        <Field orientation={ "horizontal" } className={ "p-8" }>
-            <Button type="button"
-                    variant="secondary"
-                    className={ "flex-1/3 grow cursor-pointer" }
-                    onClick={ handleCancel }
-                    disabled={ isPending || isSubmitting }
-            >
-                { isSuccess ? "Go back" : "Cancel" }
-            </Button>
-            <Button type="submit"
-                    form={ "user-update-employee-form" }
-                    variant="default"
-                    disabled={ isPending || isSubmitting }
-                    className={ "flex-2/3 grow cursor-pointer" }
-            >
-                { isPending ?
-                    <>
-                        { "Processing" }
-                        <Spinner/>
-                    </>
-                    : "Save"
-                }
-            </Button>
-        </Field>
-    </form>
+                </ScrollArea>
+                <Separator className={ "my-0" }/>
+                <FormActions formId={ "user-update-employee-form" } label={ "Save" }/>
+            </form>
+        </FormProvider>
+    </FormActionContext.Provider>
 }
 

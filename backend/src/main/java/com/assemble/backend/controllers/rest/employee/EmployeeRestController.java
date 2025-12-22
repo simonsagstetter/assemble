@@ -142,8 +142,7 @@ public class EmployeeRestController {
             @Valid @RequestBody EmployeeCreateDTO employeeCreateDTO
     ) {
         return ResponseEntity.status( HttpStatus.CREATED )
-                .body( employeeService.createEmployee( employeeCreateDTO )
-                );
+                .body( employeeService.createEmployee( employeeCreateDTO ) );
     }
 
     @Operation(

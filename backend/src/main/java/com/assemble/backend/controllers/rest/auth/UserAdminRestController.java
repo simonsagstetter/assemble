@@ -86,22 +86,24 @@ public class UserAdminRestController {
     }
 
     @Operation(
-            summary = "Get All Unlinked Users"
+            summary = "Search unlinked users by username"
     )
     @ApiResponse(
             responseCode = "200",
             description = "OK",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = UserAdminDTO.class))
+                    array = @ArraySchema(schema = @Schema(implementation = UserRefDTO.class))
             )
     )
     @GetMapping(
-            path = "/unlinked",
+            path = "/search/{searchTerm}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<UserAdminDTO>> getAllUnlinkedUsers() {
-        return ResponseEntity.ok( userAdminService.getUnlinkedUsers() );
+    public ResponseEntity<List<UserRefDTO>> searchUnlinkedUsers(
+            @PathVariable String searchTerm
+    ) {
+        return ResponseEntity.ok( userAdminService.searchUnlinkedUsers( searchTerm ) );
     }
 
     @Operation(

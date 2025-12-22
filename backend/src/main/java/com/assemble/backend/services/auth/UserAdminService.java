@@ -21,7 +21,7 @@ public interface UserAdminService {
 
     UserAdminDTO getUserById( String id );
 
-    List<UserAdminDTO> getUnlinkedUsers();
+    List<UserRefDTO> searchUnlinkedUsers( String searchTerm );
 
     UserAdminDTO setUserStatus( String id, UserUpdateStatusDTO userUpdateStatusDTO );
 

@@ -18,7 +18,7 @@ function UserStatusModal() {
     const { id } = useParams<{ id: string }>();
     const { data: userDetails } = useGetUserByIdSuspense( id );
     return <ModalHeader title={ "Update Status" } description={ "Update the status of the user." } entity={ "user" }>
-        <UserUpdateStatusForm user={ userDetails } modal/>
+        <UserUpdateStatusForm user={ userDetails }/>
     </ModalHeader>
 }
 

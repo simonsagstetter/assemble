@@ -10,73 +10,64 @@
 
 "use client"
 
-import { ChevronRight, UserIcon } from "lucide-react"
+import { ListIcon, MoreHorizontal, PlusIcon, UserIcon } from "lucide-react"
 
-import { Collapsible, CollapsibleContent, CollapsibleTrigger, } from "@/components/ui/collapsible"
 import {
     SidebarGroup,
     SidebarGroupLabel,
-    SidebarMenu,
+    SidebarMenu, SidebarMenuAction,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
+    useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { useRouter } from "@bprogress/next/app";
 
 export function AdministrationMenu() {
-    const items = [
-        {
-            title: "Users",
-            url: "/app/admin/users",
-            icon: UserIcon,
-            isActive: true,
-            items: [
-                {
-                    title: "List View",
-                    url: "/app/admin/users",
-                },
-            ],
-        }
-    ];
+    const router = useRouter();
+    const { isMobile } = useSidebar();
     return (
-        <SidebarGroup>
+        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Administration</SidebarGroupLabel>
             <SidebarMenu>
-                { items.map( ( item ) => (
-                    <Collapsible
-                        key={ item.title }
-                        asChild
-                        defaultOpen={ item.isActive }
-                        className="group/collapsible"
-                    >
-                        <SidebarMenuItem>
-                            <CollapsibleTrigger asChild>
-                                <SidebarMenuButton tooltip={ item.title }>
-                                    { item.icon && <item.icon/> }
-                                    <span>{ item.title }</span>
-                                    <ChevronRight
-                                        className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"/>
-                                </SidebarMenuButton>
-                            </CollapsibleTrigger>
-                            <CollapsibleContent>
-                                <SidebarMenuSub>
-                                    { item.items?.map( ( subItem ) => (
-                                        <SidebarMenuSubItem key={ subItem.title }>
-                                            <SidebarMenuSubButton asChild>
-                                                <Link href={ subItem.url }>
-                                                    <span>{ subItem.title }</span>
-                                                </Link>
-                                            </SidebarMenuSubButton>
-                                        </SidebarMenuSubItem>
-                                    ) ) }
-                                </SidebarMenuSub>
-                            </CollapsibleContent>
-                        </SidebarMenuItem>
-                    </Collapsible>
-                ) ) }
+                <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                        <Link href="/app/admin/users">
+                            <UserIcon></UserIcon>
+                            <span>Users</span>
+                        </Link>
+                    </SidebarMenuButton>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <SidebarMenuAction showOnHover>
+                                <MoreHorizontal/>
+                                <span className="sr-only">More</span>
+                            </SidebarMenuAction>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            className="w-48 rounded-lg"
+                            side={ isMobile ? "bottom" : "right" }
+                            align={ isMobile ? "end" : "start" }
+                        >
+                            <DropdownMenuItem onSelect={ () => router.push( "/app/admin/users" ) }>
+                                <ListIcon className="text-muted-foreground"/>
+                                <span>View All</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onSelect={ () => router.push( "/app/admin/users/create" ) }>
+                                <PlusIcon className="text-muted-foreground"/>
+                                <span>New</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </SidebarMenuItem>
             </SidebarMenu>
         </SidebarGroup>
+
     )
 }

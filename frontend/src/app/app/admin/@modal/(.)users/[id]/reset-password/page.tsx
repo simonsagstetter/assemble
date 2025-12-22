@@ -21,7 +21,7 @@ function ResetPasswordModal() {
     return <ModalHeader title={ "Reset Password" }
                         description={ "Set the password of a user and invalidate their session" }
                         entity={ "user" }>
-        <UserResetPasswordForm user={ userDetails } modal></UserResetPasswordForm>
+        <UserResetPasswordForm user={ userDetails }></UserResetPasswordForm>
     </ModalHeader>
 }
 

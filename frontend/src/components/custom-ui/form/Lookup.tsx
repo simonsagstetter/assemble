@@ -30,6 +30,7 @@ type LookupProps = {
     setOpenAction: ( open: boolean ) => void;
     placeholder: string,
     heading: string,
+    emptyMessage: string,
     searchTerm: string,
     searchCallbackAction: ( searchTerm: string ) => void,
     selectCallbackAction: ( selectedValue: LookupItem ) => void,
@@ -48,6 +49,7 @@ const Lookup = memo( function Lookup(
         setOpenAction,
         heading,
         placeholder,
+        emptyMessage,
         searchTerm,
         searchCallbackAction,
         selectCallbackAction,
@@ -97,7 +99,7 @@ const Lookup = memo( function Lookup(
                         <Spinner/>
                     </div> : null }
                     <CommandList>
-                        <CommandEmpty>No employees found.</CommandEmpty>
+                        <CommandEmpty>{ emptyMessage }</CommandEmpty>
                         { isError ? <CommandEmpty>Failed to load items</CommandEmpty> : null }
                         { items != null && items.length > 0 ?
                             <CommandGroup heading={ heading }>

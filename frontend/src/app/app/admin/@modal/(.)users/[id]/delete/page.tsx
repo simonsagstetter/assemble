@@ -20,7 +20,7 @@ function DeleteUserModal() {
 
     return <ModalHeader title={ "Delete" } description={ "Confirm the action below to delete this user." }
                         entity={ "user" }>
-        <UserDeleteForm user={ userDetails } modal/>
+        <UserDeleteForm user={ userDetails }/>
     </ModalHeader>
 }
 

@@ -16,33 +16,21 @@ import Link from "next/link";
 import { DataTable } from "@/components/custom-ui/DataTable";
 import {
     CheckIcon,
-    HatGlassesIcon,
-    IdCardIcon,
     MoreHorizontal,
-    PencilIcon,
-    RectangleEllipsisIcon,
-    TrashIcon,
-    UserCogIcon,
-    UserIcon,
-    UserLockIcon,
     XIcon
 } from "lucide-react";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "@bprogress/next/app";
+import UserActions from "@/components/admin/users/UserActions";
 
 type UserDataTableProps = {
     users: UserAdmin[];
 }
 
 export default function UserDataTable( { users }: UserDataTableProps ) {
-    const router = useRouter();
     const columns: ColumnDef<UserAdmin>[] = useMemo( () => [
         {
             accessorKey: "username",
@@ -132,54 +120,16 @@ export default function UserDataTable( { users }: UserDataTableProps ) {
                                 <MoreHorizontal className="h-4 w-4"/>
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
-                            <DropdownMenuItem
-                                onClick={ () => router.push( `/app/admin/users/${ user.id }/employee` ) }
-                            >
-                                <IdCardIcon/> { user.employee == null ? "Connect Employee" : "Update Employee" }
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={ () => router.push( `/app/admin/users/${ user.id }/status` ) }
-                            >
-                                <UserLockIcon/> Update Status
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={ () => router.push( `/app/admin/users/${ user.id }/roles` ) }
-                            >
-                                <UserCogIcon/> Update Roles
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={ () => router.push( `/app/admin/users/${ user.id }/reset-password` ) }
-                            >
-                                <RectangleEllipsisIcon/> Reset Password
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator/>
-                            <DropdownMenuItem
-                                onClick={ () => router.push( `/app/admin/users/${ user.id }` ) }
-                            >
-                                <UserIcon/> Details
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={ () => router.push( `/app/admin/users/${ user.id }/edit` ) }>
-                                <PencilIcon className={ "size-3" }/> Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator/>
-                            <DropdownMenuItem className={ "text-yellow-600" }
-                                              onClick={ () => {
-                                              } }>
-                                <HatGlassesIcon className={ "text-shadow-yellow-600" }></HatGlassesIcon> Impersonate
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator/>
-                            <DropdownMenuItem className={ "text-red-600" }
-                                              onClick={ () => router.push( `/app/admin/users/${ user.id }/delete` ) }>
-                                <TrashIcon className={ "text-red-600" }/> Delete
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
+                        <UserActions id={ user.id }
+                                     hasEmployee={ user.employee != null }
+                                     align={ "center" }
+                                     tableActions
+                        />
                     </DropdownMenu>
                 )
             }
         },
-    ], [ router ] );
+    ], [] );
 
     return <DataTable columns={ columns } data={ users }/>
 }
