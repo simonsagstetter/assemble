@@ -21,31 +21,20 @@ import { format } from "date-fns";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {
     ChevronDownIcon,
-    HatGlassesIcon,
-    IdCardIcon,
     PencilIcon,
-    RectangleEllipsisIcon,
-    TrashIcon,
-    UserCogIcon,
-    UserLockIcon
 } from "lucide-react";
-import { useRouter } from "@bprogress/next/app";
 import { Separator } from "@/components/ui/separator";
+import UserActions from "@/components/admin/users/UserActions";
 
 type UserDetailProps = {
     userDetails: UserAdmin
 }
 
 export default function UserDetail( { userDetails }: UserDetailProps ) {
-    const router = useRouter();
     return <Card className="w-full border-0 shadow-none rounded-none">
         <CardHeader className={ "px-8 py-4" }>
             <small className="text-xs uppercase leading-0 pt-1">user</small>
@@ -90,40 +79,10 @@ export default function UserDetail( { userDetails }: UserDetailProps ) {
                                 <ChevronDownIcon/>
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="[--radius:1rem]">
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem
-                                    onSelect={ () => router.push( `/app/admin/users/${ userDetails.id }/employee` ) }>
-                                    <IdCardIcon/> { userDetails.employee == null ? "Connect Employee" : "Update Employee" }
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                    onSelect={ () => router.push( `/app/admin/users/${ userDetails.id }/status` ) }>
-                                    <UserLockIcon/> Update Status
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                    onSelect={ () => router.push( `/app/admin/users/${ userDetails.id }/roles` ) }>
-                                    <UserCogIcon/> Update Roles
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                    onSelect={ () => router.push( `/app/admin/users/${ userDetails.id }/reset-password` ) }>
-                                    <RectangleEllipsisIcon/> Reset Password
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                            <DropdownMenuSeparator/>
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem className={ "text-yellow-600" }>
-                                    <HatGlassesIcon className={ "text-shadow-yellow-600" }></HatGlassesIcon> Impersonate
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                            <DropdownMenuSeparator/>
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem variant="destructive"
-                                                  onSelect={ () => router.push( `/app/admin/users/${ userDetails.id }/delete` ) }>
-                                    <TrashIcon/>
-                                    Delete
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                        </DropdownMenuContent>
+                        <UserActions id={ userDetails.id }
+                                     hasEmployee={ userDetails.employee != null }
+                                     align="end"
+                                     className="[--radius:1rem]"/>
                     </DropdownMenu>
                 </ButtonGroup>
             </CardAction>

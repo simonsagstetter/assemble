@@ -23,11 +23,7 @@ interface ModalContext {
     setOpen: ( open: boolean ) => void;
 }
 
-export const ModalContext = createContext<ModalContext>( {
-    open: true,
-    setOpen: () => {
-    }
-} );
+export const ModalContext = createContext<ModalContext | null>( null );
 
 export default function Modal( { children }: ModalProps ) {
     const [ open, setOpen ] = useState<boolean>( true );

@@ -12,7 +12,7 @@
 import { useCallback, useState } from "react";
 import { useSearchUnlinkedEmployees } from "@/api/rest/generated/query/employees/employees";
 import { IdCardIcon } from "lucide-react";
-import Lookup, { type LookupItem } from "@/components/custom-ui/Lookup";
+import Lookup, { type LookupItem } from "@/components/custom-ui/form/Lookup";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
 
 
@@ -80,6 +80,7 @@ export default function EmployeeSearch( { field, disabled }: EmployeeSearchProps
         setOpenAction={ ( open ) => setState( ( prev ) => ( { ...prev, open } ) ) }
         placeholder={ "Search employees..." }
         heading={ "Unlinked Employees" }
+        emptyMessage={ "No employees found." }
         searchTerm={ state.searchTerm }
         searchCallbackAction={ onSearch }
         selectCallbackAction={ onSelect }

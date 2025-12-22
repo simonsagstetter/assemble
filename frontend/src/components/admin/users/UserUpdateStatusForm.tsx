@@ -10,11 +10,9 @@
 "use client";
 
 import { UserAdmin } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import { use } from "react";
-import { ModalContext } from "@/components/custom-ui/Modal";
 import { useRouter } from "@bprogress/next/app";
 import { useQueryClient } from "@tanstack/react-query";
-import { Controller, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import {
     getGetAllUsersQueryKey,
     getGetUserByIdQueryKey,
@@ -24,29 +22,23 @@ import { type UserStatusFormData, UserStatusSchema } from "@/types/users/user.ty
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import {
-    Field,
-    FieldContent,
-    FieldDescription,
-    FieldError,
     FieldGroup,
-    FieldLabel,
     FieldSet
 } from "@/components/ui/field";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircleIcon, CheckCircle2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { SwitchField } from "@/components/custom-ui/form/fields";
+import { ErrorMessage, SuccessMessage } from "@/components/custom-ui/form/messages";
+import { FormActions } from "@/components/custom-ui/form/actions";
+import { FormActionContext } from "@/store/formActionStore";
+import useModalContext from "@/hooks/useModalContext";
 
 type UserStatusFormProps = {
-    user: UserAdmin,
-    modal?: boolean
+    user: UserAdmin
 }
 
-export default function UserUpdateStatusForm( { user, modal = false }: UserStatusFormProps ) {
-    const modalContext = use( ModalContext );
+export default function UserUpdateStatusForm( { user }: UserStatusFormProps ) {
+    const modalContext = useModalContext();
     const router = useRouter();
     const queryClient = useQueryClient();
     const { enabled, locked } = user;
@@ -57,7 +49,7 @@ export default function UserUpdateStatusForm( { user, modal = false }: UserStatu
             locked
         }
     } );
-    const { errors, isSubmitting } = form.formState;
+    const { isSubmitting } = form.formState;
     const { mutate, isPending, isSuccess, isError } = useUpdateUserStatus();
 
     const handleUpdateStatus = ( data: UserStatusFormData ) => {
@@ -87,7 +79,7 @@ export default function UserUpdateStatusForm( { user, modal = false }: UserStatu
                             onClick: () => router.push( "/app/admin/users/" + user.id )
                         }
                     } );
-                    if ( modal ) {
+                    if ( modalContext ) {
                         handleCancel();
                     }
                 },
@@ -104,7 +96,7 @@ export default function UserUpdateStatusForm( { user, modal = false }: UserStatu
     }
 
     const handleCancel = () => {
-        if ( modal ) {
+        if ( modalContext ) {
             modalContext.setOpen( false );
             router.back();
         } else {
@@ -113,112 +105,36 @@ export default function UserUpdateStatusForm( { user, modal = false }: UserStatu
         }
     }
 
-    return <form id={ "user-status-form" } onSubmit={ form.handleSubmit( handleUpdateStatus ) } className="space-y-8">
-        <ScrollArea className={ `${ modal ? "my-0" : "" }` }>
-            <FieldGroup className={ "py-4 px-8" }>
-                <FieldSet>
-                    <FieldGroup>
-                        <Controller
-                            name={ "enabled" }
-                            control={ form.control }
-                            render={ ( { field, fieldState } ) => (
-                                <Field data-invalid={ fieldState.invalid } orientation={ "horizontal" }>
-                                    <FieldContent>
-                                        <FieldLabel htmlFor={ "enabled-field" }>Enabled Status</FieldLabel>
-                                        <FieldDescription>
-                                            Enable or disable the new user account
-                                        </FieldDescription>
-                                        { fieldState.invalid &&
-                                            <FieldError errors={ [ fieldState.error ] }>
-                                            </FieldError>
-                                        }
+    return <FormProvider { ...form }>
+        <FormActionContext.Provider value={ { isPending, isSuccess, isError, handleCancel, disableOnSuccess: false } }>
+            <form id={ "user-status-form" } onSubmit={ form.handleSubmit( handleUpdateStatus ) } className="space-y-8">
+                <ScrollArea className={ `${ modalContext ? "my-0" : "" }` }>
+                    <FieldGroup className={ "py-4 px-8" }>
+                        <FieldSet>
+                            <FieldGroup>
 
-                                    </FieldContent>
-                                    <Switch
-                                        id={ "enabled-field" }
-                                        className={ "cursor-pointer" }
-                                        name={ field.name }
-                                        checked={ field.value }
-                                        onCheckedChange={ field.onChange }
-                                        disabled={ isPending || isSubmitting || isSuccess }/>
-                                </Field>
-                            ) }
-                        />
-                        <Controller
-                            name={ "locked" }
-                            control={ form.control }
-                            render={ ( { field, fieldState } ) => (
-                                <Field data-invalid={ fieldState.invalid } orientation={ "horizontal" }>
-                                    <FieldContent>
-                                        <FieldLabel htmlFor={ "locked-field" }>Locked Status</FieldLabel>
-                                        <FieldDescription>
-                                            Locked users cannot log in but can still be connected to data
-                                        </FieldDescription>
-                                        { fieldState.invalid &&
-                                            <FieldError errors={ [ fieldState.error ] }>
-                                            </FieldError>
-                                        }
+                                <SwitchField fieldName={ "enabled" }
+                                             formControl={ form.control }
+                                             label={ "Enabled Status" }
+                                             disabled={ isPending || isSubmitting || isSuccess }>
+                                    Enable or disable the new user account
+                                </SwitchField>
+                                <SwitchField fieldName={ "locked" }
+                                             formControl={ form.control }
+                                             label={ "Locked Status" }
+                                             disabled={ isPending || isSubmitting || isSuccess }>
+                                    Locked users cannot log in but can still be connected to data
+                                </SwitchField>
+                            </FieldGroup>
+                        </FieldSet>
+                        <ErrorMessage/>
+                        <SuccessMessage message={ "User was updated successfully" }/>
+                    </FieldGroup>
+                </ScrollArea>
+                <Separator className={ "my-0" }/>
+                <FormActions formId={ "user-status-form" } label={ "Save" }/>
+            </form>
+        </FormActionContext.Provider>
+    </FormProvider>
 
-                                    </FieldContent>
-                                    <Switch
-                                        id={ "locked-field" }
-                                        className={ "cursor-pointer" }
-                                        name={ field.name }
-                                        checked={ field.value }
-                                        onCheckedChange={ field.onChange }
-                                        disabled={ isPending || isSubmitting || isSuccess }/>
-                                </Field>
-                            ) }
-                        />
-                    </FieldGroup>
-                </FieldSet>
-                { isError && errors.root && (
-                    <FieldGroup>
-                        <Alert variant="destructive">
-                            <AlertCircleIcon/>
-                            <AlertTitle>Oops! We encountered an error.</AlertTitle>
-                            <AlertDescription>
-                                { errors.root.message }
-                            </AlertDescription>
-                        </Alert>
-                    </FieldGroup>
-                ) }
-                { isSuccess && (
-                    <FieldGroup>
-                        <Alert variant="default">
-                            <CheckCircle2Icon/>
-                            <AlertTitle>
-                                { "User was updated successfully" }
-                            </AlertTitle>
-                        </Alert>
-                    </FieldGroup>
-                ) }
-            </FieldGroup>
-        </ScrollArea>
-        <Separator className={ "my-0" }/>
-        <Field orientation={ "horizontal" } className={ "p-8" }>
-            <Button type="button"
-                    variant="secondary"
-                    className={ "flex-1/3 grow cursor-pointer" }
-                    onClick={ handleCancel }
-                    disabled={ isPending || isSubmitting }
-            >
-                { isSuccess ? "Go back" : "Cancel" }
-            </Button>
-            <Button type="submit"
-                    form={ "user-status-form" }
-                    variant="default"
-                    disabled={ isPending || isSubmitting }
-                    className={ "flex-2/3 grow cursor-pointer" }
-            >
-                { isPending ?
-                    <>
-                        { "Processing" }
-                        <Spinner/>
-                    </>
-                    : "Save"
-                }
-            </Button>
-        </Field>
-    </form>
 }

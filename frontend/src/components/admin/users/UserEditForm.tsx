@@ -9,7 +9,7 @@
  */
 "use client";
 import { useQueryClient } from "@tanstack/react-query";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type UserUpdateFormData, UserUpdateSchema } from "@/types/users/user.types";
 import {
@@ -30,14 +30,18 @@ import { useRouter } from "@bprogress/next/app";
 import { use } from "react";
 import { ModalContext } from "@/components/custom-ui/Modal";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { FormActionContext } from "@/store/formActionStore";
+import useModalContext from "@/hooks/useModalContext";
+import { FormActions } from "@/components/custom-ui/form/actions";
+import { IdentityFragment } from "@/components/admin/users/form/fragments";
+import { ErrorMessage, SuccessMessage } from "@/components/custom-ui/form/messages";
 
 type UserEditFormProps = {
     user: UserAdmin,
-    modal?: boolean
 }
 
-export default function UserEditForm( { user, modal = false }: UserEditFormProps ) {
-    const modalContext = use( ModalContext );
+export default function UserEditForm( { user }: UserEditFormProps ) {
+    const modalContext = useModalContext();
     const { username, firstname, lastname, email } = user;
     const queryClient = useQueryClient();
     const router = useRouter();
@@ -51,8 +55,6 @@ export default function UserEditForm( { user, modal = false }: UserEditFormProps
             email,
         }
     } );
-
-    const { isSubmitting, errors } = form.formState;
 
     const updateUser = useUpdateUser();
 
@@ -87,7 +89,7 @@ export default function UserEditForm( { user, modal = false }: UserEditFormProps
                             onClick: () => router.push( "/app/admin/users/" + user.id )
                         }
                     } );
-                    if ( modal ) {
+                    if ( modalContext ) {
                         handleCancel();
                     }
                 },
@@ -115,7 +117,7 @@ export default function UserEditForm( { user, modal = false }: UserEditFormProps
     }
 
     const handleCancel = () => {
-        if ( modal ) {
+        if ( modalContext ) {
             modalContext.setOpen( false );
             router.back();
         } else {
@@ -124,147 +126,22 @@ export default function UserEditForm( { user, modal = false }: UserEditFormProps
         }
     }
 
-    return <form id={ "user-edit-form" } onSubmit={ form.handleSubmit( handleUpdateUser ) } className="space-y-8">
-        <ScrollArea className={ `${ modal ? "my-0" : "" }` }>
-            <FieldGroup className={ "py-4 px-8" }>
-                <FieldSet>
-                    <FieldGroup>
-                        <Controller
-                            name={ "username" }
-                            control={ form.control }
-                            render={ ( { field, fieldState } ) => (
-                                <Field data-invalid={ fieldState.invalid }>
-                                    <FieldLabel htmlFor={ "username-field" }>Username</FieldLabel>
-                                    <Input
-                                        { ...field }
-                                        id={ "username-field" }
-                                        aria-invalid={ fieldState.invalid }
-                                        placeholder={ "e.g. musterpersonmax" }
-                                        autoFocus
-                                        disabled={ isPending || isSubmitting }
-                                    />
-                                    <FieldDescription>
-                                        This field is required and must have a unique value
-                                    </FieldDescription>
-                                    { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
-                                    </FieldError> }
-                                </Field>
-                            ) }
-                        />
-                        <div className={ "grid grid-cols-2 gap-16" }>
-                            <Controller
-                                name={ "firstname" }
-                                control={ form.control }
-                                render={ ( { field, fieldState } ) => (
-                                    <Field data-invalid={ fieldState.invalid }>
-                                        <FieldLabel htmlFor={ "firstname-field" }>Firstname</FieldLabel>
-                                        <Input
-                                            { ...field }
-                                            id={ "firstname-field" }
-                                            aria-invalid={ fieldState.invalid }
-                                            placeholder={ "e.g. Max" }
-                                            disabled={ isPending || isSubmitting }
-                                        />
-                                        <FieldDescription>
-                                            This field is required
-                                        </FieldDescription>
-                                        { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
-                                        </FieldError> }
-                                    </Field>
-                                ) }
-                            />
-                            <Controller
-                                name={ "lastname" }
-                                control={ form.control }
-                                render={ ( { field, fieldState } ) => (
-                                    <Field data-invalid={ fieldState.invalid }>
-                                        <FieldLabel htmlFor={ "lastname-field" }>Lastname</FieldLabel>
-                                        <Input
-                                            { ...field }
-                                            id={ "lastname-field" }
-                                            aria-invalid={ fieldState.invalid }
-                                            placeholder={ "e.g. Mustermann" }
-                                            disabled={ isPending || isSubmitting }
-                                        />
-                                        <FieldDescription>
-                                            This field is required
-                                        </FieldDescription>
-                                        { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
-                                        </FieldError> }
-                                    </Field>
-                                ) }
-                            />
-                        </div>
-                        <Controller
-                            name={ "email" }
-                            control={ form.control }
-                            render={ ( { field, fieldState } ) => (
-                                <Field data-invalid={ fieldState.invalid }>
-                                    <FieldLabel htmlFor={ "email-field" }>E-Mail</FieldLabel>
-                                    <Input
-                                        { ...field }
-                                        id={ "email-field" }
-                                        aria-invalid={ fieldState.invalid }
-                                        placeholder={ "e.g. max.musterperson@example.com" }
-                                        disabled={ isPending || isSubmitting }
-                                    />
-                                    <FieldDescription>
-                                        This field is required
-                                    </FieldDescription>
-                                    { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
-                                    </FieldError> }
-                                </Field>
-                            ) }
-                        />
+    return <FormActionContext.Provider
+        value={ { isPending, isSuccess, isError, handleCancel, disableOnSuccess: false } }>
+        <FormProvider { ...form }>
+            <form id={ "user-edit-form" } onSubmit={ form.handleSubmit( handleUpdateUser ) } className="space-y-8">
+                <ScrollArea className={ `${ modalContext ? "my-0" : "" }` }>
+                    <FieldGroup className={ "py-4 px-8" }>
+                        <FieldSet>
+                            <IdentityFragment/>
+                        </FieldSet>
+                        <ErrorMessage/>
+                        <SuccessMessage message={ "User was updated successfully" }/>
                     </FieldGroup>
-                </FieldSet>
-                { isError && errors.root && (
-                    <FieldGroup>
-                        <Alert variant="destructive">
-                            <AlertCircleIcon/>
-                            <AlertTitle>Oops! We encountered an error.</AlertTitle>
-                            <AlertDescription>
-                                { errors.root.message }
-                            </AlertDescription>
-                        </Alert>
-                    </FieldGroup>
-                ) }
-                { isSuccess && (
-                    <FieldGroup>
-                        <Alert variant="default">
-                            <CheckCircle2Icon/>
-                            <AlertTitle>
-                                { "User was updated successfully" }
-                            </AlertTitle>
-                        </Alert>
-                    </FieldGroup>
-                ) }
-            </FieldGroup>
-        </ScrollArea>
-        <Separator className={ "my-0" }/>
-        <Field orientation={ "horizontal" } className={ "p-8" }>
-            <Button type="button"
-                    variant="secondary"
-                    className={ "flex-1/3 grow cursor-pointer" }
-                    onClick={ handleCancel }
-                    disabled={ isPending || isSubmitting }
-            >
-                { isSuccess ? "Go back" : "Cancel" }
-            </Button>
-            <Button type="submit"
-                    form={ "user-edit-form" }
-                    variant="default"
-                    disabled={ isPending || isSubmitting }
-                    className={ "flex-2/3 grow cursor-pointer" }
-            >
-                { isPending ?
-                    <>
-                        { "Processing" }
-                        <Spinner/>
-                    </>
-                    : "Save"
-                }
-            </Button>
-        </Field>
-    </form>
+                </ScrollArea>
+                <Separator className={ "my-0" }/>
+                <FormActions formId={ "user-edit-form" } label={ "Save" }/>
+            </form>
+        </FormProvider>
+    </FormActionContext.Provider>
 }
