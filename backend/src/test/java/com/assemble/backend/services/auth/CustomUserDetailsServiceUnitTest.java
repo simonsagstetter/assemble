@@ -14,7 +14,7 @@ import com.assemble.backend.models.entities.auth.SecurityUser;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
-import com.assemble.backend.services.core.IdService;
+import com.github.f4b6a3.uuid.UuidCreator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +47,6 @@ class CustomUserDetailsServiceUnitTest {
     private CustomUserDetailsService customUserDetailsService;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private final IdService idService = new IdService();
 
     @DisplayName("loadUserByUsername should return an instance of UserDetails with all Details")
     @Test
@@ -55,7 +54,7 @@ class CustomUserDetailsServiceUnitTest {
         Collection<GrantedAuthority> authorities = List.of( new SimpleGrantedAuthority( "ROLE_" + UserRole.USER.name() ) );
 
         User givenUser = User.builder()
-                .id( idService.generateIdFor( User.class ) )
+                .id( UuidCreator.getTimeOrderedEpoch() )
                 .username( "mustermannmax" )
                 .firstname( "Max" )
                 .lastname( "Mustermann" )

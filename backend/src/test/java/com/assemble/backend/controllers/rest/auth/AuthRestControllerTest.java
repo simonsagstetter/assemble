@@ -14,7 +14,6 @@ import com.assemble.backend.models.dtos.auth.LoginRequest;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
-import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import com.assemble.backend.testutils.WithMockCustomUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,10 +46,6 @@ class AuthRestControllerTest {
 
     @Autowired
     private UserRepository userRepository;
-
-
-    @Autowired
-    private IdService idService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -115,7 +110,6 @@ class AuthRestControllerTest {
         String rawPassword = "SuperS3curePassword123!";
 
         User user = User.builder()
-                .id( idService.generateIdFor( User.class ) )
                 .username( "mustermannmax" )
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
@@ -156,7 +150,6 @@ class AuthRestControllerTest {
         String rawPassword = "SuperS3curePassword123!";
 
         User user = User.builder()
-                .id( idService.generateIdFor( User.class ) )
                 .username( "mustermannmax" )
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
@@ -198,7 +191,6 @@ class AuthRestControllerTest {
         String rawPassword = "SuperS3curePassword123!";
 
         User user = User.builder()
-                .id( idService.generateIdFor( User.class ) )
                 .username( "mustermannmax" )
                 .firstname( "Max" )
                 .lastname( "Mustermann" )

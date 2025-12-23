@@ -13,7 +13,6 @@ package com.assemble.backend.scripts.auth;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
-import com.assemble.backend.services.core.IdService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,8 +31,6 @@ public class UserCommands {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final IdService idService;
-
     @ShellMethod(
             key = "create-superuser"
     )
@@ -41,11 +38,9 @@ public class UserCommands {
     // one-time configuration and should not be used as a pattern in production auth flows.
     public String createSuperUser() {
         if ( userRepository.countDistinctByRolesContaining( UserRole.SUPERUSER ) == 0 ) {
-            String id = idService.generateIdFor( User.class );
 
             String rawPassword = UUID.randomUUID().toString().replace( "-", "" );
             User superUser = User.builder()
-                    .id( id )
                     .firstname( "Simon" )
                     .lastname( "Sagstetter" )
                     .username( "sagstettersi" )

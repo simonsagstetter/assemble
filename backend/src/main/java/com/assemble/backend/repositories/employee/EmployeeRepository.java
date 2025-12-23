@@ -17,8 +17,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface EmployeeRepository extends JpaRepository<Employee, String> {
+public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
     @Query("""
                 SELECT e
@@ -30,4 +31,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
                 )
             """)
     List<Employee> search( @Param("searchTerm") String searchTerm );
+
+    UUID no( String no );
 }

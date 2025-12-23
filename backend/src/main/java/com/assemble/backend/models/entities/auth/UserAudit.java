@@ -16,6 +16,7 @@ import lombok.*;
 import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,7 +27,7 @@ import java.io.Serializable;
 public class UserAudit implements Serializable {
 
     @Nullable
-    private String id;
+    private UUID id;
     @NotBlank
     @NonNull
     private String username;

@@ -12,8 +12,8 @@ package com.assemble.backend.configurations.jpa;
 
 import com.assemble.backend.models.entities.db.EntityGreeting;
 import com.assemble.backend.repositories.db.EntityRepository;
-import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
+import com.github.f4b6a3.uuid.UuidCreator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +30,10 @@ class JpaAuditingConfigurationTest {
     @Autowired
     private EntityRepository entityRepository;
 
-    @Autowired
-    private IdService idService;
-
     @Test
     @DisplayName("JPA Auditing should populate fields")
     void auditing_ShouldWork() {
         EntityGreeting entity = EntityGreeting.builder()
-                .id( idService.generateIdFor( EntityGreeting.class ) )
                 .message( "Hello Postgres!" )
                 .build();
 

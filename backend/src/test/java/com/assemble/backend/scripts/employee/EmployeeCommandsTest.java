@@ -13,8 +13,6 @@ package com.assemble.backend.scripts.employee;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
-import com.assemble.backend.repositories.employee.EmployeeRepository;
-import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -46,12 +44,6 @@ class EmployeeCommandsTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private IdService idService;
-
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
     @Test
     @DisplayName("Create-Employee should fail if username parameter is empty")
     void createEmployee_ShouldThrowInvalidParameterException_IfUIsEmpty() {
@@ -67,10 +59,8 @@ class EmployeeCommandsTest {
     @Test
     @DisplayName("Create-Employee should fail if user is already linked to employee")
     void createEmployee_ShouldThrowInvalidParameterException_WhenUserIsAlreadyLinkedToEmployee() {
-        String id = idService.generateIdFor( User.class );
         String rawPassword = UUID.randomUUID().toString().replaceAll( "-", "" );
         User superUser = User.builder()
-                .id( id )
                 .username( "superuser" )
                 .firstname( "Super" )
                 .lastname( "User" )
@@ -88,10 +78,8 @@ class EmployeeCommandsTest {
     @Test
     @DisplayName("Create-Employee should return id if command ran successful")
     void createEmployee_ShouldReturnId_WhenCommandRanSuccessful() {
-        String id = idService.generateIdFor( User.class );
         String rawPassword = UUID.randomUUID().toString().replaceAll( "-", "" );
         User superUser = User.builder()
-                .id( id )
                 .username( "superuser" )
                 .firstname( "Super" )
                 .lastname( "User" )

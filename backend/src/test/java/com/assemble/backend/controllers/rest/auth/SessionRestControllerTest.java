@@ -13,7 +13,6 @@ package com.assemble.backend.controllers.rest.auth;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
-import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import com.assemble.backend.testutils.WithMockCustomUser;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,8 +56,6 @@ class SessionRestControllerTest {
     @SuppressWarnings("rawtypes")
     private FindByIndexNameSessionRepository sessionRepository;
 
-    @Autowired
-    private IdService idService;
 
     @Autowired
     private UserRepository userRepository;
@@ -71,7 +68,6 @@ class SessionRestControllerTest {
     @BeforeEach
     void init() {
         testUser = User.builder()
-                .id( idService.generateIdFor( User.class ) )
                 .firstname( "Test" )
                 .lastname( "User" )
                 .username( "testuser" )

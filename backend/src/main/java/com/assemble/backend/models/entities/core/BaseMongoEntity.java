@@ -11,7 +11,6 @@
 package com.assemble.backend.models.entities.core;
 
 import com.assemble.backend.models.entities.auth.UserAudit;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -30,13 +29,12 @@ import java.time.Instant;
 public abstract class BaseMongoEntity implements Persistable<String>, Serializable {
 
     @Id
-    @NonNull
-    @NotBlank
     private String id;
 
     @NotNull
     @Version
-    private Integer version;
+    @Builder.Default
+    private Long version = 0L;
 
     @NotNull
     @CreatedDate

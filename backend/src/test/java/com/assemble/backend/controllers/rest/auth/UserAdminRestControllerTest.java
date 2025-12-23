@@ -16,10 +16,10 @@ import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
-import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import com.assemble.backend.testutils.WithMockCustomUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.f4b6a3.uuid.UuidCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +39,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -54,9 +55,6 @@ class UserAdminRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private IdService idService;
 
     @Autowired
     private SessionRegistry sessionRegistry;
@@ -84,7 +82,6 @@ class UserAdminRestControllerTest {
     @BeforeEach
     void init() {
         testUser = User.builder()
-                .id( idService.generateIdFor( User.class ) )
                 .firstname( "Test" )
                 .lastname( "User" )
                 .username( "testuser" )
@@ -95,7 +92,6 @@ class UserAdminRestControllerTest {
 
 
         testEmployee = Employee.builder()
-                .id( idService.generateIdFor( Employee.class ) )
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
                 .email( "testuser@example.com" )
@@ -150,7 +146,7 @@ class UserAdminRestControllerTest {
         userRepository.save( testUser );
 
         mockMvc.perform(
-                get( "/api/admin/users/fake-id" )
+                get( "/api/admin/users/" + UuidCreator.getTimeOrderedEpoch().toString() )
         ).andExpect(
                 status().isNotFound()
         ).andExpect(
@@ -165,7 +161,9 @@ class UserAdminRestControllerTest {
     @WithMockCustomUser(roles = { UserRole.ADMIN })
     @DisplayName("/GET searchUnlinkedUsers should return 200")
     void searchUnlinkedUsers_ShouldReturn200_WhenCalled() throws Exception {
-        userRepository.save( testUser );
+        User saved = userRepository.save( testUser );
+
+        assert saved.getId() != null;
 
         mockMvc.perform(
                 get( "/api/admin/users/search/" + testUser.getFirstname().toLowerCase() )
@@ -174,7 +172,7 @@ class UserAdminRestControllerTest {
         ).andExpect(
                 content().contentType( MediaType.APPLICATION_JSON )
         ).andExpect(
-                jsonPath( "$[0].id" ).value( testUser.getId() )
+                jsonPath( "$[0].id" ).value( saved.getId().toString() )
 
         );
     }
@@ -309,9 +307,11 @@ class UserAdminRestControllerTest {
     @WithMockCustomUser(roles = { UserRole.ADMIN })
     @DisplayName("/POST createUser should return 400 when employee is already linked")
     void createUser_ShouldReturn400_WhenEmployeeIsAlreadyLinked() throws Exception {
-        userRepository.save( testUser );
-        testEmployee.setUser( testUser );
+        User saved = userRepository.save( testUser );
+        testEmployee.setUser( saved );
         employeeRepository.save( testEmployee );
+
+        assert testEmployee.getId() != null;
 
         UserCreateDTO userCreateDTO = UserCreateDTO.builder()
                 .username( "musterperson" )
@@ -320,7 +320,7 @@ class UserAdminRestControllerTest {
                 .lastname( "Musterperson" )
                 .email( "max@example.com" )
                 .roles( List.of( UserRole.USER ) )
-                .employeeId( testEmployee.getId() )
+                .employeeId( testEmployee.getId().toString() )
                 .build();
 
         String jsonContent = objectMapper.writeValueAsString( userCreateDTO );
@@ -346,6 +346,8 @@ class UserAdminRestControllerTest {
         userRepository.save( testUser );
         Employee savedEmployee = employeeRepository.save( testEmployee );
 
+        assert savedEmployee.getId() != null;
+
         UserCreateDTO userCreateDTO = UserCreateDTO.builder()
                 .username( "musterperson" )
                 .password( "SuperSaf3Passw0rd!" )
@@ -353,7 +355,7 @@ class UserAdminRestControllerTest {
                 .lastname( "Musterperson" )
                 .email( "max@example.com" )
                 .roles( List.of( UserRole.USER ) )
-                .employeeId( savedEmployee.getId() )
+                .employeeId( savedEmployee.getId().toString() )
                 .build();
 
         String jsonContent = objectMapper.writeValueAsString( userCreateDTO );
@@ -368,7 +370,7 @@ class UserAdminRestControllerTest {
         ).andExpect(
                 content().contentType( MediaType.APPLICATION_JSON )
         ).andExpect(
-                jsonPath( "$.employee.id" ).value( testEmployee.getId() )
+                jsonPath( "$.employee.id" ).value( savedEmployee.getId().toString() )
         );
     }
 
@@ -417,7 +419,7 @@ class UserAdminRestControllerTest {
         String jsonContent = objectMapper.writeValueAsString( userUpdateDTO );
 
         mockMvc.perform(
-                patch( "/api/admin/users/fake-id" )
+                patch( "/api/admin/users/" + UuidCreator.getTimeOrderedEpoch().toString() )
                         .with( csrf() )
                         .contentType( MediaType.APPLICATION_JSON )
                         .content( jsonContent )
@@ -499,8 +501,10 @@ class UserAdminRestControllerTest {
 
         String jsonContent = objectMapper.writeValueAsString( userUpdatePasswordDTO );
 
+        UUID randomId = UuidCreator.getTimeOrderedEpoch();
+
         mockMvc.perform(
-                patch( "/api/admin/users/fake-id/password" )
+                patch( "/api/admin/users/" + randomId.toString() + "/password" )
                         .with( csrf() )
                         .contentType( MediaType.APPLICATION_JSON )
                         .content( jsonContent )
@@ -607,7 +611,7 @@ class UserAdminRestControllerTest {
         userRepository.save( testUser );
 
         mockMvc.perform(
-                delete( "/api/admin/users/fake-id" )
+                delete( "/api/admin/users/" + UuidCreator.getTimeOrderedEpoch().toString() )
                         .with( csrf() )
         ).andExpect(
                 status().isNotFound()
@@ -636,8 +640,8 @@ class UserAdminRestControllerTest {
     @WithMockCustomUser(roles = { UserRole.ADMIN })
     @DisplayName("/DELETE deleteUser should return 204 and update related employee")
     void deleteUser_ShouldReturn204AndUpdateRelatedEmployee_WhenCalled() throws Exception {
-        userRepository.save( testUser );
-        testEmployee.setUser( testUser );
+        User saved = userRepository.save( testUser );
+        testEmployee.setUser( saved );
         employeeRepository.save( testEmployee );
 
         mockMvc.perform(
@@ -646,6 +650,8 @@ class UserAdminRestControllerTest {
         ).andExpect(
                 status().isNoContent()
         );
+
+        assert testEmployee.getId() != null;
 
         Employee updatedEmployee = employeeRepository.findById( testEmployee.getId() ).orElseThrow();
         assertThat( updatedEmployee.getUser() ).isNull();
@@ -666,7 +672,7 @@ class UserAdminRestControllerTest {
         String jsonContent = objectMapper.writeValueAsString( userUpdateStatusDTO );
 
         mockMvc.perform(
-                patch( "/api/admin/users/fake-id/status" )
+                patch( "/api/admin/users/" + UuidCreator.getTimeOrderedEpoch().toString() + "/status" )
                         .with( csrf() )
                         .contentType( MediaType.APPLICATION_JSON )
                         .content( jsonContent )
@@ -683,7 +689,7 @@ class UserAdminRestControllerTest {
     @WithMockCustomUser(roles = { UserRole.ADMIN })
     @DisplayName("/Patch updateUserStatus should return 200 when user does exist")
     void updateUserStatus_ShouldReturn200_WhenUserDoesExist() throws Exception {
-        userRepository.save( testUser );
+        User saved = userRepository.save( testUser );
 
         UserUpdateStatusDTO userUpdateStatusDTO = UserUpdateStatusDTO.builder()
                 .enabled( true )
@@ -691,6 +697,8 @@ class UserAdminRestControllerTest {
                 .build();
 
         String jsonContent = objectMapper.writeValueAsString( userUpdateStatusDTO );
+
+        assert saved.getId() != null;
 
         mockMvc.perform(
                 patch( "/api/admin/users/" + testUser.getId() + "/status" )
@@ -702,7 +710,7 @@ class UserAdminRestControllerTest {
         ).andExpect(
                 content().contentType( MediaType.APPLICATION_JSON )
         ).andExpect(
-                jsonPath( "$.id" ).value( testUser.getId() )
+                jsonPath( "$.id" ).value( saved.getId().toString() )
         ).andExpect(
                 jsonPath( "$.enabled" ).value( userUpdateStatusDTO.getEnabled() )
         ).andExpect(
@@ -715,19 +723,20 @@ class UserAdminRestControllerTest {
     @DisplayName("/Patch updateUserStatus should return 200 and invalidate sessions when user does exist")
     @SuppressWarnings("unchecked")
     void updateUserStatus_ShouldReturn200AndInvalidateSessions_WhenUserDoesExist() throws Exception {
-        userRepository.save( testUser );
+        User saved = userRepository.save( testUser );
+        assert saved.getId() != null;
 
         Session session = sessionRepository.createSession();
         session.setAttribute(
                 FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME,
-                testUser.getUsername()
+                saved.getUsername()
         );
         session.setMaxInactiveInterval( Duration.ofSeconds( 7200 ) );
 
         sessionRepository.save( session );
 
         SessionInformation sessionInformation = new SessionInformation(
-                testUser.getUsername(),
+                saved.getUsername(),
                 session.getId(),
                 new Date()
         );
@@ -742,7 +751,7 @@ class UserAdminRestControllerTest {
         String jsonContent = objectMapper.writeValueAsString( userUpdateStatusDTO );
 
         mockMvc.perform(
-                patch( "/api/admin/users/" + testUser.getId() + "/status" )
+                patch( "/api/admin/users/" + saved.getId().toString() + "/status" )
                         .with( csrf() )
                         .contentType( MediaType.APPLICATION_JSON )
                         .content( jsonContent )
@@ -751,14 +760,14 @@ class UserAdminRestControllerTest {
         ).andExpect(
                 content().contentType( MediaType.APPLICATION_JSON )
         ).andExpect(
-                jsonPath( "$.id" ).value( testUser.getId() )
+                jsonPath( "$.id" ).value( saved.getId().toString() )
         ).andExpect(
                 jsonPath( "$.enabled" ).value( userUpdateStatusDTO.getEnabled() )
         ).andExpect(
                 jsonPath( "$.locked" ).value( userUpdateStatusDTO.getLocked() )
         );
 
-        Integer size = sessionRepository.findByPrincipalName( testUser.getUsername() ).size();
+        Integer size = sessionRepository.findByPrincipalName( saved.getUsername() ).size();
         assertThat( size ).isZero();
     }
 
@@ -801,7 +810,7 @@ class UserAdminRestControllerTest {
         String jsonContent = objectMapper.writeValueAsString( userUpdateRolesDTO );
 
         mockMvc.perform(
-                patch( "/api/admin/users/fake-id/roles" )
+                patch( "/api/admin/users/" + UuidCreator.getTimeOrderedEpoch().toString() + "/roles" )
                         .with( csrf() )
                         .contentType( MediaType.APPLICATION_JSON )
                         .content( jsonContent )
@@ -818,7 +827,9 @@ class UserAdminRestControllerTest {
     @WithMockCustomUser(roles = { UserRole.ADMIN })
     @DisplayName("/Patch updateUserRoles should return 200")
     void updateUserRoles_ShouldReturn200_WhenCalled() throws Exception {
-        userRepository.save( testUser );
+        User saved = userRepository.save( testUser );
+
+        assert saved.getId() != null;
 
         UserUpdateRolesDTO userUpdateRolesDTO = UserUpdateRolesDTO.builder()
                 .roles( List.of( UserRole.SUPERUSER, UserRole.ADMIN ) )
@@ -827,7 +838,7 @@ class UserAdminRestControllerTest {
         String jsonContent = objectMapper.writeValueAsString( userUpdateRolesDTO );
 
         mockMvc.perform(
-                patch( "/api/admin/users/" + testUser.getId() + "/roles" )
+                patch( "/api/admin/users/" + saved.getId().toString() + "/roles" )
                         .with( csrf() )
                         .contentType( MediaType.APPLICATION_JSON )
                         .content( jsonContent )
@@ -836,7 +847,7 @@ class UserAdminRestControllerTest {
         ).andExpect(
                 content().contentType( MediaType.APPLICATION_JSON )
         ).andExpect(
-                jsonPath( "$.id" ).value( testUser.getId() )
+                jsonPath( "$.id" ).value( saved.getId().toString() )
         ).andExpect(
                 jsonPath( "$.roles" ).isArray()
         );
@@ -855,7 +866,7 @@ class UserAdminRestControllerTest {
         String jsonContent = objectMapper.writeValueAsString( userUpdateEmployeeDTO );
 
         mockMvc.perform(
-                patch( "/api/admin/users/fake-id/employee" )
+                patch( "/api/admin/users/" + UuidCreator.getTimeOrderedEpoch().toString() + "/employee" )
                         .with( csrf() )
                         .contentType( MediaType.APPLICATION_JSON )
                         .content( jsonContent )
@@ -874,8 +885,10 @@ class UserAdminRestControllerTest {
     void updateUserEmployee_ShouldReturn404_WhenEmployeeDoesNotExist() throws Exception {
         userRepository.save( testUser );
 
+        UUID randomId = UuidCreator.getTimeOrderedEpoch();
+
         UserUpdateEmployeeDTO userUpdateEmployeeDTO = UserUpdateEmployeeDTO.builder()
-                .employeeId( "fake-id" )
+                .employeeId( randomId.toString() )
                 .build();
 
         String jsonContent = objectMapper.writeValueAsString( userUpdateEmployeeDTO );
@@ -898,12 +911,14 @@ class UserAdminRestControllerTest {
     @WithMockCustomUser(roles = { UserRole.ADMIN })
     @DisplayName("/PATCH updateUserEmployee should return 400 when employee is already linked")
     void updateUserEmployee_ShouldReturn400_WhenEmployeeIsAlreadyLinked() throws Exception {
-        userRepository.save( testUser );
-        testEmployee.setUser( testUser );
+        User saved = userRepository.save( testUser );
+        testEmployee.setUser( saved );
         employeeRepository.save( testEmployee );
 
+        assert testEmployee.getId() != null;
+
         UserUpdateEmployeeDTO userUpdateEmployeeDTO = UserUpdateEmployeeDTO.builder()
-                .employeeId( testEmployee.getId() )
+                .employeeId( testEmployee.getId().toString() )
                 .build();
 
         String jsonContent = objectMapper.writeValueAsString( userUpdateEmployeeDTO );
@@ -926,8 +941,8 @@ class UserAdminRestControllerTest {
     @WithMockCustomUser(roles = { UserRole.ADMIN })
     @DisplayName("/PATCH updateUserEmployee should return 200 and unlink employee")
     void updateUserEmployee_ShouldReturn200AndUnlinkEmployee_WhenCalled() throws Exception {
-        userRepository.save( testUser );
-        testEmployee.setUser( testUser );
+        User saved = userRepository.save( testUser );
+        testEmployee.setUser( saved );
         employeeRepository.save( testEmployee );
 
         UserUpdateEmployeeDTO userUpdateEmployeeDTO = UserUpdateEmployeeDTO.builder()
@@ -957,8 +972,10 @@ class UserAdminRestControllerTest {
         userRepository.save( testUser );
         employeeRepository.save( testEmployee );
 
+        assert testEmployee.getId() != null;
+
         UserUpdateEmployeeDTO userUpdateEmployeeDTO = UserUpdateEmployeeDTO.builder()
-                .employeeId( testEmployee.getId() )
+                .employeeId( testEmployee.getId().toString() )
                 .build();
 
         String jsonContent = objectMapper.writeValueAsString( userUpdateEmployeeDTO );
