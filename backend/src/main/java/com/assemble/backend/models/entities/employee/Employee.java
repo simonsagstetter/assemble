@@ -12,17 +12,17 @@ package com.assemble.backend.models.entities.employee;
 
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.core.BaseJPAEntity;
+import com.assemble.backend.models.entities.timeentry.TimeEntry;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @SuperBuilder
 @Getter
@@ -30,9 +30,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(callSuper = true)
 @Entity
 @Table(name = "employees")
+@EntityListeners(EmployeeEntityListener.class)
 public class Employee extends BaseJPAEntity implements Serializable {
 
     @OneToOne
@@ -95,4 +95,10 @@ public class Employee extends BaseJPAEntity implements Serializable {
         return this.getFirstname() + " " + this.getLastname();
     }
 
+    @OneToMany(mappedBy = "employee")
+    @Builder.Default
+    private Set<TimeEntry> timeEntries = new HashSet<>();
+
+    @Column(name = "NO", unique = true, nullable = false)
+    private String no;
 }
