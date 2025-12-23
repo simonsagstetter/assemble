@@ -1,8 +1,0 @@
-type Query {
-    greetings: [Greeting!]!
-}
-
-type Greeting {
-    id: String!
-    message: String!
-}
