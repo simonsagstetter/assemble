@@ -13,16 +13,16 @@ package com.assemble.backend.models.mappers.project;
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectDTO;
 import com.assemble.backend.models.entities.project.Project;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
+import com.assemble.backend.models.mappers.core.BaseEntity;
+import org.mapstruct.*;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.WARN
+        unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface ProjectMapper {
 
+    @BaseEntity
     ProjectDTO toProjectDTO( Project project );
 
     Project toProject( ProjectCreateDTO projectCreateDTO );

@@ -21,7 +21,6 @@ import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
 import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.EntityNotFoundException;
-import org.aspectj.util.FuzzyBoolean;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

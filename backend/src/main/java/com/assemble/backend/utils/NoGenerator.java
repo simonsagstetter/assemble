@@ -36,7 +36,6 @@ public class NoGenerator {
 
             return String.format( "%s%05d", prefix, sequence.getCurrentValue() );
         } catch ( NoResultException e ) {
-            System.out.println( e.getMessage() );
             Sequence sequence = Sequence.builder()
                     .name( sequenceName )
                     .currentValue( 1L )

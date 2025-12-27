@@ -209,7 +209,7 @@ class ProjectRestControllerTest {
     @DisplayName("/POST createProject should return status code 201 when request body is valid")
     void createProject_ShouldReturnStatusCode201_WhenRequestBodyIsValid() throws Exception {
         ProjectCreateDTO validCreateDTO = ProjectCreateDTO.builder()
-                .name( "Test Project" )
+                .name( "Test Project 2" )
                 .description( "Test Project Description" )
                 .category( "Maintanance" )
                 .stage( ProjectStage.PROPOSAL )

@@ -32,5 +32,4 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
             """)
     List<Employee> search( @Param("searchTerm") String searchTerm );
 
-    UUID no( String no );
 }

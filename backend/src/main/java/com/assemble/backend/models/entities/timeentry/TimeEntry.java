@@ -59,15 +59,12 @@ public class TimeEntry extends BaseJPAEntity {
     @DurationMax(hours = 23, minutes = 59, seconds = 59)
     private Duration totalTime;
 
-    @NonNull
     @Column(name = "RATE", nullable = false)
     private BigDecimal rate;
 
-    @NonNull
     @Column(name = "TOTAL", nullable = false)
     private BigDecimal total;
 
-    @NonNull
     @Column(name = "TOTAL_INTERNAL", nullable = false)
     private BigDecimal totalInternal;
 }

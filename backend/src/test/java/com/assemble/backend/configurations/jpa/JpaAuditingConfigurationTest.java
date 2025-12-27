@@ -13,7 +13,6 @@ package com.assemble.backend.configurations.jpa;
 import com.assemble.backend.models.entities.db.EntityGreeting;
 import com.assemble.backend.repositories.db.EntityRepository;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
-import com.github.f4b6a3.uuid.UuidCreator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
