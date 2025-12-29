@@ -32,7 +32,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/timeentries")
-@Tag(name = "Timeenties", description = "Timeentry endpoints")
+@Tag(name = "TimeEntries", description = "Timeentry endpoints")
 @AllArgsConstructor
 public class TimeEntryRestController {
 
