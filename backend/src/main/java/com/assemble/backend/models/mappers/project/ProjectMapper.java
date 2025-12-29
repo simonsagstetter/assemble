@@ -12,6 +12,7 @@ package com.assemble.backend.models.mappers.project;
 
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectDTO;
+import com.assemble.backend.models.dtos.project.ProjectRefDTO;
 import com.assemble.backend.models.entities.project.Project;
 import com.assemble.backend.models.mappers.core.BaseEntity;
 import org.mapstruct.*;
@@ -24,6 +25,8 @@ public interface ProjectMapper {
 
     @BaseEntity
     ProjectDTO toProjectDTO( Project project );
+
+    ProjectRefDTO toProjectRefDTO( Project project );
 
     Project toProject( ProjectCreateDTO projectCreateDTO );
 }
