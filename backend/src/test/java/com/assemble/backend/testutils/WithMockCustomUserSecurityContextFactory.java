@@ -12,6 +12,7 @@ package com.assemble.backend.testutils;
 
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.SecurityUser;
+import com.github.f4b6a3.uuid.UuidCreator;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -30,7 +31,7 @@ final class WithMockCustomUserSecurityContextFactory implements WithSecurityCont
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         SecurityUser principal = new SecurityUser(
                 User.builder()
-                        .id( customUser.userId() )
+                        .id( UuidCreator.getTimeOrderedEpoch() )
                         .username( customUser.username() )
                         .email( customUser.email() )
                         .firstname( customUser.firstname() )

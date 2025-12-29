@@ -16,13 +16,14 @@ import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.mappers.employee.EmployeeMapper;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
-import com.assemble.backend.services.core.IdService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -31,7 +32,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
     private final EmployeeMapper employeeMapper;
-    private final IdService idService;
 
     @Override
     public List<EmployeeDTO> getAllEmployees() {
@@ -43,7 +43,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDTO getEmployeeById( String id ) {
-        Employee employee = employeeRepository.findById( id )
+        Employee employee = employeeRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find employee with id: " + id )
                 );
@@ -51,6 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EmployeeRefDTO> searchUnlinkedEmployees( String searchTerm ) {
         String normalizedSearchTerm = searchTerm == null ? "" : searchTerm.toLowerCase();
         return employeeRepository
@@ -61,9 +62,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeDTO createEmployee( EmployeeCreateDTO employeeCreateDTO ) {
         User user = employeeCreateDTO.getUserId() != null ? userRepository
-                .findById( employeeCreateDTO.getUserId() )
+                .findById( UUID.fromString( employeeCreateDTO.getUserId() ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException(
                                 "Could not find user with id: " + employeeCreateDTO.getUserId()
@@ -75,9 +77,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 "User is already linked to employee " + user.getEmployee().getFullname()
         );
 
-        String id = idService.generateIdFor( Employee.class );
-
-        Employee employee = employeeMapper.toEmployee( employeeCreateDTO, id );
+        Employee employee = employeeMapper.toEmployee( employeeCreateDTO );
         employee.setUser( user );
 
 
@@ -87,14 +87,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeDTO setEmployeeUser( String employeeId, EmployeeUpdateUserDTO employeeUpdateUserDTO ) {
-        Employee employee = employeeRepository.findById( employeeId )
+        Employee employee = employeeRepository.findById( UUID.fromString( employeeId ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find employee with id: " + employeeId )
                 );
 
         User user = employeeUpdateUserDTO.getUserId() != null ? userRepository
-                .findById( employeeUpdateUserDTO.getUserId() )
+                .findById( UUID.fromString( employeeUpdateUserDTO.getUserId() ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException(
                                 "Could not find user with id: " + employeeUpdateUserDTO.getUserId()
@@ -116,8 +117,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeDTO updateEmployee( String id, EmployeeUpdateDTO employeeUpdateDTO ) {
-        Employee employee = employeeRepository.findById( id )
+        Employee employee = employeeRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find employee with id: " + id )
                 );
@@ -131,12 +133,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public void deleteEmployee( String id ) {
-        Employee employee = employeeRepository.findById( id )
+        Employee employee = employeeRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find employee with id: " + id )
                 );
-        
+
         if ( employee.getUser() != null ) {
             User user = employee.getUser();
             user.setEmployee( null );

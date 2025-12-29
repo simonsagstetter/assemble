@@ -13,7 +13,6 @@ package com.assemble.backend.models.entities.core;
 import com.assemble.backend.models.entities.auth.UserAudit;
 import com.assemble.backend.models.entities.db.DocumentGreeting;
 import com.assemble.backend.repositories.db.DocumentRepository;
-import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,9 +34,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @Import(TestcontainersConfiguration.class)
 class BaseMongoEntityTest {
 
-    @Autowired
-    private IdService idService;
-
     @MockitoBean
     private AuditorAware<UserAudit> auditorAware;
 
@@ -52,15 +48,15 @@ class BaseMongoEntityTest {
         Mockito.when( auditorAware.getCurrentAuditor() ).thenReturn( Optional.of( mockedUserAudit ) );
 
         String testMessage = "Hello MongoDB!";
-        String recordId = idService.generateIdFor( DocumentGreeting.class );
 
         DocumentGreeting given = DocumentGreeting.builder()
-                .id( recordId )
                 .message( testMessage )
                 .build();
 
         //WHEN
         DocumentGreeting saved = this.documentRepository.save( given );
+
+        assert saved.getId() != null;
 
         DocumentGreeting actual = assertDoesNotThrow( () -> this.documentRepository.findById( saved.getId() ).orElseThrow() );
 
@@ -68,7 +64,7 @@ class BaseMongoEntityTest {
         assertThat( actual )
                 .isNotNull()
                 .extracting( "message", "id" )
-                .contains( given.getMessage(), given.getId() );
+                .contains( given.getMessage(), saved.getId() );
 
         assertThat( actual )
                 .extracting( "version", "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
@@ -89,14 +85,14 @@ class BaseMongoEntityTest {
                 .thenReturn( Optional.of( lastModifiedUserAudit ) );
 
         String testMessage = "Hello MongoDB!";
-        String recordId = idService.generateIdFor( DocumentGreeting.class );
 
         DocumentGreeting given = DocumentGreeting.builder()
-                .id( recordId )
                 .message( testMessage )
                 .build();
 
         DocumentGreeting created = this.documentRepository.save( given );
+
+        assert created.getId() != null;
 
         DocumentGreeting stored = assertDoesNotThrow( () -> this.documentRepository.findById( created.getId() ).orElseThrow() );
         stored.setMessage( "Hello again, MongoDB!" );

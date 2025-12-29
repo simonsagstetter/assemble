@@ -25,10 +25,7 @@ function useCurrentContext() {
 }
 
 function IdentityFragment() {
-    const form = useFormContext();
-    const { isPending, isSuccess, disableOnSuccess } = useFormActionContext();
-    const { isSubmitting } = form.formState;
-    const disabled = disableOnSuccess ? isPending || isSubmitting || isSuccess : isPending || isSubmitting;
+    const { form, disabled } = useCurrentContext();
     return <FieldSet>
         <FieldLegend>Identity</FieldLegend>
         <FieldDescription>Required information about the user</FieldDescription>

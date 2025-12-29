@@ -20,10 +20,6 @@
     "plugins": [
       {
         "name": "next"
-      },
-      {
-        "name": "@0no-co/graphqlsp",
-        "schema": "./src/api/schema/generated/schema.graphql"
       }
     ],
     "paths": {

@@ -30,13 +30,12 @@ public interface EmployeeMapper {
     @Named("employeeToEmployeeRefDTO")
     EmployeeRefDTO employeeToEmployeeRefDTO( Employee employee );
 
-    @Mapping(target = "id", expression = "java(id)")
     @Mapping(target = "firstname", expression = "java(employeeCreateDTO.getFirstname())")
     @Mapping(target = "lastname", expression = "java(employeeCreateDTO.getLastname())")
     @Mapping(target = "email", expression = "java(employeeCreateDTO.getEmail())")
     @Mapping(target = "address", source = "employeeCreateDTO", qualifiedByName = "addressFromEmployeeCreateDTO")
     @Mapping(target = "bankAccount", source = "employeeCreateDTO", qualifiedByName = "bankAccountFromEmployeeCreateDTO")
-    Employee toEmployee( EmployeeCreateDTO employeeCreateDTO, String id );
+    Employee toEmployee( EmployeeCreateDTO employeeCreateDTO );
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     Employee toEmployee( EmployeeUpdateDTO employeeUpdateDTO, @MappingTarget Employee employee );

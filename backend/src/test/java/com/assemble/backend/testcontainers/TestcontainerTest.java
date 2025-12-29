@@ -14,7 +14,6 @@ import com.assemble.backend.models.entities.db.DocumentGreeting;
 import com.assemble.backend.models.entities.db.EntityGreeting;
 import com.assemble.backend.repositories.db.DocumentRepository;
 import com.assemble.backend.repositories.db.EntityRepository;
-import com.assemble.backend.services.core.IdService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,28 +36,24 @@ class TestcontainerTest {
     @Autowired
     private EntityRepository entityRepository;
 
-    @Autowired
-    private IdService idService;
-
     @Test
     @DisplayName("MongoDB Container should be running and be available for repository interaction")
     void mongoDbContainer_test() {
         String testMessage = "Hello MongoDB!";
-        String recordId = idService.generateIdFor( DocumentGreeting.class );
-
         DocumentGreeting given = DocumentGreeting.builder()
-                .id( recordId )
                 .message( testMessage )
                 .build();
 
         DocumentGreeting saved = this.documentRepository.save( given );
+
+        assert saved.getId() != null;
 
         DocumentGreeting actual = assertDoesNotThrow( () -> this.documentRepository.findById( saved.getId() ).orElseThrow() );
 
         assertThat( actual )
                 .isNotNull()
                 .extracting( "message", "id" )
-                .contains( given.getMessage(), given.getId() );
+                .contains( given.getMessage(), saved.getId() );
 
         assertThat( actual )
                 .extracting( "version", "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
@@ -70,20 +65,20 @@ class TestcontainerTest {
     @DisplayName("PostgreSQL Container should be running and be available for repository interaction")
     void postgreSQLContainer_test() {
         String testMessage = "Hello Postgres!";
-        String recordId = idService.generateIdFor( EntityGreeting.class );
         EntityGreeting given = EntityGreeting.builder()
-                .id( recordId )
                 .message( testMessage )
                 .build();
 
         EntityGreeting saved = this.entityRepository.save( given );
+
+        assert saved.getId() != null;
 
         EntityGreeting actual = assertDoesNotThrow( () -> this.entityRepository.findById( saved.getId() ).orElseThrow() );
 
         assertThat( actual )
                 .isNotNull()
                 .extracting( "message", "id" )
-                .contains( given.getMessage(), given.getId() );
+                .contains( given.getMessage(), saved.getId() );
 
         assertThat( actual )
                 .extracting( "version", "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )

@@ -38,6 +38,14 @@ public class EmployeeDTO {
     @NonNull
     private String id;
 
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "E00001"
+    )
+    @NonNull
+    private String no;
+
     @JsonManagedReference
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,

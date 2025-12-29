@@ -13,7 +13,6 @@ package com.assemble.backend.models.entities.core;
 import com.assemble.backend.models.entities.auth.UserAudit;
 import com.assemble.backend.models.entities.db.EntityGreeting;
 import com.assemble.backend.repositories.db.EntityRepository;
-import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,9 +40,6 @@ class BaseJPAEntityTest {
     @Autowired
     private EntityRepository entityRepository;
 
-    @Autowired
-    private IdService idService;
-
     @MockitoBean
     private AuditorAware<UserAudit> auditorAware;
 
@@ -55,15 +51,15 @@ class BaseJPAEntityTest {
         Mockito.when( auditorAware.getCurrentAuditor() ).thenReturn( Optional.of( mockedUserAudit ) );
 
         String testMessage = "Hello Postgres!";
-        String recordId = idService.generateIdFor( EntityGreeting.class );
 
         EntityGreeting given = EntityGreeting.builder()
-                .id( recordId )
                 .message( testMessage )
                 .build();
 
         //WHEN
         EntityGreeting saved = this.entityRepository.save( given );
+
+        assert saved.getId() != null;
 
         EntityGreeting actual = assertDoesNotThrow( () -> this.entityRepository.findById( saved.getId() ).orElseThrow() );
 
@@ -71,7 +67,7 @@ class BaseJPAEntityTest {
         assertThat( actual )
                 .isNotNull()
                 .extracting( "message", "id" )
-                .contains( given.getMessage(), given.getId() );
+                .contains( given.getMessage(), saved.getId() );
 
         assertThat( actual )
                 .extracting( "version", "createdDate", "lastModifiedDate", "createdBy", "lastModifiedBy" )
@@ -93,14 +89,14 @@ class BaseJPAEntityTest {
                 .thenReturn( Optional.of( lastModifiedUserAudit ) );
 
         String testMessage = "Hello Postgres!";
-        String recordId = idService.generateIdFor( EntityGreeting.class );
 
         EntityGreeting given = EntityGreeting.builder()
-                .id( recordId )
                 .message( testMessage )
                 .build();
 
         EntityGreeting created = this.entityRepository.save( given );
+
+        assert created.getId() != null;
 
         EntityGreeting stored = assertDoesNotThrow( () -> this.entityRepository.findById( created.getId() ).orElseThrow() );
         stored.setMessage( "Hello again, Postgres!" );

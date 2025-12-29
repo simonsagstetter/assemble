@@ -20,6 +20,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public void changePassword( String username, String oldPassword, String newPassword ) {
         User user = userRepository.findByUsername( username )
                 .orElseThrow( () -> new EntityNotFoundException( "User not found" ) );

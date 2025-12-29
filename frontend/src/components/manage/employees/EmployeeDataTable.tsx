@@ -25,6 +25,18 @@ type EmployeeDataTableProps = {
 export default function EmployeeDataTable( { employees }: EmployeeDataTableProps ) {
     const columns: ColumnDef<Employee>[] = useMemo( () => [
         {
+            header: "No",
+            cell( { row } ) {
+                const employee = row.original;
+                return <Link
+                    href={ `/app/manage/employees/${ employee.id }` }
+                    className={ "hover:underline" }
+                >
+                    { employee.no }
+                </Link>
+            }
+        },
+        {
             header: "Fullname",
             cell( { row } ) {
                 const employee = row.original;

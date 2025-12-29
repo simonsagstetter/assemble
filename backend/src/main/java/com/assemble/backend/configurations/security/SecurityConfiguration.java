@@ -54,8 +54,6 @@ public class SecurityConfiguration {
                                 .requestMatchers( "/api/auth/logout" ).authenticated()
                                 .requestMatchers( "/swagger-ui/**" ).permitAll()
                                 .requestMatchers( "/v3/api-docs/**" ).permitAll()
-                                .requestMatchers( "/graphiql/**" ).permitAll()
-                                .requestMatchers( "/graphql/**" ).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .logout( logoutCustomizer )

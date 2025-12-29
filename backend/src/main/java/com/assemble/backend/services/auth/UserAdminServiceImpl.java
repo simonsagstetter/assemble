@@ -17,11 +17,11 @@ import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.mappers.auth.UserAdminMapper;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
-import com.assemble.backend.services.core.IdService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -35,7 +35,6 @@ public class UserAdminServiceImpl implements UserAdminService {
     private final UserAdminMapper userAdminMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmployeeRepository employeeRepository;
-    private final IdService idService;
     private final SessionService sessionService;
 
     @Override
@@ -49,7 +48,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     @Override
     public UserAdminDTO getUserById( String id ) {
         return userAdminMapper.toUserAdminDTO(
-                userRepository.findById( id )
+                userRepository.findById( UUID.fromString( id ) )
                         .orElseThrow(
                                 () -> new EntityNotFoundException( "User not found with id: " + id )
                         )
@@ -58,6 +57,7 @@ public class UserAdminServiceImpl implements UserAdminService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserRefDTO> searchUnlinkedUsers( String searchTerm ) {
         String normalizedSearchTerm = searchTerm == null ? "" : searchTerm.toLowerCase();
         return userRepository
@@ -68,8 +68,9 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public UserAdminDTO setUserStatus( String id, UserUpdateStatusDTO userUpdateStatusDTO ) {
-        User user = userRepository.findById( id )
+        User user = userRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find user with id: " + id )
                 );
@@ -85,8 +86,9 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public UserAdminDTO setUserRoles( String id, List<UserRole> roles ) {
-        User user = userRepository.findById( id )
+        User user = userRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find user with id: " + id )
                 );
@@ -96,14 +98,15 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public UserAdminDTO setUserEmployee( String userId, UserUpdateEmployeeDTO userUpdateEmployeeDTO ) {
-        User user = userRepository.findById( userId )
+        User user = userRepository.findById( UUID.fromString( userId ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find user with id: " + userId )
                 );
 
         Employee employee = userUpdateEmployeeDTO.getEmployeeId() != null ? employeeRepository
-                .findById( userUpdateEmployeeDTO.getEmployeeId() )
+                .findById( UUID.fromString( userUpdateEmployeeDTO.getEmployeeId() ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException(
                                 "Could not find employee with id: " + userUpdateEmployeeDTO.getEmployeeId()
@@ -136,9 +139,10 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public UserAdminDTO createUser( UserCreateDTO userCreateDTO ) {
         Employee employee = userCreateDTO.getEmployeeId() != null ? employeeRepository
-                .findById( userCreateDTO.getEmployeeId() )
+                .findById( UUID.fromString( userCreateDTO.getEmployeeId() ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find employee with id: " + userCreateDTO.getEmployeeId() )
                 ) : null;
@@ -146,8 +150,6 @@ public class UserAdminServiceImpl implements UserAdminService {
         if ( employee != null && employee.getUser() != null ) {
             throw new InvalidParameterException( "User is already linked to employee: " + employee.getUser().getUsername() );
         }
-
-        String id = idService.generateIdFor( User.class );
 
         String password = passwordEncoder.encode(
                 userCreateDTO.getPassword() != null ?
@@ -159,7 +161,7 @@ public class UserAdminServiceImpl implements UserAdminService {
 
         userCreateDTO.setPassword( password );
 
-        User user = userAdminMapper.toUser( userCreateDTO, id );
+        User user = userAdminMapper.toUser( userCreateDTO );
         User savedUser = userRepository.save( user );
 
 
@@ -176,8 +178,9 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public UserAdminDTO updateUser( String id, UserUpdateDTO userUpdateDTO ) {
-        User user = userRepository.findById( id )
+        User user = userRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find user with id: " + id )
                 );
@@ -190,8 +193,9 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public void setUserPassword( String id, String newPassword, Boolean invalidateAllSessions ) {
-        User user = userRepository.findById( id )
+        User user = userRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find user with id: " + id )
                 );
@@ -206,8 +210,9 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public void deleteUser( String id ) {
-        User user = userRepository.findById( id )
+        User user = userRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find user with id: " + id )
                 );

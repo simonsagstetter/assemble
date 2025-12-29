@@ -13,7 +13,6 @@ package com.assemble.backend.scripts.auth;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
-import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,8 +39,6 @@ class UserCommandsTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private IdService idService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -60,10 +57,8 @@ class UserCommandsTest {
     @Test
     @DisplayName("create-superuser should not create new super user when already exists")
     void createSuperUser_ShouldNotCreateSuperUser_WhenAlreadyExists() {
-        String id = idService.generateIdFor( User.class );
         String rawPassword = UUID.randomUUID().toString().replaceAll( "-", "" );
         User superUser = User.builder()
-                .id( id )
                 .username( "superuser" )
                 .firstname( "Super" )
                 .lastname( "User" )

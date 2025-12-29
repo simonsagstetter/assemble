@@ -10,9 +10,11 @@
 
 package com.assemble.backend.configurations.jpa;
 
+import lombok.Generated;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+@Generated
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorAwareImpl")
 public class JpaAuditingConfiguration {

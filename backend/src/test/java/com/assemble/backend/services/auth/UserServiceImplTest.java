@@ -17,6 +17,7 @@ import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.models.mappers.auth.UserMapper;
 import com.assemble.backend.repositories.auth.UserRepository;
+import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +58,7 @@ class UserServiceImplTest {
     @BeforeAll
     static void init() {
         user = User.builder()
-                .id( "1" )
+                .id( UuidCreator.getTimeOrderedEpoch() )
                 .username( "testuser" )
                 .firstname( "Test" )
                 .lastname( "User" )
@@ -144,9 +145,11 @@ class UserServiceImplTest {
         when( userRepository.findByUsername( user.getUsername() ) )
                 .thenReturn( Optional.of( user ) );
 
+        assert user.getId() != null;
+
         when( userMapper.toUserDTO( user ) ).thenReturn(
                 UserDTO.builder()
-                        .id( user.getId() )
+                        .id( user.getId().toString() )
                         .firstname( user.getFirstname() )
                         .lastname( user.getLastname() )
                         .email( user.getEmail() )

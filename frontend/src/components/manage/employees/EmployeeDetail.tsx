@@ -48,6 +48,10 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
             <CardDescription className={ "leading-6" }>
                 <div className="flex flex-row gap-10 **:[&_span]:text-xs **:[&_p]:font-semibold **:[&_p]:text-sm">
                     <div>
+                        <span>No.</span>
+                        <p>{ employee.no }</p>
+                    </div>
+                    <div>
                         <span>User</span>
                         <p>
                             { employee.user != null ? <Link
@@ -140,6 +144,10 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
                                                 </Link>
                                                 : "-" }
                                             </DetailValue>
+                                        </Detail>
+                                        <Detail>
+                                            <DetailLabel>No.</DetailLabel>
+                                            <DetailValue>{ employee.no }</DetailValue>
                                         </Detail>
                                     </DetailRow>
                                 </DetailSection>

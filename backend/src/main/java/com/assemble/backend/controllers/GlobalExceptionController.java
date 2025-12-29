@@ -11,9 +11,7 @@
 package com.assemble.backend.controllers;
 
 import com.assemble.backend.exceptions.auth.PasswordMismatchException;
-import com.assemble.backend.models.dtos.global.ErrorResponse;
-import com.assemble.backend.models.dtos.global.FieldValidationError;
-import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
+import com.assemble.backend.models.dtos.global.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -25,6 +23,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -92,6 +91,14 @@ public class GlobalExceptionController {
         return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( body );
     }
 
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleHandlerMethodValidationException(
+            HandlerMethodValidationException ex
+    ) {
+        return createErrorResponse( ex.getMessage(), HttpStatus.BAD_REQUEST );
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException( EntityNotFoundException ex ) {
@@ -100,8 +107,14 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseBody
-    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException( DataIntegrityViolationException ex ) {
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException() {
         return createErrorResponse( "A conflict ocurred. Please check your input and try again.", HttpStatus.CONFLICT );
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException( IllegalArgumentException ex ) {
+        return createErrorResponse( ex.getMessage(), HttpStatus.BAD_REQUEST );
     }
 
 }

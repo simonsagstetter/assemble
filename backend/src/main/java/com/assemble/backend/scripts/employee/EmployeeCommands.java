@@ -17,7 +17,6 @@ import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.entities.employee.MaritalStatus;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
-import com.assemble.backend.services.core.IdService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +36,6 @@ public class EmployeeCommands {
     private UserRepository userRepository;
 
     private EmployeeRepository employeeRepository;
-
-    private IdService idService;
 
     @ShellMethod(
             key = "create-employee"
@@ -63,7 +60,6 @@ public class EmployeeCommands {
         );
 
         Employee employee = Employee.builder()
-                .id( idService.generateIdFor( Employee.class ) )
                 .user( user )
                 .firstname( user.getFirstname() )
                 .lastname( user.getLastname() )
@@ -95,6 +91,6 @@ public class EmployeeCommands {
 
         log.info( "Created employee with id: {}", savedEmployee.getId() );
 
-        return employee.getId();
+        return employee.getId() != null ? employee.getId().toString() : "No id";
     }
 }

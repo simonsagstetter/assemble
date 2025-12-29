@@ -11,9 +11,9 @@
 package com.assemble.backend.models.entities.core;
 
 import com.assemble.backend.models.entities.auth.UserAudit;
+import com.assemble.backend.utils.UUIDv7;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -26,6 +26,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 
 @SuperBuilder
 @Getter
@@ -36,18 +37,18 @@ import java.time.Instant;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseJPAEntity
-        implements Persistable<String>, Serializable {
+        implements Persistable<UUID>, Serializable {
 
     @Id
-    @NonNull
-    @NotBlank
+    @UUIDv7
     @Column(nullable = false, unique = true, name = "ID", updatable = false)
-    private String id;
+    private UUID id;
 
     @NotNull
     @Version
     @Column(name = "VERSION", nullable = false)
-    private Integer version;
+    @Builder.Default
+    private Long version = 0L;
 
     @NotNull
     @CreatedDate
@@ -88,7 +89,7 @@ public abstract class BaseJPAEntity
     }
 
     @Override
-    public String getId() {
+    public UUID getId() {
         return this.id;
     }
 }

@@ -12,7 +12,6 @@ package com.assemble.backend.configurations.mongodb;
 
 import com.assemble.backend.models.entities.db.DocumentGreeting;
 import com.assemble.backend.repositories.db.DocumentRepository;
-import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,14 +28,10 @@ class MongoAuditingConfigurationTest {
     @Autowired
     private DocumentRepository documentRepository;
 
-    @Autowired
-    private IdService idService;
-
     @Test
     @DisplayName("MongoDB Auditing should populate fields")
     void auditing_ShouldWork() {
         DocumentGreeting entity = DocumentGreeting.builder()
-                .id( idService.generateIdFor( DocumentGreeting.class ) )
                 .message( "Hello Postgres!" )
                 .build();
 

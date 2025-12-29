@@ -14,7 +14,6 @@ import com.assemble.backend.models.dtos.auth.ChangePasswordDTO;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
-import com.assemble.backend.services.core.IdService;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import com.assemble.backend.testutils.WithMockCustomUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,8 +46,6 @@ class UserRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private IdService idService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -64,7 +61,6 @@ class UserRestControllerTest {
     @BeforeEach
     void init() {
         testUser = User.builder()
-                .id( idService.generateIdFor( User.class ) )
                 .firstname( "Test" )
                 .lastname( "User" )
                 .username( "testuser" )
@@ -80,6 +76,8 @@ class UserRestControllerTest {
     void me_ShouldReturnAuthenticatedUser() throws Exception {
         User user = userRepository.save( testUser );
 
+        assert user.getId() != null;
+
         mockMvc.perform(
                 get( "/api/users/me" )
         ).andExpect(
@@ -88,7 +86,7 @@ class UserRestControllerTest {
                 content()
                         .contentType( MediaType.APPLICATION_JSON_VALUE )
         ).andExpect(
-                jsonPath( "$.id" ).value( user.getId() )
+                jsonPath( "$.id" ).value( user.getId().toString() )
         ).andExpect(
                 jsonPath( "$.username" ).value( user.getUsername() )
         ).andExpect(

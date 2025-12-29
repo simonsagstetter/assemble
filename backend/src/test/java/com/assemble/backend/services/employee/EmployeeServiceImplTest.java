@@ -18,7 +18,7 @@ import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.mappers.employee.EmployeeMapper;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
-import com.assemble.backend.services.core.IdService;
+import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +35,7 @@ import java.security.InvalidParameterException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -53,9 +54,6 @@ class EmployeeServiceImplTest {
     @Mock
     private EmployeeMapper employeeMapper;
 
-    @Mock
-    private IdService idService;
-
     @InjectMocks
     private EmployeeServiceImpl service;
 
@@ -66,12 +64,18 @@ class EmployeeServiceImplTest {
     private static User user;
     private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
+    private static UUID uuid;
+    private static UUID notExistingUUID;
+
     @BeforeAll
     static void setUp() {
+        uuid = UuidCreator.getTimeOrderedEpoch();
+        notExistingUUID = UuidCreator.getTimeOrderedEpoch();
         Instant now = Instant.now();
         UserAudit userAudit = new UserAudit( null, "SYSTEM" );
         employee = Employee.builder()
-                .id( "1" )
+                .id( uuid )
+                .no( "E000001" )
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
                 .email( "max.mustermann@example.com" )
@@ -83,7 +87,8 @@ class EmployeeServiceImplTest {
                 .build();
 
         employeeDTO = EmployeeDTO.builder()
-                .id( "1" )
+                .id( uuid.toString() )
+                .no( "E000001" )
                 .fullname( employee.getFullname() )
                 .firstname( employee.getFirstname() )
                 .lastname( employee.getLastname() )
@@ -96,7 +101,7 @@ class EmployeeServiceImplTest {
                 .build();
 
         user = User.builder()
-                .id( "1" )
+                .id( uuid )
                 .username( "testuser" )
                 .firstname( "Test" )
                 .lastname( "User" )
@@ -112,7 +117,7 @@ class EmployeeServiceImplTest {
 
     @BeforeEach
     void resetMocks() {
-        reset( employeeRepository, userRepository, employeeMapper, idService );
+        reset( employeeRepository, userRepository, employeeMapper );
         employee.setUser( null );
         employeeDTO.setUser( null );
         user.setEmployee( null );
@@ -148,22 +153,23 @@ class EmployeeServiceImplTest {
     @Test
     @DisplayName("getEmployeeById should throw when employee does not exist")
     void getEmployeeById_ShouldThrow_WhenEmployeeDoesNotExist() {
-        when( employeeRepository.findById( "1" ) ).thenReturn( Optional.empty() );
 
-        assertThrows( EntityNotFoundException.class, () -> service.getEmployeeById( "1" ) );
+        when( employeeRepository.findById( notExistingUUID ) ).thenReturn( Optional.empty() );
 
-        verify( employeeRepository, times( 1 ) ).findById( "1" );
+        assertThrows( EntityNotFoundException.class, () -> service.getEmployeeById( notExistingUUID.toString() ) );
+
+        verify( employeeRepository, times( 1 ) ).findById( notExistingUUID );
     }
 
     @Test
     @DisplayName("getEmployeeById should return EmployeeDTO when employee exists")
     void getEmployeeById_ShouldReturnEmployeeDTO_WhenEmployeeExists() {
-        String id = employee.getId();
-        assert id != null;
+        assert employee.getId() != null;
+        UUID id = employee.getId();
         when( employeeRepository.findById( id ) ).thenReturn( Optional.of( employee ) );
         when( employeeMapper.employeeToEmployeeDTO( employee ) ).thenReturn( employeeDTO );
 
-        EmployeeDTO actual = assertDoesNotThrow( () -> service.getEmployeeById( id ) );
+        EmployeeDTO actual = assertDoesNotThrow( () -> service.getEmployeeById( id.toString() ) );
 
         assertEquals( employeeDTO, actual );
 
@@ -178,7 +184,7 @@ class EmployeeServiceImplTest {
                 .thenReturn( List.of( employee ) );
 
         EmployeeRefDTO employeeRefDTO = EmployeeRefDTO.builder()
-                .id( employee.getId() )
+                .id( uuid.toString() )
                 .fullname( employee.getFullname() )
                 .build();
 
@@ -197,36 +203,43 @@ class EmployeeServiceImplTest {
     @DisplayName("createEmployee should throw when user does not exist")
     void createEmployee_ShouldThrow_WhenUserDoesNotExist() {
         EmployeeCreateDTO employeeCreateDTO = EmployeeCreateDTO.builder()
-                .userId( "not-existing-user-id" )
+                .userId( notExistingUUID.toString() )
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
                 .email( "max.mustermann@example.com" )
                 .build();
 
-        when( userRepository.findById( employeeCreateDTO.getUserId() ) ).thenReturn( Optional.empty() );
+        assert employeeCreateDTO.getUserId() != null;
+        UUID userId = UUID.fromString( employeeCreateDTO.getUserId() );
+
+        when( userRepository.findById( userId ) ).thenReturn( Optional.empty() );
 
         assertThrows( EntityNotFoundException.class, () -> service.createEmployee( employeeCreateDTO ) );
 
-        verify( userRepository, times( 1 ) ).findById( employeeCreateDTO.getUserId() );
+        verify( userRepository, times( 1 ) ).findById( userId );
     }
 
     @Test
     @DisplayName("createEmployee should throw when user is already linked to another employee")
     void createEmployee_ShouldThrow_WhenUserIsAlreadyLinkedToAnotherEmployee() {
+        assert user.getId() != null;
         EmployeeCreateDTO employeeCreateDTO = EmployeeCreateDTO.builder()
-                .userId( user.getId() )
+                .userId( user.getId().toString() )
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
                 .email( "max.mustermann@example.com" )
                 .build();
 
-        when( userRepository.findById( employeeCreateDTO.getUserId() ) ).thenReturn( Optional.of( user ) );
+        assert employeeCreateDTO.getUserId() != null;
+        UUID userId = UUID.fromString( employeeCreateDTO.getUserId() );
+
+        when( userRepository.findById( userId ) ).thenReturn( Optional.of( user ) );
 
         user.setEmployee( employee );
 
         assertThrows( InvalidParameterException.class, () -> service.createEmployee( employeeCreateDTO ) );
 
-        verify( userRepository, times( 1 ) ).findById( employeeCreateDTO.getUserId() );
+        verify( userRepository, times( 1 ) ).findById( userId );
 
     }
 
@@ -240,8 +253,7 @@ class EmployeeServiceImplTest {
                 .email( "max.mustermann@example.com" )
                 .build();
 
-        when( idService.generateIdFor( Employee.class ) ).thenReturn( "1" );
-        when( employeeMapper.toEmployee( employeeCreateDTO, "1" ) ).thenReturn( employee );
+        when( employeeMapper.toEmployee( employeeCreateDTO ) ).thenReturn( employee );
         when( employeeRepository.save( employee ) ).thenReturn( employee );
         when( employeeMapper.employeeToEmployeeDTO( employee ) ).thenReturn( employeeDTO );
 
@@ -249,8 +261,7 @@ class EmployeeServiceImplTest {
 
         assertEquals( employeeDTO, actual );
 
-        verify( idService, times( 1 ) ).generateIdFor( Employee.class );
-        verify( employeeMapper, times( 1 ) ).toEmployee( employeeCreateDTO, "1" );
+        verify( employeeMapper, times( 1 ) ).toEmployee( employeeCreateDTO );
         verify( employeeMapper, times( 1 ) ).employeeToEmployeeDTO( employee );
         verify( employeeRepository, times( 1 ) ).save( employee );
     }
@@ -258,16 +269,16 @@ class EmployeeServiceImplTest {
     @Test
     @DisplayName("createEmployee should return EmployeeDTO with linked user")
     void createEmployee_ShouldReturnEmployeeDTOWithLinkedUser_WhenCalled() {
+        assert user.getId() != null;
         EmployeeCreateDTO employeeCreateDTO = EmployeeCreateDTO.builder()
-                .userId( user.getId() )
+                .userId( user.getId().toString() )
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
                 .email( "max.mustermann@example.com" )
                 .build();
 
         when( userRepository.findById( user.getId() ) ).thenReturn( Optional.of( user ) );
-        when( idService.generateIdFor( Employee.class ) ).thenReturn( "1" );
-        when( employeeMapper.toEmployee( employeeCreateDTO, "1" ) ).thenReturn( employee );
+        when( employeeMapper.toEmployee( employeeCreateDTO ) ).thenReturn( employee );
         when( employeeRepository.save( employee ) ).thenReturn( employee );
         when( employeeMapper.employeeToEmployeeDTO( employee ) ).thenReturn( employeeDTO );
 
@@ -276,8 +287,7 @@ class EmployeeServiceImplTest {
         assertEquals( employeeDTO, actual );
 
         verify( userRepository, times( 1 ) ).findById( user.getId() );
-        verify( idService, times( 1 ) ).generateIdFor( Employee.class );
-        verify( employeeMapper, times( 1 ) ).toEmployee( employeeCreateDTO, "1" );
+        verify( employeeMapper, times( 1 ) ).toEmployee( employeeCreateDTO );
         verify( employeeMapper, times( 1 ) ).employeeToEmployeeDTO( employee );
         verify( employeeRepository, times( 1 ) ).save( employee );
     }
@@ -285,52 +295,61 @@ class EmployeeServiceImplTest {
     @Test
     @DisplayName("setEmployeeUser should throw when employee does not exist")
     void setEmployeeUser_ShouldThrow_WhenEmployeeDoesNotExist() {
-        when( employeeRepository.findById( "1" ) ).thenReturn( Optional.empty() );
-        EmployeeUpdateUserDTO employeeUpdateUserDTO = EmployeeUpdateUserDTO.builder().userId( "1" ).build();
-        assertThrows( EntityNotFoundException.class, () -> service.setEmployeeUser( "1", employeeUpdateUserDTO ) );
+        when( employeeRepository.findById( uuid ) ).thenReturn( Optional.empty() );
+        EmployeeUpdateUserDTO employeeUpdateUserDTO = EmployeeUpdateUserDTO.builder().userId( uuid.toString() ).build();
+        assertThrows( EntityNotFoundException.class, () -> service.setEmployeeUser( uuid.toString(), employeeUpdateUserDTO ) );
 
-        verify( employeeRepository, times( 1 ) ).findById( "1" );
+        verify( employeeRepository, times( 1 ) ).findById( uuid );
     }
 
     @Test
     @DisplayName("setEmployeeUser should throw when user does not exist")
     void setEmployeeUser_ShouldThrow_WhenUserDoesNotExist() {
-        when( employeeRepository.findById( employee.getId() ) ).thenReturn( Optional.of( employee ) );
+        assert employee.getId() != null;
+        UUID id = employee.getId();
+        when( employeeRepository.findById( id ) ).thenReturn( Optional.of( employee ) );
 
         EmployeeUpdateUserDTO employeeUpdateUserDTO = EmployeeUpdateUserDTO.builder()
-                .userId( "not-existing-user-id" )
+                .userId( notExistingUUID.toString() )
                 .build();
 
-        when( userRepository.findById( employeeUpdateUserDTO.getUserId() ) ).thenReturn( Optional.empty() );
 
-        assertThrows( EntityNotFoundException.class, () -> service.setEmployeeUser( employee.getId(), employeeUpdateUserDTO ) );
+        when( userRepository.findById( notExistingUUID ) ).thenReturn( Optional.empty() );
 
-        verify( employeeRepository, times( 1 ) ).findById( employee.getId() );
-        verify( userRepository, times( 1 ) ).findById( employeeUpdateUserDTO.getUserId() );
+        assertThrows( EntityNotFoundException.class, () -> service.setEmployeeUser( id.toString(), employeeUpdateUserDTO ) );
+
+        verify( employeeRepository, times( 1 ) ).findById( id );
+        verify( userRepository, times( 1 ) ).findById( notExistingUUID );
     }
 
     @Test
     @DisplayName("setEmployeeUser should throw when user is already linked to another employee")
     void setEmployeeUser_ShouldThrow_WhenUserIsAlreadyLinkedToAnotherEmployee() {
-        when( employeeRepository.findById( employee.getId() ) ).thenReturn( Optional.of( employee ) );
+        assert employee.getId() != null;
+        UUID id = employee.getId();
+        when( employeeRepository.findById( id ) ).thenReturn( Optional.of( employee ) );
+
+        assert user.getId() != null;
 
         EmployeeUpdateUserDTO employeeUpdateUserDTO = EmployeeUpdateUserDTO.builder()
-                .userId( user.getId() )
+                .userId( user.getId().toString() )
                 .build();
 
         user.setEmployee( employee );
-        when( userRepository.findById( employeeUpdateUserDTO.getUserId() ) ).thenReturn( Optional.of( user ) );
+        when( userRepository.findById( user.getId() ) ).thenReturn( Optional.of( user ) );
 
-        assertThrows( InvalidParameterException.class, () -> service.setEmployeeUser( employee.getId(), employeeUpdateUserDTO ) );
+        assertThrows( InvalidParameterException.class, () -> service.setEmployeeUser( id.toString(), employeeUpdateUserDTO ) );
 
-        verify( employeeRepository, times( 1 ) ).findById( employee.getId() );
-        verify( userRepository, times( 1 ) ).findById( employeeUpdateUserDTO.getUserId() );
+        verify( employeeRepository, times( 1 ) ).findById( id );
+        verify( userRepository, times( 1 ) ).findById( user.getId() );
     }
 
     @Test
     @DisplayName("setEmployeeUser should return EmployeeDTO when user was unlinked")
     void setEmployeeUser_ShouldReturnEmployeeDTO_WhenUserWasUnlinked() {
-        when( employeeRepository.findById( employee.getId() ) ).thenReturn( Optional.of( employee ) );
+        assert employee.getId() != null;
+        UUID id = employee.getId();
+        when( employeeRepository.findById( id ) ).thenReturn( Optional.of( employee ) );
 
         EmployeeUpdateUserDTO employeeUpdateUserDTO = EmployeeUpdateUserDTO.builder()
                 .userId( null )
@@ -340,64 +359,63 @@ class EmployeeServiceImplTest {
         when( employeeMapper.employeeToEmployeeDTO( employee ) ).thenReturn( employeeDTO );
 
         EmployeeDTO actual = assertDoesNotThrow( () -> service.setEmployeeUser(
-                employee.getId(), employeeUpdateUserDTO
+                id.toString(), employeeUpdateUserDTO
         ) );
 
         assertEquals( employeeDTO, actual );
 
-        verify( employeeRepository, times( 1 ) ).findById( employee.getId() );
+        verify( employeeRepository, times( 1 ) ).findById( id );
         verify( employeeRepository, times( 1 ) ).save( employee );
     }
 
     @Test
     @DisplayName("setEmployeeUser should return EmployeeDTO when new user was linked")
     void setEmployeeUser_ShouldReturnEmployeeDTO_WhenNewUserWasLinked() {
-        when( employeeRepository.findById( employee.getId() ) ).thenReturn( Optional.of( employee ) );
-        when( userRepository.findById( user.getId() ) ).thenReturn( Optional.of( user ) );
+
+        when( employeeRepository.findById( uuid ) ).thenReturn( Optional.of( employee ) );
+        when( userRepository.findById( uuid ) ).thenReturn( Optional.of( user ) );
 
         EmployeeUpdateUserDTO employeeUpdateUserDTO = EmployeeUpdateUserDTO.builder()
-                .userId( user.getId() )
+                .userId( uuid.toString() )
                 .build();
 
         when( employeeRepository.save( employee ) ).thenReturn( employee );
         when( employeeMapper.employeeToEmployeeDTO( employee ) ).thenReturn( employeeDTO );
 
         EmployeeDTO actual = assertDoesNotThrow( () -> service.setEmployeeUser(
-                employee.getId(), employeeUpdateUserDTO
+                uuid.toString(), employeeUpdateUserDTO
         ) );
 
         assertEquals( employeeDTO, actual );
 
-        verify( employeeRepository, times( 1 ) ).findById( employee.getId() );
-        verify( userRepository, times( 1 ) ).findById( employeeUpdateUserDTO.getUserId() );
+        verify( employeeRepository, times( 1 ) ).findById( uuid );
+        verify( userRepository, times( 1 ) ).findById( uuid );
         verify( employeeRepository, times( 1 ) ).save( employee );
     }
 
     @Test
     @DisplayName("updateEmployee should throw when employee does not exist")
     void updateEmployee_ShouldThrow_WhenEmployeeDoesNotExist() {
-        when( employeeRepository.findById( "1" ) ).thenReturn( Optional.empty() );
+        when( employeeRepository.findById( notExistingUUID ) ).thenReturn( Optional.empty() );
         EmployeeUpdateDTO employeeUpdateDTO = EmployeeUpdateDTO.builder()
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
                 .build();
 
-        assertThrows( EntityNotFoundException.class, () -> service.updateEmployee( "1", employeeUpdateDTO ) );
+        assertThrows( EntityNotFoundException.class, () -> service.updateEmployee( notExistingUUID.toString(), employeeUpdateDTO ) );
 
-        verify( employeeRepository, times( 1 ) ).findById( "1" );
+        verify( employeeRepository, times( 1 ) ).findById( notExistingUUID );
     }
 
     @Test
     @DisplayName("updateEmployee should return updated EmployeeDTO when EmployeeUpdateDTO was valid")
     void updateEmployee_ShouldReturnUpdatedEmployeeDTO_WhenEmployeeUpdateDTOIsValid() {
-        String id = employee.getId();
-        assert id != null;
         EmployeeUpdateDTO employeeUpdateDTO = EmployeeUpdateDTO.builder()
                 .firstname( "Test" )
                 .lastname( "Test" )
                 .build();
 
-        when( employeeRepository.findById( id ) ).thenReturn( Optional.of( employee ) );
+        when( employeeRepository.findById( uuid ) ).thenReturn( Optional.of( employee ) );
 
         when( employeeRepository.save( employee ) ).thenReturn( employee );
         employee.setFirstname( employeeUpdateDTO.getFirstname() );
@@ -408,11 +426,11 @@ class EmployeeServiceImplTest {
         employeeDTO.setLastname( employeeUpdateDTO.getLastname() );
         when( employeeMapper.toEmployee( employeeUpdateDTO, employee ) ).thenReturn( employee );
 
-        EmployeeDTO actual = assertDoesNotThrow( () -> service.updateEmployee( id, employeeUpdateDTO ) );
+        EmployeeDTO actual = assertDoesNotThrow( () -> service.updateEmployee( uuid.toString(), employeeUpdateDTO ) );
 
         assertEquals( employeeDTO, actual );
 
-        verify( employeeRepository, times( 1 ) ).findById( id );
+        verify( employeeRepository, times( 1 ) ).findById( uuid );
         verify( employeeRepository, times( 1 ) ).save( employee );
         verify( employeeMapper, times( 1 ) ).employeeToEmployeeDTO( employee );
         verify( employeeMapper, times( 1 ) ).toEmployee( employeeUpdateDTO, employee );
@@ -423,23 +441,21 @@ class EmployeeServiceImplTest {
     @Test
     @DisplayName("deleteEmployee should throw when employee does not exist")
     void deleteEmployee_ShouldThrow_WhenEmployeeDoesNotExist() {
-        when( employeeRepository.findById( "1" ) ).thenReturn( Optional.empty() );
+        when( employeeRepository.findById( notExistingUUID ) ).thenReturn( Optional.empty() );
 
-        assertThrows( EntityNotFoundException.class, () -> service.deleteEmployee( "1" ) );
+        assertThrows( EntityNotFoundException.class, () -> service.deleteEmployee( notExistingUUID.toString() ) );
 
-        verify( employeeRepository, times( 1 ) ).findById( "1" );
+        verify( employeeRepository, times( 1 ) ).findById( notExistingUUID );
     }
 
     @Test
     @DisplayName("deleteEmployee should not throw when user exists")
     void deleteEmployee_ShouldNotThrow_WhenEmployeeExists() {
-        String id = employee.getId();
-        assert id != null;
-        when( employeeRepository.findById( id ) ).thenReturn( Optional.of( employee ) );
+        when( employeeRepository.findById( uuid ) ).thenReturn( Optional.of( employee ) );
 
-        assertDoesNotThrow( () -> service.deleteEmployee( id ) );
+        assertDoesNotThrow( () -> service.deleteEmployee( uuid.toString() ) );
 
-        verify( employeeRepository, times( 1 ) ).findById( id );
+        verify( employeeRepository, times( 1 ) ).findById( uuid );
         verify( employeeRepository, times( 1 ) ).delete( employee );
     }
 
@@ -448,13 +464,11 @@ class EmployeeServiceImplTest {
     void deleteEmployee_ShouldUnlinkUserBeforeDeletion_WhenEmployeeExists() {
         employee.setUser( user );
         user.setEmployee( null );
-        String id = employee.getId();
-        assert id != null;
-        when( employeeRepository.findById( id ) ).thenReturn( Optional.of( employee ) );
+        when( employeeRepository.findById( uuid ) ).thenReturn( Optional.of( employee ) );
 
-        assertDoesNotThrow( () -> service.deleteEmployee( id ) );
+        assertDoesNotThrow( () -> service.deleteEmployee( uuid.toString() ) );
 
-        verify( employeeRepository, times( 1 ) ).findById( id );
+        verify( employeeRepository, times( 1 ) ).findById( uuid );
         verify( userRepository, times( 1 ) ).save( user );
         verify( employeeRepository, times( 1 ) ).delete( employee );
     }
