@@ -15,7 +15,6 @@ import com.assemble.backend.models.dtos.project.ProjectAssignmentDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDeleteDTO;
 
 import java.util.List;
-import java.util.Set;
 
 public interface ProjectAssignmentService {
 

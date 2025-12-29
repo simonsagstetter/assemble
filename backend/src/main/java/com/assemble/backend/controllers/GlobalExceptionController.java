@@ -107,7 +107,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseBody
-    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException( DataIntegrityViolationException ex ) {
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException() {
         return createErrorResponse( "A conflict ocurred. Please check your input and try again.", HttpStatus.CONFLICT );
     }
 

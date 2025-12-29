@@ -11,7 +11,6 @@
 package com.assemble.backend.controllers.rest.project;
 
 import com.assemble.backend.models.dtos.global.ErrorResponse;
-import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDeleteDTO;

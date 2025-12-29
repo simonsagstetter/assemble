@@ -75,7 +75,6 @@ class ProjectAssignmentRestControllerTest {
     private ObjectMapper objectMapper;
 
     private static Project testProject;
-    private static User testUser;
     private static Employee testEmployee;
     private static ProjectAssignment testProjectAssignment;
 
@@ -92,7 +91,7 @@ class ProjectAssignmentRestControllerTest {
                                 .build()
                 );
 
-        testUser = userRepository.save(
+        User testUser = userRepository.save(
                 User.builder()
                         .firstname( "Test" )
                         .lastname( "User" )
@@ -108,6 +107,7 @@ class ProjectAssignmentRestControllerTest {
                         .firstname( "Max" )
                         .lastname( "Mustermann" )
                         .email( "testuser@example.com" )
+                        .user( testUser )
                         .build()
         );
 
