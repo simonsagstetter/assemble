@@ -60,25 +60,25 @@ public class TimeEntryDTO extends BaseEntityDTO {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
-            requiredMode = Schema.RequiredMode.REQUIRED
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
     private Instant startTime;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
-            requiredMode = Schema.RequiredMode.REQUIRED
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
     private Instant endTime;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
-            requiredMode = Schema.RequiredMode.REQUIRED
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
     private Duration pauseTime;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
-            requiredMode = Schema.RequiredMode.REQUIRED
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
     private Duration totalTime;
 

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TimeEntryEntityListener {
-    
+
     @Autowired
     @Lazy
     private NoGenerator noGenerator;

@@ -24,7 +24,7 @@ public class ProjectRefDTO {
             accessMode = Schema.AccessMode.READ_ONLY,
             requiredMode = Schema.RequiredMode.REQUIRED,
             format = "uuid",
-            example = "6c0a7fd9872e47b29ec68fb10ea251de"
+            example = "6c0a7fd9-872e-47b2-9ec6-8fb10ea251de"
     )
     @NonNull
     private String id;

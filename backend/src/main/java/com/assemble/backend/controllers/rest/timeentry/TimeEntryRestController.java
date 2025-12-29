@@ -14,7 +14,7 @@ import com.assemble.backend.models.dtos.global.ErrorResponse;
 import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import com.assemble.backend.models.dtos.timeentry.TimeEntryCreateDTO;
 import com.assemble.backend.models.dtos.timeentry.TimeEntryDTO;
-import com.assemble.backend.services.timeentry.TimeEntryServiceImpl;
+import com.assemble.backend.services.timeentry.TimeEntryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,11 +32,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/timeentries")
-@Tag(name = "TimeEntries", description = "Timeentry endpoints")
+@Tag(name = "Timeentries", description = "Timeentry endpoints")
 @AllArgsConstructor
 public class TimeEntryRestController {
 
-    private TimeEntryServiceImpl timeEntryService;
+    private TimeEntryService timeEntryService;
 
     @Operation(
             summary = "Get All Timentries"

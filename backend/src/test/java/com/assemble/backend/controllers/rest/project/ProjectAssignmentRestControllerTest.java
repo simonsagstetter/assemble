@@ -85,7 +85,7 @@ class ProjectAssignmentRestControllerTest {
                         Project.builder()
                                 .name( "Test Project" )
                                 .description( "Test Project Description" )
-                                .category( "Maintanance" )
+                                .category( "Maintenance" )
                                 .stage( ProjectStage.PROPOSAL )
                                 .type( ProjectType.EXTERNAL )
                                 .build()

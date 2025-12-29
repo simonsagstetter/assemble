@@ -92,7 +92,7 @@ class TimeEntryServiceImplTest {
                 .no( "P000001" )
                 .name( "Test Project" )
                 .description( "Test Project Description" )
-                .category( "Maintanance" )
+                .category( "Maintenance" )
                 .stage( ProjectStage.PROPOSAL )
                 .type( ProjectType.EXTERNAL )
                 .createdDate( now )

@@ -33,11 +33,11 @@ class TimeEntryCalculationServiceTest {
         BigDecimal rate = BigDecimal.valueOf( 60 );
         Duration total = Duration.ofHours( 6 );
         Duration pause = Duration.ofMinutes( 30 );
-        BigDecimal expecedRate = BigDecimal.valueOf( 330 );
+        BigDecimal expectedRate = BigDecimal.valueOf( 330 );
 
         BigDecimal actual = timeEntryCalculationService.calculateTotal( total, pause, rate );
 
-        assertEquals( expecedRate, actual );
+        assertEquals( expectedRate, actual );
 
     }
 
@@ -46,11 +46,11 @@ class TimeEntryCalculationServiceTest {
     void calculateTotalShouldReturnCorrectRate_WhenCalledPauseIsNull() {
         BigDecimal rate = BigDecimal.valueOf( 60 );
         Duration total = Duration.ofHours( 6 );
-        BigDecimal expecedRate = BigDecimal.valueOf( 360 );
+        BigDecimal expectedRate = BigDecimal.valueOf( 360 );
 
         BigDecimal actual = timeEntryCalculationService.calculateTotal( total, null, rate );
 
-        assertEquals( expecedRate, actual );
+        assertEquals( expectedRate, actual );
     }
 
     @Test

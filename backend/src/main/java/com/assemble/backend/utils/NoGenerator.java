@@ -12,9 +12,11 @@ package com.assemble.backend.utils;
 
 import com.assemble.backend.models.entities.db.Sequence;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class NoGenerator {
@@ -22,6 +24,7 @@ public class NoGenerator {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Transactional
     public String generateNextNo( String sequenceName, String prefix ) {
         String query = "SELECT s FROM Sequence s WHERE s.name = :sequenceName";
 
@@ -29,6 +32,7 @@ public class NoGenerator {
             Sequence sequence = entityManager
                     .createQuery( query, Sequence.class )
                     .setParameter( "sequenceName", sequenceName )
+                    .setLockMode( LockModeType.PESSIMISTIC_WRITE )
                     .getSingleResult();
 
             sequence.setCurrentValue( sequence.getCurrentValue() + 1 );

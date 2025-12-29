@@ -34,7 +34,7 @@ public class TimeValuesValidator implements ConstraintValidator<ValidTimeValues,
         boolean hasPause = pause != null;
 
         if ( hasRange == hasTotal ) {
-            String tmpl = "Start time and end time or or total time must be set";
+            String tmpl = "Start time and end time or total time must be set";
             constraintValidatorContext
                     .buildConstraintViolationWithTemplate( tmpl )
                     .addPropertyNode( "startTime" )

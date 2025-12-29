@@ -111,4 +111,10 @@ public class GlobalExceptionController {
         return createErrorResponse( "A conflict ocurred. Please check your input and try again.", HttpStatus.CONFLICT );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException( IllegalArgumentException ex ) {
+        return createErrorResponse( ex.getMessage(), HttpStatus.BAD_REQUEST );
+    }
+
 }

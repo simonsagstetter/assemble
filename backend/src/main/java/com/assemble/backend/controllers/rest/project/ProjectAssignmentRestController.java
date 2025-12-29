@@ -14,7 +14,7 @@ import com.assemble.backend.models.dtos.global.ErrorResponse;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDeleteDTO;
-import com.assemble.backend.services.project.ProjectAssignmentServiceImpl;
+import com.assemble.backend.services.project.ProjectAssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,7 +38,7 @@ import java.util.List;
 @PreAuthorize("hasRole('MANAGER') || hasRole('ADMIN') || hasRole('SUPERUSER')")
 public class ProjectAssignmentRestController {
 
-    private ProjectAssignmentServiceImpl service;
+    private ProjectAssignmentService service;
 
     @Operation(
             summary = "Get All Assignments By Project ID"
@@ -131,7 +131,7 @@ public class ProjectAssignmentRestController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<ProjectAssignmentDTO>> createProjectAssignments(
-            @Valid @RequestBody List<ProjectAssignmentCreateDTO> projectAssignmentCreateDTOList
+            @RequestBody List<@Valid ProjectAssignmentCreateDTO> projectAssignmentCreateDTOList
     ) {
         return ResponseEntity.status( HttpStatus.CREATED )
                 .body( service.createProjectAssignments( projectAssignmentCreateDTOList ) );

@@ -13,7 +13,7 @@ package com.assemble.backend.controllers.rest.project;
 import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectDTO;
-import com.assemble.backend.services.project.ProjectServiceImpl;
+import com.assemble.backend.services.project.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,7 +38,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProjectRestController {
 
-    private ProjectServiceImpl projectService;
+    private ProjectService projectService;
 
     @Operation(
             summary = "Get All Projects"
