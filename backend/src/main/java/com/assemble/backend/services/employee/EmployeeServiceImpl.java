@@ -19,6 +19,7 @@ import com.assemble.backend.repositories.employee.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -50,6 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EmployeeRefDTO> searchUnlinkedEmployees( String searchTerm ) {
         String normalizedSearchTerm = searchTerm == null ? "" : searchTerm.toLowerCase();
         return employeeRepository
@@ -60,6 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeDTO createEmployee( EmployeeCreateDTO employeeCreateDTO ) {
         User user = employeeCreateDTO.getUserId() != null ? userRepository
                 .findById( UUID.fromString( employeeCreateDTO.getUserId() ) )
@@ -84,6 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeDTO setEmployeeUser( String employeeId, EmployeeUpdateUserDTO employeeUpdateUserDTO ) {
         Employee employee = employeeRepository.findById( UUID.fromString( employeeId ) )
                 .orElseThrow(
@@ -113,6 +117,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeDTO updateEmployee( String id, EmployeeUpdateDTO employeeUpdateDTO ) {
         Employee employee = employeeRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
@@ -128,6 +133,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public void deleteEmployee( String id ) {
         Employee employee = employeeRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(

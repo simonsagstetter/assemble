@@ -21,6 +21,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -56,6 +57,7 @@ public class UserAdminServiceImpl implements UserAdminService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserRefDTO> searchUnlinkedUsers( String searchTerm ) {
         String normalizedSearchTerm = searchTerm == null ? "" : searchTerm.toLowerCase();
         return userRepository
@@ -66,6 +68,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public UserAdminDTO setUserStatus( String id, UserUpdateStatusDTO userUpdateStatusDTO ) {
         User user = userRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
@@ -83,6 +86,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public UserAdminDTO setUserRoles( String id, List<UserRole> roles ) {
         User user = userRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
@@ -94,6 +98,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public UserAdminDTO setUserEmployee( String userId, UserUpdateEmployeeDTO userUpdateEmployeeDTO ) {
         User user = userRepository.findById( UUID.fromString( userId ) )
                 .orElseThrow(
@@ -134,6 +139,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public UserAdminDTO createUser( UserCreateDTO userCreateDTO ) {
         Employee employee = userCreateDTO.getEmployeeId() != null ? employeeRepository
                 .findById( UUID.fromString( userCreateDTO.getEmployeeId() ) )
@@ -172,6 +178,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public UserAdminDTO updateUser( String id, UserUpdateDTO userUpdateDTO ) {
         User user = userRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
@@ -186,6 +193,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public void setUserPassword( String id, String newPassword, Boolean invalidateAllSessions ) {
         User user = userRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
@@ -202,6 +210,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    @Transactional
     public void deleteUser( String id ) {
         User user = userRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(

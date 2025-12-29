@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.Session;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class SessionServiceImpl implements SessionService {
     private final FindByIndexNameSessionRepository<? extends Session> sessionRepository;
 
     @Override
+    @Transactional
     public void invalidateUserSessions( String username ) {
         Map<String, ? extends Session> sessions = sessionRepository.findByPrincipalName( username );
         sessions.keySet().forEach( sessionRepository::deleteById );

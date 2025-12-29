@@ -22,6 +22,7 @@ import com.assemble.backend.repositories.timeentry.TimeEntryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -51,6 +52,7 @@ public class TimeEntryServiceImpl implements TimeEntryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TimeEntryDTO> getTimeEntriesByEmployeeId( String employeeId ) {
         return timeEntryRepository.findAllByEmployeeId( UUID.fromString( employeeId ) )
                 .stream()
@@ -59,6 +61,7 @@ public class TimeEntryServiceImpl implements TimeEntryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TimeEntryDTO> getTimeEntriesByProjectId( String projectId ) {
         return timeEntryRepository.findAllByProjectId( UUID.fromString( projectId ) )
                 .stream()
@@ -76,6 +79,7 @@ public class TimeEntryServiceImpl implements TimeEntryService {
     }
 
     @Override
+    @Transactional
     public TimeEntryDTO createTimeEntry( TimeEntryCreateDTO timeEntryCreateDTO ) {
         Project project = projectRepository.findById( UUID.fromString( timeEntryCreateDTO.getProjectId() ) )
                 .orElseThrow(
@@ -141,6 +145,7 @@ public class TimeEntryServiceImpl implements TimeEntryService {
     }
 
     @Override
+    @Transactional
     public void deleteTimeEntryById( String id ) {
         TimeEntry timeEntry = timeEntryRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(

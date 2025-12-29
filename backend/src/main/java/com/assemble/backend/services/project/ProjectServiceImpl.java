@@ -18,6 +18,7 @@ import com.assemble.backend.repositories.project.ProjectRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -54,6 +55,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public void deleteProjectById( String id ) {
         Project project = projectRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
