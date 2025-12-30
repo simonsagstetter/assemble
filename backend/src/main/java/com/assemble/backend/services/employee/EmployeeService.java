@@ -24,6 +24,8 @@ public interface EmployeeService {
 
     List<EmployeeRefDTO> searchUnlinkedEmployees( String searchTerm );
 
+    List<EmployeeRefDTO> searchAllEmployees( String searchTerm );
+
     EmployeeDTO createEmployee( EmployeeCreateDTO employeeCreateDTO );
 
     EmployeeDTO updateEmployee( String id, EmployeeUpdateDTO employeeUpdateDTO );

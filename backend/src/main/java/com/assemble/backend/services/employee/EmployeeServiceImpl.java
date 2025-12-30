@@ -62,6 +62,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<EmployeeRefDTO> searchAllEmployees( String searchTerm ) {
+        String normalizedSearchTerm = searchTerm == null ? "" : searchTerm.toLowerCase();
+        return employeeRepository
+                .searchAll( normalizedSearchTerm )
+                .stream()
+                .map( employeeMapper::employeeToEmployeeRefDTO )
+                .toList();
+    }
+
+    @Override
     @Transactional
     public EmployeeDTO createEmployee( EmployeeCreateDTO employeeCreateDTO ) {
         User user = employeeCreateDTO.getUserId() != null ? userRepository

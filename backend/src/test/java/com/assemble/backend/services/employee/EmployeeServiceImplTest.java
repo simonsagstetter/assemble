@@ -200,6 +200,29 @@ class EmployeeServiceImplTest {
     }
 
     @Test
+    @DisplayName("searchAllEmployees should return a list of EmployeeRefDTO if employee found")
+    void searchAllEmployees_ShouldReturnListOfEmployeeRefDTO_WhenEmployeeFound() {
+        String searchTerm = "Max";
+        when( employeeRepository.searchAll( searchTerm.toLowerCase() ) )
+                .thenReturn( List.of( employee ) );
+
+        EmployeeRefDTO employeeRefDTO = EmployeeRefDTO.builder()
+                .id( uuid.toString() )
+                .fullname( employee.getFullname() )
+                .build();
+
+        when( employeeMapper.employeeToEmployeeRefDTO( employee ) ).thenReturn( employeeRefDTO );
+
+        List<EmployeeRefDTO> actual = assertDoesNotThrow( () -> service.searchAllEmployees( searchTerm ) );
+
+        assertEquals( 1, actual.size() );
+        assertThat( actual ).contains( employeeRefDTO );
+
+        verify( employeeRepository, times( 1 ) ).searchAll( searchTerm.toLowerCase() );
+        verify( employeeMapper, times( 1 ) ).employeeToEmployeeRefDTO( employee );
+    }
+
+    @Test
     @DisplayName("createEmployee should throw when user does not exist")
     void createEmployee_ShouldThrow_WhenUserDoesNotExist() {
         EmployeeCreateDTO employeeCreateDTO = EmployeeCreateDTO.builder()

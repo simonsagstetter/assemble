@@ -32,6 +32,14 @@ public class EmployeeRefDTO {
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
             requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "E00001"
+    )
+    @NonNull
+    private String no;
+
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             example = "Max Mustermann"
     )
     @NonNull

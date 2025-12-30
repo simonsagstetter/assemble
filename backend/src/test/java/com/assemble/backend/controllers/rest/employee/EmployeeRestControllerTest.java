@@ -171,6 +171,26 @@ class EmployeeRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
+    @DisplayName("/GET searchAllEmployees should return 200")
+    void searchAllEmployeess_ShouldReturn200_WhenCalled() throws Exception {
+        employeeRepository.save( testEmployee );
+
+        mockMvc.perform(
+                get( "/api/employees/search-all/" + testEmployee.getFirstname() )
+        ).andExpect(
+                status().isOk()
+        ).andExpect(
+                content().contentType( MediaType.APPLICATION_JSON )
+        ).andExpect(
+                jsonPath( "$[0].id" ).isNotEmpty()
+
+        ).andExpect(
+                jsonPath( "$[0].fullname" ).value( testEmployee.getFullname() )
+        );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.MANAGER })
     @DisplayName("/POST createEmployee should return 400 when dto is invalid")
     void createEmployee_ShouldReturn400_WhenDTOIsInvalid() throws Exception {
         employeeRepository.save( testEmployee );
