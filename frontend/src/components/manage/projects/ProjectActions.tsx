@@ -19,7 +19,7 @@ import {
     IdCardIcon,
     PencilIcon,
     TrashIcon,
-    UserIcon,
+    LayersIcon,
 } from "lucide-react";
 import { ComponentProps, ForwardRefExoticComponent, RefAttributes } from "react";
 import { DropdownMenuContentProps } from "@radix-ui/react-dropdown-menu";
@@ -46,7 +46,7 @@ export default function ProjectActions(
                 <DropdownMenuGroup>
                     <DropdownMenuItem
                         onSelect={ () => router.push( `/app/manage/projects/${ id }` ) }>
-                        <UserIcon/> Details
+                        <LayersIcon/> Details
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onSelect={ () => router.push( `/app/manage/projects/${ id }/edit` ) }>

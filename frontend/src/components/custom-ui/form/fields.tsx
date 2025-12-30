@@ -36,7 +36,6 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SelectProps } from "@radix-ui/react-select";
 import { Textarea } from "@/components/ui/textarea";
-import { placeholder } from "@babel/types";
 
 function CustomField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
     { fieldName, formControl, renderAction }

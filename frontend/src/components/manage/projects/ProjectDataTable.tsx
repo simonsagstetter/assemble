@@ -19,7 +19,6 @@ import { DataTable } from "@/components/custom-ui/DataTable";
 import { CheckIcon, MoreHorizontal, XIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import EmployeeActions from "@/components/manage/employees/EmployeeActions";
 import ProjectActions from "@/components/manage/projects/ProjectActions";
 
 type ProjectDataTableProps = {
