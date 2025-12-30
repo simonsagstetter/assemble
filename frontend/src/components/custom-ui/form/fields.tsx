@@ -35,6 +35,7 @@ import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SelectProps } from "@radix-ui/react-select";
+import { Textarea } from "@/components/ui/textarea";
 
 function CustomField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
     { fieldName, formControl, renderAction }
@@ -78,6 +79,43 @@ function InputField<TFieldValues extends FieldValues, TTransformedValues extends
                     { ...props }
                     id={ `${ fieldName }-field` }
                     aria-invalid={ fieldState.invalid }
+                />
+                { children ?
+                    <FieldDescription>
+                        { children }
+                    </FieldDescription>
+                    : null
+                }
+
+                { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
+                </FieldError> }
+            </Field>
+        ) }
+    />
+}
+
+
+function TextareaField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
+    { fieldName, formControl, label, children, ...props }
+    :
+        {
+            fieldName: Path<TFieldValues>,
+            formControl: Control<TFieldValues, any, TTransformedValues>,
+            label: string,
+            children?: ReactNode
+        } & ComponentProps<"textarea">
+) {
+    return <Controller
+        name={ fieldName }
+        control={ formControl }
+        render={ ( { field, fieldState } ) => (
+            <Field data-invalid={ fieldState.invalid }>
+                <FieldLabel htmlFor={ `${ fieldName }-field` }>{ label }</FieldLabel>
+                <Textarea
+                    { ...field }
+                    id={ `${ fieldName }-field` }
+                    aria-invalid={ fieldState.invalid }
+                    { ...props }
                 />
                 { children ?
                     <FieldDescription>
@@ -237,5 +275,6 @@ export {
     InputField,
     SwitchField,
     CalendarField,
-    SelectField
+    SelectField,
+    TextareaField
 }

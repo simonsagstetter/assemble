@@ -44,13 +44,15 @@ public class ProjectCreateDTO {
             accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
-    private ProjectType type;
+    @Builder.Default
+    private ProjectType type = ProjectType.EXTERNAL;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
-    private ProjectStage stage;
+    @Builder.Default
+    private ProjectStage stage = ProjectStage.PROPOSAL;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,

@@ -18,13 +18,11 @@ export const metadata: Metadata = {
 }
 
 type AdminLayoutProps = {
-    children: Readonly<ReactNode>,
-    modal: Readonly<ReactNode>
+    children: Readonly<ReactNode>
 }
 
-export default function AdminLayout( { children, modal }: AdminLayoutProps ) {
+export default function AdminLayout( { children }: AdminLayoutProps ) {
     return <RequireRole roles={ [ UserRolesItem.ADMIN, UserRolesItem.SUPERUSER ] }>
         { children }
-        { modal }
     </RequireRole>;
 }

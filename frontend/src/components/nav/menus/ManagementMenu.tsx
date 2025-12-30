@@ -12,7 +12,7 @@
 
 import {
     MoreHorizontal,
-    ListIcon, PlusIcon, IdCardIcon,
+    ListIcon, PlusIcon, IdCardIcon, LayersIcon,
 } from "lucide-react"
 
 import {
@@ -41,6 +41,36 @@ export default function ManagementMenu() {
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Management</SidebarGroupLabel>
             <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                        <Link href="/app/manage/projects">
+                            <LayersIcon></LayersIcon>
+                            <span>Projects</span>
+                        </Link>
+                    </SidebarMenuButton>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <SidebarMenuAction showOnHover>
+                                <MoreHorizontal/>
+                                <span className="sr-only">More</span>
+                            </SidebarMenuAction>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            className="w-48 rounded-lg"
+                            side={ isMobile ? "bottom" : "right" }
+                            align={ isMobile ? "end" : "start" }
+                        >
+                            <DropdownMenuItem onSelect={ () => router.push( "/app/manage/projects" ) }>
+                                <ListIcon className="text-muted-foreground"/>
+                                <span>View All</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onSelect={ () => router.push( "/app/manage/projects/create" ) }>
+                                <PlusIcon className="text-muted-foreground"/>
+                                <span>New</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </SidebarMenuItem>
                 <SidebarMenuItem>
                     <SidebarMenuButton asChild>
                         <Link href="/app/manage/employees">
