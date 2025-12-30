@@ -12,7 +12,6 @@ package com.assemble.backend.services.project;
 
 import com.assemble.backend.models.dtos.project.ProjectAssignmentCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDTO;
-import com.assemble.backend.models.dtos.project.ProjectAssignmentDeleteDTO;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public interface ProjectAssignmentService {
 
     List<ProjectAssignmentDTO> getProjectAssignmentsByEmployeeId( String employeeId );
 
-    List<ProjectAssignmentDTO> createProjectAssignments( List<ProjectAssignmentCreateDTO> assignments );
+    ProjectAssignmentDTO createProjectAssignment( ProjectAssignmentCreateDTO projectAssignmentCreateDTO );
 
-    void deleteProjectAssignmentByIds( ProjectAssignmentDeleteDTO deleteDTO );
+    void deleteProjectAssignmentById( String id );
 }

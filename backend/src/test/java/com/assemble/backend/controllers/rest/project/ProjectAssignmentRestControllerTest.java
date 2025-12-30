@@ -11,7 +11,6 @@
 package com.assemble.backend.controllers.rest.project;
 
 import com.assemble.backend.models.dtos.project.ProjectAssignmentCreateDTO;
-import com.assemble.backend.models.dtos.project.ProjectAssignmentDeleteDTO;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.models.entities.employee.Employee;
@@ -182,17 +181,15 @@ class ProjectAssignmentRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
-    @DisplayName("/POST createProjectAssignments should return status code 400 when request body is invalid")
-    void createProjectAssignments_ShouldReturnStatusCode400_WhenRequestBodyIsInvalid() throws Exception {
-        List<ProjectAssignmentCreateDTO> dtoList = List.of(
-                ProjectAssignmentCreateDTO.builder()
-                        .projectId( "" )
-                        .employeeId( "" )
-                        .hourlyRate( BigDecimal.valueOf( 50 ) )
-                        .build()
-        );
+    @DisplayName("/POST createProjectAssignment should return status code 400 when request body is invalid")
+    void createProjectAssignment_ShouldReturnStatusCode400_WhenRequestBodyIsInvalid() throws Exception {
+        ProjectAssignmentCreateDTO dto = ProjectAssignmentCreateDTO.builder()
+                .projectId( "" )
+                .employeeId( "" )
+                .hourlyRate( BigDecimal.valueOf( 50 ) )
+                .build();
 
-        String jsonContent = objectMapper.writeValueAsString( dtoList );
+        String jsonContent = objectMapper.writeValueAsString( dto );
 
         mockMvc.perform(
                 post( "/api/projectassignments" )
@@ -204,24 +201,22 @@ class ProjectAssignmentRestControllerTest {
         ).andExpect(
                 content().contentType( MediaType.APPLICATION_JSON )
         ).andExpect(
-                jsonPath( "$.message" ).isNotEmpty()
+                jsonPath( "$.errors" ).isArray()
         );
     }
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
-    @DisplayName("/POST createProjectAssignments should return status code 404 when employee not found")
-    void createProjectAssignments_ShouldReturnStatusCode404_WhenEmployeeNotFound() throws Exception {
+    @DisplayName("/POST createProjectAssignment should return status code 404 when employee not found")
+    void createProjectAssignment_ShouldReturnStatusCode404_WhenEmployeeNotFound() throws Exception {
         assert testProject.getId() != null;
-        List<ProjectAssignmentCreateDTO> dtoList = List.of(
-                ProjectAssignmentCreateDTO.builder()
-                        .employeeId( UuidCreator.getTimeOrderedEpoch().toString() )
-                        .projectId( testProject.getId().toString() )
-                        .hourlyRate( BigDecimal.valueOf( 50 ) )
-                        .build()
-        );
+        ProjectAssignmentCreateDTO dto = ProjectAssignmentCreateDTO.builder()
+                .employeeId( UuidCreator.getTimeOrderedEpoch().toString() )
+                .projectId( testProject.getId().toString() )
+                .hourlyRate( BigDecimal.valueOf( 50 ) )
+                .build();
 
-        String jsonContent = objectMapper.writeValueAsString( dtoList );
+        String jsonContent = objectMapper.writeValueAsString( dto );
 
         mockMvc.perform(
                 post( "/api/projectassignments" )
@@ -239,18 +234,16 @@ class ProjectAssignmentRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
-    @DisplayName("/POST createProjectAssignments should return status code 404 when project not found")
-    void createProjectAssignments_ShouldReturnStatusCode404_WhenProjectNotFound() throws Exception {
+    @DisplayName("/POST createProjectAssignment should return status code 404 when project not found")
+    void createProjectAssignment_ShouldReturnStatusCode404_WhenProjectNotFound() throws Exception {
         assert testEmployee.getId() != null;
-        List<ProjectAssignmentCreateDTO> dtoList = List.of(
-                ProjectAssignmentCreateDTO.builder()
-                        .projectId( UuidCreator.getTimeOrderedEpoch().toString() )
-                        .employeeId( testEmployee.getId().toString() )
-                        .hourlyRate( BigDecimal.valueOf( 50 ) )
-                        .build()
-        );
+        ProjectAssignmentCreateDTO dto = ProjectAssignmentCreateDTO.builder()
+                .projectId( UuidCreator.getTimeOrderedEpoch().toString() )
+                .employeeId( testEmployee.getId().toString() )
+                .hourlyRate( BigDecimal.valueOf( 50 ) )
+                .build();
 
-        String jsonContent = objectMapper.writeValueAsString( dtoList );
+        String jsonContent = objectMapper.writeValueAsString( dto );
 
         mockMvc.perform(
                 post( "/api/projectassignments" )
@@ -268,19 +261,17 @@ class ProjectAssignmentRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
-    @DisplayName("/POST createProjectAssignments should return status code 201 when request body is valid")
-    void createProjectAssignments_ShouldReturnStatusCode201_WhenRequestBodyIsValid() throws Exception {
+    @DisplayName("/POST createProjectAssignment should return status code 201 when request body is valid")
+    void createProjectAssignment_ShouldReturnStatusCode201_WhenRequestBodyIsValid() throws Exception {
         assert testEmployee.getId() != null;
         assert testProject.getId() != null;
-        List<ProjectAssignmentCreateDTO> dtoList = List.of(
-                ProjectAssignmentCreateDTO.builder()
-                        .projectId( testProject.getId().toString() )
-                        .employeeId( testEmployee.getId().toString() )
-                        .hourlyRate( BigDecimal.valueOf( 50 ) )
-                        .build()
-        );
+        ProjectAssignmentCreateDTO dto = ProjectAssignmentCreateDTO.builder()
+                .projectId( testProject.getId().toString() )
+                .employeeId( testEmployee.getId().toString() )
+                .hourlyRate( BigDecimal.valueOf( 50 ) )
+                .build();
 
-        String jsonContent = objectMapper.writeValueAsString( dtoList );
+        String jsonContent = objectMapper.writeValueAsString( dto );
 
         mockMvc.perform(
                         post( "/api/projectassignments" )
@@ -292,36 +283,41 @@ class ProjectAssignmentRestControllerTest {
                 ).andExpect(
                         content().contentType( MediaType.APPLICATION_JSON )
                 ).andExpect(
-                        jsonPath( "$[0].id" ).isNotEmpty()
+                        jsonPath( "$.id" ).isNotEmpty()
                 )
                 .andExpect(
-                        jsonPath( "$[0].employee.id" ).value( testEmployee.getId().toString() )
+                        jsonPath( "$.employee.id" ).value( testEmployee.getId().toString() )
                 )
                 .andExpect(
-                        jsonPath( "$[0].project.id" ).value( testProject.getId().toString() )
+                        jsonPath( "$.project.id" ).value( testProject.getId().toString() )
                 )
                 .andExpect(
-                        jsonPath( "$[0].hourlyRate" ).value( dtoList.getFirst().getHourlyRate().doubleValue() )
+                        jsonPath( "$.hourlyRate" ).value( dto.getHourlyRate().doubleValue() )
                 );
     }
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
-    @DisplayName("/DELETE deleteProjectAssignmentsByIds should return status code 400 when request body is invalid")
-    void deleteProjectAssignmentsByIds_ShouldReturnStatusCode400_WhenRequestBodyIsInvalid() throws Exception {
-        ProjectAssignmentDeleteDTO dto = ProjectAssignmentDeleteDTO.builder()
-                .ids( List.of() )
+    @DisplayName("/POST createProjectAssignment should return status code 409 when request body is key conflict")
+    void createProjectAssignment_ShouldReturnStatusCode409_WhenRequestBodyIsKeyConflict() throws Exception {
+        projectAssignmentRepository.save( testProjectAssignment );
+        assert testEmployee.getId() != null;
+        assert testProject.getId() != null;
+        ProjectAssignmentCreateDTO dto = ProjectAssignmentCreateDTO.builder()
+                .projectId( testProject.getId().toString() )
+                .employeeId( testEmployee.getId().toString() )
+                .hourlyRate( BigDecimal.valueOf( 50 ) )
                 .build();
 
         String jsonContent = objectMapper.writeValueAsString( dto );
 
         mockMvc.perform(
-                delete( "/api/projectassignments" )
+                post( "/api/projectassignments" )
                         .contentType( MediaType.APPLICATION_JSON )
                         .content( jsonContent )
                         .with( csrf() )
         ).andExpect(
-                status().isBadRequest()
+                status().isConflict()
         ).andExpect(
                 content().contentType( MediaType.APPLICATION_JSON )
         ).andExpect(
@@ -331,18 +327,10 @@ class ProjectAssignmentRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
-    @DisplayName("/DELETE deleteProjectAssignmentsByIds should return status code 404 when ProjectAssignment not found")
-    void deleteProjectAssignmentsByIds_ShouldReturnStatusCode404_WhenProjectAssignmentNotFound() throws Exception {
-        ProjectAssignmentDeleteDTO dto = ProjectAssignmentDeleteDTO.builder()
-                .ids( List.of( UuidCreator.getTimeOrderedEpoch().toString() ) )
-                .build();
-
-        String jsonContent = objectMapper.writeValueAsString( dto );
-
+    @DisplayName("/DELETE deleteProjectAssignmentById should return status code 404 when ProjectAssignment not found")
+    void deleteProjectAssignmentById_ShouldReturnStatusCode404_WhenProjectAssignmentNotFound() throws Exception {
         mockMvc.perform(
-                delete( "/api/projectassignments" )
-                        .contentType( MediaType.APPLICATION_JSON )
-                        .content( jsonContent )
+                delete( "/api/projectassignments/" + UuidCreator.getTimeOrderedEpoch().toString() )
                         .with( csrf() )
         ).andExpect(
                 status().isNotFound()
@@ -355,20 +343,12 @@ class ProjectAssignmentRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
-    @DisplayName("/DELETE deleteProjectAssignmentsByIds should return status code 204 when request body is valid")
-    void deleteProjectAssignmentsByIds_ShouldReturnStatusCode204_WhenRequestBodyIsValid() throws Exception {
+    @DisplayName("/DELETE deleteProjectAssignmentById should return status code 204 when request body is valid")
+    void deleteProjectAssignmentById_ShouldReturnStatusCode204_WhenRequestBodyIsValid() throws Exception {
         ProjectAssignment projectAssignment = projectAssignmentRepository.save( testProjectAssignment );
         assert projectAssignment.getId() != null;
-        ProjectAssignmentDeleteDTO dto = ProjectAssignmentDeleteDTO.builder()
-                .ids( List.of( projectAssignment.getId().toString() ) )
-                .build();
-
-        String jsonContent = objectMapper.writeValueAsString( dto );
-
         mockMvc.perform(
-                delete( "/api/projectassignments" )
-                        .contentType( MediaType.APPLICATION_JSON )
-                        .content( jsonContent )
+                delete( "/api/projectassignments/" + projectAssignment.getId().toString() )
                         .with( csrf() )
         ).andExpect(
                 status().isNoContent()
