@@ -14,10 +14,11 @@ import AppSidebar from "@/components/nav/AppSidebar";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 
 type AppLayoutProps = {
-    children: Readonly<ReactNode>
+    children: Readonly<ReactNode>,
+    modal: Readonly<ReactNode>
 }
 
-export default async function AppLayout( { children }: AppLayoutProps ) {
+export default async function AppLayout( { children, modal }: AppLayoutProps ) {
     const userDetails = await getUserDetails();
 
     return <SidebarProvider>
@@ -25,6 +26,7 @@ export default async function AppLayout( { children }: AppLayoutProps ) {
         <SidebarInset>
             <SiteHeader/>
             { children }
+            { modal }
         </SidebarInset>
     </SidebarProvider>
 }
