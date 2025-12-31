@@ -129,6 +129,7 @@ class ProjectAssignmentServiceImplTest {
                         EmployeeRefDTO.builder()
                                 .id( recordId.toString() )
                                 .fullname( testEmployee.getFullname() )
+                                .no( testEmployee.getNo() )
                                 .build()
                 )
                 .active( testProjectAssignment.isActive() )
@@ -138,6 +139,30 @@ class ProjectAssignmentServiceImplTest {
                 .createdBy( testProjectAssignment.getCreatedBy() )
                 .lastModifiedBy( testProjectAssignment.getLastModifiedBy() )
                 .build();
+    }
+
+    @Test
+    @DisplayName("getProjectAssignmentById should throw if ProjectAssignment does not exist")
+    void getProjectAssignmentById_ShouldThrow_WhenProjectAssignmentDoesNotExist() {
+        when( projectAssignmentRepository.findById( randomId ) ).thenReturn( Optional.empty() );
+
+        assertThrows( EntityNotFoundException.class, () -> service.getProjectAssignmentById( randomId.toString() ) );
+
+        verify( projectAssignmentRepository, times( 1 ) ).findById( randomId );
+    }
+
+    @Test
+    @DisplayName("getProjectAssignmentById should return ProjectAssignmentDTO if ProjectAssignment does exist")
+    void getProjectAssignmentById_ShouldReturnProjectAssignmentDTO_WhenProjectAssignmentExists() {
+        when( projectAssignmentRepository.findById( recordId ) ).thenReturn( Optional.of( testProjectAssignment ) );
+        when( projectAssignmentMapper.toProjectAssignmentDTO( testProjectAssignment ) ).thenReturn( testProjectAssignmentDTO );
+
+        ProjectAssignmentDTO actual = assertDoesNotThrow( () -> service.getProjectAssignmentById( recordId.toString() ) );
+
+        assertEquals( testProjectAssignmentDTO, actual );
+
+        verify( projectAssignmentRepository, times( 1 ) ).findById( recordId );
+        verify( projectAssignmentMapper, times( 1 ) ).toProjectAssignmentDTO( testProjectAssignment );
     }
 
     @Test

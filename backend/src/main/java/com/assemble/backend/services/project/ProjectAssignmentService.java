@@ -17,6 +17,8 @@ import java.util.List;
 
 public interface ProjectAssignmentService {
 
+    ProjectAssignmentDTO getProjectAssignmentById( String id );
+
     List<ProjectAssignmentDTO> getProjectAssignmentsByProjectId( String projectId );
 
     List<ProjectAssignmentDTO> getProjectAssignmentsByEmployeeId( String employeeId );

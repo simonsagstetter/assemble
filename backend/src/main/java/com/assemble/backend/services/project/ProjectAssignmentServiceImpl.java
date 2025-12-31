@@ -36,6 +36,16 @@ public class ProjectAssignmentServiceImpl implements ProjectAssignmentService {
     private ProjectRepository projectRepository;
 
     @Override
+    public ProjectAssignmentDTO getProjectAssignmentById( String id ) {
+        ProjectAssignment projectAssignment = projectAssignmentRepository.findById( UUID.fromString( id ) )
+                .orElseThrow(
+                        () -> new EntityNotFoundException( "Could not find project assignment with id: " + id )
+                );
+
+        return projectAssignmentMapper.toProjectAssignmentDTO( projectAssignment );
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<ProjectAssignmentDTO> getProjectAssignmentsByProjectId( String projectId ) {
         return projectAssignmentRepository

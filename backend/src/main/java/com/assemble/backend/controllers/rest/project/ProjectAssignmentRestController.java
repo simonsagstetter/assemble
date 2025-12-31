@@ -41,6 +41,39 @@ public class ProjectAssignmentRestController {
     private ProjectAssignmentService service;
 
     @Operation(
+            summary = "Get Project Assignment By ID"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(
+                            implementation = ProjectAssignmentDTO.class
+                    )
+            )
+    )
+    @ApiResponse(
+            description = "Not Found",
+            responseCode = "404",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(
+                            implementation = ErrorResponse.class
+                    )
+            )
+    )
+    @GetMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<ProjectAssignmentDTO> getProjectAssignmentById(
+            @PathVariable String id
+    ) {
+        return ResponseEntity.ok( service.getProjectAssignmentById( id ) );
+    }
+
+    @Operation(
             summary = "Get All Assignments By Project ID"
     )
     @ApiResponse(

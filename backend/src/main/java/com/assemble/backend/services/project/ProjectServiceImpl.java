@@ -49,6 +49,17 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<ProjectDTO> searchAllProjects( String searchTerm ) {
+        String normalizedSearchTerm = searchTerm == null ? "" : searchTerm.toLowerCase();
+        return projectRepository
+                .searchAll( normalizedSearchTerm )
+                .stream()
+                .map( projectMapper::toProjectDTO )
+                .toList();
+    }
+
+    @Override
     public ProjectDTO createProject( ProjectCreateDTO projectCreateDTO ) {
         Project newProject = projectRepository.save( projectMapper.toProject( projectCreateDTO ) );
         return projectMapper.toProjectDTO( newProject );

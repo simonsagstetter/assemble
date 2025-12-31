@@ -146,6 +146,28 @@ class ProjectRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
+    @DisplayName("/GET searchAllProjects should return status code 200 when project does exist in db")
+    void searchAllProjects_ShouldReturnStatusCode200_WhenProjectDoesExistInDB() throws Exception {
+        Project project = projectRepository.save( testProject );
+        assert project.getId() != null;
+        mockMvc.perform(
+                        get( "/api/projects/search/{searchTerm}", project.getName() )
+                ).andExpect(
+                        status().isOk()
+                ).andExpect(
+                        content().contentType( MediaType.APPLICATION_JSON )
+                ).andExpect(
+                        jsonPath( "$[0].id" ).value( project.getId().toString() )
+                ).andExpect(
+                        jsonPath( "$[0].no" ).value( project.getNo() )
+                )
+                .andExpect(
+                        jsonPath( "$[0].name" ).value( project.getName() )
+                );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.MANAGER })
     @DisplayName("/POST createProject should return status code 400 when request body is invalid")
     void createProject_ShouldReturnStatusCode400_WhenRequestBodyIsInvalid() throws Exception {
         ProjectCreateDTO invalidCreateDTO = ProjectCreateDTO.builder()

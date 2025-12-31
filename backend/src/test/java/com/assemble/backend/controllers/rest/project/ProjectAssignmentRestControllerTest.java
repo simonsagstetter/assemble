@@ -120,6 +120,51 @@ class ProjectAssignmentRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
+    @DisplayName("/GET getProjectAssignmentById should return status code 404 when not found")
+    void getProjectAssignmentById_ShouldReturnStatusCode404_WhenNotFound() throws Exception {
+        mockMvc.perform(
+                        get( "/api/projectassignments/" + UuidCreator.getTimeOrderedEpoch().toString() )
+                ).andExpect(
+                        status().isNotFound()
+                ).andExpect(
+                        content().contentType( MediaType.APPLICATION_JSON )
+                )
+                .andExpect(
+                        jsonPath( "$.message" ).isNotEmpty()
+                );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.MANAGER })
+    @DisplayName("/GET getProjectAssignmentById should return status code 200 when found")
+    void getProjectAssignmentById_ShouldReturnStatusCode200_WhenFound() throws Exception {
+        ProjectAssignment projectAssignment = projectAssignmentRepository.save( testProjectAssignment );
+        assert projectAssignment.getId() != null;
+        assert testProject.getId() != null;
+        assert testEmployee.getId() != null;
+        mockMvc.perform(
+                        get( "/api/projectassignments/" + projectAssignment.getId().toString() )
+                ).andExpect(
+                        status().isOk()
+                ).andExpect(
+                        content().contentType( MediaType.APPLICATION_JSON )
+                )
+                .andExpect(
+                        jsonPath( "$.id" ).value( projectAssignment.getId().toString() )
+                )
+                .andExpect(
+                        jsonPath( "$.employee.id" ).value( testEmployee.getId().toString() )
+                )
+                .andExpect(
+                        jsonPath( "$.project.id" ).value( testProject.getId().toString() )
+                )
+                .andExpect(
+                        jsonPath( "$.hourlyRate" ).value( testProjectAssignment.getHourlyRate().doubleValue() )
+                );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.MANAGER })
     @DisplayName("/GET getAllProjectAssignmentsByProjectId should return status code 200")
     void getAllProjectAssignmentsByProjectId_ShouldReturnStatusCode200_WhenCalled() throws Exception {
         ProjectAssignment projectAssignment = projectAssignmentRepository.save( testProjectAssignment );

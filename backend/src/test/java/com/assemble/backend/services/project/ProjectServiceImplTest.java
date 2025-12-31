@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -142,6 +143,25 @@ class ProjectServiceImplTest {
         assertEquals( testProjectDTO, actual );
 
         verify( projectRepository, times( 1 ) ).findById( testProjectId );
+        verify( projectMapper, times( 1 ) ).toProjectDTO( testProject );
+    }
+
+    @Test
+    @DisplayName("searchAllProjects should return a list of ProjectDTO if project found")
+    void searchAllProjects_ShouldReturnListOfProjectDTO_WhenProjectFound() {
+        String searchTerm = "Test";
+        when( projectRepository.searchAll( searchTerm.toLowerCase() ) )
+                .thenReturn( List.of( testProject ) );
+
+
+        when( projectMapper.toProjectDTO( testProject ) ).thenReturn( testProjectDTO );
+
+        List<ProjectDTO> actual = assertDoesNotThrow( () -> service.searchAllProjects( searchTerm ) );
+
+        assertEquals( 1, actual.size() );
+        assertThat( actual ).contains( testProjectDTO );
+
+        verify( projectRepository, times( 1 ) ).searchAll( searchTerm.toLowerCase() );
         verify( projectMapper, times( 1 ) ).toProjectDTO( testProject );
     }
 
