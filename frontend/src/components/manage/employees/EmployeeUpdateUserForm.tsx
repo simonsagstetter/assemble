@@ -9,7 +9,7 @@
  */
 "use client";
 
-import { Employee } from "@/api/rest/generated/query/openAPIDefinition.schemas";
+import { EmployeeDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import useModalContext from "@/hooks/useModalContext";
 import { useRouter } from "@bprogress/next/app";
 import { FormProvider, useForm } from "react-hook-form";
@@ -36,7 +36,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
 type EmployeeUpdateUserFormProps = {
-    employee: Employee
+    employee: EmployeeDTO
 }
 
 export default function EmployeeUpdateUserForm( { employee }: EmployeeUpdateUserFormProps ) {

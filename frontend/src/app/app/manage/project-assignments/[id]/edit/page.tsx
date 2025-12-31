@@ -8,6 +8,6 @@
  * All rights reserved.
  */
 
-export default function AssignEmployeesPage() {
+export default function DeleteProjectAssignmentPage() {
     throw new Error( "Not Implemented" );
 }

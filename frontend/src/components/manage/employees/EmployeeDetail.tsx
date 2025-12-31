@@ -10,7 +10,7 @@
 
 "use client";
 
-import { Employee } from "@/api/rest/generated/query/openAPIDefinition.schemas";
+import { EmployeeDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -31,16 +31,31 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
     ChevronDownIcon,
-    PencilIcon,
+    PencilIcon, PlusIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import EmployeeActions from "@/components/manage/employees/EmployeeActions";
+import {
+    useGetAllProjectAssignmentsByEmployeeId
+} from "@/api/rest/generated/query/project-assignments/project-assignments";
+import Loading from "@/components/custom-ui/Loading";
+import ProjectAssignmentDataTable from "@/components/manage/projects/ProjectAssignmentDataTable";
+import { useSearchParams } from "next/navigation";
 
 type EmployeeDetailProps = {
-    employee: Employee
+    employee: EmployeeDTO
 }
 
 export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
+    const {
+        data: projectAssignments,
+        isPending,
+        isError,
+        error
+    } = useGetAllProjectAssignmentsByEmployeeId( employee.id );
+    const params = useSearchParams();
+    const activeTab = params.get( "tab" ) ?? "details";
+
     return <Card className="w-full border-0 shadow-none rounded-none">
         <CardHeader className={ "px-8 py-4" }>
             <small className="text-xs uppercase leading-0 pt-1">employee</small>
@@ -91,10 +106,10 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
         </CardHeader>
         <Separator></Separator>
         <CardContent className={ "px-8" }>
-            <Tabs defaultValue="details">
+            <Tabs defaultValue={ activeTab }>
                 <TabsList>
                     <TabsTrigger value="details">Details</TabsTrigger>
-                    <TabsTrigger value="related">Related</TabsTrigger>
+                    <TabsTrigger value="projects">Projects</TabsTrigger>
                 </TabsList>
                 <TabsContent value="details" className={ "py-2" }>
                     <Accordion type={ "single" } defaultValue={ "identity" }>
@@ -318,8 +333,19 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
                         </AccordionItem>
                     </Accordion>
                 </TabsContent>
-                <TabsContent value="related">
-                    <>Not Implemented Yet</>
+                <TabsContent value="projects">
+                    { isPending || !projectAssignments ? <Loading/> : null }
+                    { isError ? error?.message ?? "Error loading assignments" : null }
+                    { !isPending && projectAssignments ?
+                        <div className={ "relative" }>
+                            <Button type={ "button" } className={ "absolute right-0 -top-11" }>
+                                <Link href={ `/app/manage/employees/${ employee.id }/assign` }
+                                      className={ "px-4 py-3 flex flex-row items-center gap-1" }><PlusIcon
+                                    className={ "size-4" }/>Assign</Link>
+                            </Button>
+                            <ProjectAssignmentDataTable projectAssignments={ projectAssignments }
+                                                        origin={ "Employee" }/>
+                        </div> : null }
                 </TabsContent>
             </Tabs>
         </CardContent>

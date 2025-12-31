@@ -8,7 +8,7 @@
  * All rights reserved.
  */
 
-import { Employee } from "@/api/rest/generated/query/openAPIDefinition.schemas";
+import { EmployeeDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import Link from "next/link";
@@ -19,11 +19,11 @@ import { MoreHorizontal } from "lucide-react";
 import EmployeeActions from "@/components/manage/employees/EmployeeActions";
 
 type EmployeeDataTableProps = {
-    employees: Employee[]
+    employees: EmployeeDTO[]
 }
 
 export default function EmployeeDataTable( { employees }: EmployeeDataTableProps ) {
-    const columns: ColumnDef<Employee>[] = useMemo( () => [
+    const columns: ColumnDef<EmployeeDTO>[] = useMemo( () => [
         {
             header: "No",
             cell( { row } ) {

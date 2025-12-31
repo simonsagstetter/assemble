@@ -17,7 +17,7 @@ import {
     DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import {
-    IdCardIcon, PencilIcon,
+    IdCardIcon, LayersIcon, PencilIcon,
     TrashIcon,
     UserIcon,
 } from "lucide-react";
@@ -31,6 +31,10 @@ export default function EmployeeActions(
     const router = useRouter();
     return <DropdownMenuContent { ...props }>
         <DropdownMenuGroup>
+            <DropdownMenuItem
+                onSelect={ () => router.push( `/app/manage/employees/${ id }/assign` ) }>
+                <LayersIcon/> Assign
+            </DropdownMenuItem>
             <DropdownMenuItem
                 onSelect={ () => router.push( `/app/manage/employees/${ id }/user` ) }>
                 <UserIcon/> { hasUser ? "Update User" : "Connect User" }

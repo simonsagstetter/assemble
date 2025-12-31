@@ -12,7 +12,7 @@ import { z } from "zod";
 import { optionalString } from "@/utils/zod";
 import { ProjectDTOStage, ProjectDTOType } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 
-const CreateProjectSchema = z.object( {
+const ProjectCreateSchema = z.object( {
     name: z.string().trim().min( 1, "Name is required." ),
     active: z.boolean().optional(),
     type: optionalString( z.enum( ProjectDTOType ) ),
@@ -21,10 +21,20 @@ const CreateProjectSchema = z.object( {
     stage: optionalString( z.enum( ProjectDTOStage ) )
 } );
 
-type CreateProjectFormData = z.infer<typeof CreateProjectSchema>;
+type ProjectCreateFormData = z.infer<typeof ProjectCreateSchema>;
 
+const ProjectAssignmentCreateSchema = z.object( {
+    employeeId: z.string().trim().min( 1, "Employee ID is required." ),
+    projectId: z.string().trim().min( 1, "Project ID is required." ),
+    active: z.boolean(),
+    hourlyRate: z.coerce.number<number>().optional()
+} );
+
+type ProjectAssignmentCreateFormData = z.infer<typeof ProjectAssignmentCreateSchema>;
 
 export {
-    type CreateProjectFormData,
-    CreateProjectSchema
+    type ProjectCreateFormData,
+    type ProjectAssignmentCreateFormData,
+    ProjectCreateSchema,
+    ProjectAssignmentCreateSchema
 }

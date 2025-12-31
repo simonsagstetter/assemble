@@ -28,7 +28,10 @@ import { FieldDescription, FieldGroup, FieldLegend, FieldSet } from "@/component
 import { ErrorMessage, SuccessMessage } from "@/components/custom-ui/form/messages";
 import { Separator } from "@/components/ui/separator";
 import { FormActions } from "@/components/custom-ui/form/actions";
-import { CreateProjectFormData, CreateProjectSchema } from "@/types/projects/project.types";
+import {
+    ProjectCreateFormData,
+    ProjectCreateSchema
+} from "@/types/projects/project.types";
 import { getGetAllProjectsQueryKey, useCreateProject } from "@/api/rest/generated/query/projects/projects";
 import { InputField, SelectField, SwitchField, TextareaField } from "@/components/custom-ui/form/fields";
 
@@ -38,7 +41,7 @@ export default function ProjectCreateForm() {
     const router = useRouter();
 
     const form = useForm( {
-        resolver: zodResolver( CreateProjectSchema ),
+        resolver: zodResolver( ProjectCreateSchema ),
         defaultValues: {
             name: "",
             active: true,
@@ -54,7 +57,7 @@ export default function ProjectCreateForm() {
     const { mutate, isError, isSuccess, isPending } = useCreateProject();
     const disabled = isPending || isSubmitting || isSuccess;
 
-    const handleCreateProject = async ( data: CreateProjectFormData ) => {
+    const handleCreateProject = async ( data: ProjectCreateFormData ) => {
         mutate(
             {
                 data: {
@@ -83,7 +86,7 @@ export default function ProjectCreateForm() {
                         const data = error.response.data;
                         if ( "errors" in data && data.errors ) {
                             data.errors.forEach( ( error: FieldValidationError ) => {
-                                form.setError( error.fieldName as keyof CreateProjectFormData, {
+                                form.setError( error.fieldName as keyof ProjectCreateFormData, {
                                     type: "manual",
                                     message: error.errorMessage
                                 } )
