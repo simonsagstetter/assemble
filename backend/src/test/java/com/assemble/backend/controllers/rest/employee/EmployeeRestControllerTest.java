@@ -374,7 +374,7 @@ class EmployeeRestControllerTest {
         String jsonContent = objectMapper.writeValueAsString( employeeUpdateUserDTO );
 
         mockMvc.perform(
-                patch( "/api/employees/" + randomId.toString() + "/user" )
+                patch( "/api/employees/" + randomId + "/user" )
                         .contentType( MediaType.APPLICATION_JSON )
                         .content( jsonContent )
                         .with( csrf() )

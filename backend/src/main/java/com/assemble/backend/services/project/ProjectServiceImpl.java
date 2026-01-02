@@ -13,7 +13,6 @@ package com.assemble.backend.services.project;
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectDTO;
 import com.assemble.backend.models.entities.project.Project;
-import com.assemble.backend.models.entities.project.ProjectAssignment;
 import com.assemble.backend.models.mappers.project.ProjectMapper;
 import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
 import com.assemble.backend.repositories.project.ProjectRepository;
