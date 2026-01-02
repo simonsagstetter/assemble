@@ -74,7 +74,8 @@ export default function ProjectDetail( { project }: ProjectDetailProps ) {
                 </div>
             </div>
             <CardDescription className={ "leading-6" }>
-                <div className="flex flex-row gap-10 **:[&_span]:text-xs **:[&_p]:font-semibold **:[&_p]:text-sm">
+                <div
+                    className="flex flex-row gap-10 **:[&_span]:text-xs **:[&_p]:font-semibold **:[&_p]:text-sm **:text-stone-800">
                     <div>
                         <span>No.</span>
                         <p>{ project.no }</p>
@@ -117,7 +118,7 @@ export default function ProjectDetail( { project }: ProjectDetailProps ) {
                                      value={ project.stage }/>
         <Separator/>
         <CardContent className={ "px-8" }>
-            <Tabs defaultValue={ activeTab } onValueChange={ setActiveTab }>
+            <Tabs defaultValue={ activeTab } onValueChange={ setActiveTab } value={ activeTab }>
                 <TabsList>
                     <TabsTrigger value="details">Details</TabsTrigger>
                     <TabsTrigger value="team">Team</TabsTrigger>

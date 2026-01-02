@@ -45,7 +45,8 @@ export default function UserDetail( { userDetails }: UserDetailProps ) {
                 </div>
             </div>
             <CardDescription className={ "leading-6" }>
-                <div className="flex flex-row gap-10 **:[&_span]:text-xs **:[&_p]:font-semibold **:[&_p]:text-sm">
+                <div
+                    className="flex flex-row gap-10 **:[&_span]:text-xs **:[&_p]:font-semibold **:[&_p]:text-sm **:text-stone-800">
                     <div>
                         <span>Employee</span>
                         <p>

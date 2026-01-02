@@ -74,7 +74,8 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
                 </div>
             </div>
             <CardDescription className={ "leading-6" }>
-                <div className="flex flex-row gap-10 **:[&_span]:text-xs **:[&_p]:font-semibold **:[&_p]:text-sm">
+                <div
+                    className="flex flex-row gap-10 **:[&_span]:text-xs **:[&_p]:font-semibold **:[&_p]:text-sm **:text-stone-800">
                     <div>
                         <span>No.</span>
                         <p>{ employee.no }</p>
@@ -119,7 +120,7 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
         </CardHeader>
         <Separator></Separator>
         <CardContent className={ "px-8" }>
-            <Tabs defaultValue={ activeTab } onValueChange={ setActiveTab }>
+            <Tabs defaultValue={ activeTab } value={ activeTab } onValueChange={ setActiveTab }>
                 <TabsList>
                     <TabsTrigger value="details">Details</TabsTrigger>
                     <TabsTrigger value="projects">Projects</TabsTrigger>
