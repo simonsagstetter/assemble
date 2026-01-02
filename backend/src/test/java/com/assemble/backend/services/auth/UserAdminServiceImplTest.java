@@ -264,6 +264,7 @@ class UserAdminServiceImplTest {
         Employee employee = Employee.builder()
                 .id( uuid )
                 .user( null )
+                .no( "E000001" )
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
                 .email( "max.mustermann@example.com" )
@@ -284,7 +285,12 @@ class UserAdminServiceImplTest {
         user.setEmployee( employee );
         when( userAdminMapper.toUser( userCreateDTO ) ).thenReturn( user );
         when( userRepository.save( user ) ).thenReturn( user );
-        userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( uuid.toString() ).fullname( employee.getFullname() ).build() );
+        userAdminDTO.setEmployee( EmployeeRefDTO.builder()
+                .id( uuid.toString() )
+                .fullname( employee.getFullname() )
+                .no( employee.getNo() )
+                .build()
+        );
         when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
         when( userRepository.save( user ) ).thenReturn( user );
 
@@ -309,6 +315,7 @@ class UserAdminServiceImplTest {
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
                 .email( "max.mustermann@example.com" )
+                .no( "E000001" )
                 .build();
 
         UserCreateDTO userCreateDTO = UserCreateDTO.builder()
@@ -325,7 +332,7 @@ class UserAdminServiceImplTest {
         user.setEmployee( employee );
         when( userAdminMapper.toUser( userCreateDTO ) ).thenReturn( user );
         when( userRepository.save( user ) ).thenReturn( user );
-        userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( uuid.toString() ).fullname( employee.getFullname() ).build() );
+        userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( uuid.toString() ).fullname( employee.getFullname() ).no( employee.getNo() ).build() );
         when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
         when( userRepository.save( user ) ).thenReturn( user );
 
@@ -515,13 +522,14 @@ class UserAdminServiceImplTest {
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
                 .email( "max.mustermann@example.com" )
+                .no( "E000001" )
                 .build();
 
         when( userRepository.findById( uuid ) ).thenReturn( Optional.of( user ) );
 
         when( employeeRepository.findById( uuid ) ).thenReturn( Optional.of( employee ) );
         when( employeeRepository.save( employee ) ).thenReturn( employee );
-        userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( uuid.toString() ).fullname( employee.getFullname() ).build() );
+        userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( uuid.toString() ).fullname( employee.getFullname() ).no( employee.getNo() ).build() );
         when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
 
         UserUpdateEmployeeDTO userUpdateEmployeeDTO = UserUpdateEmployeeDTO.builder()
@@ -555,6 +563,7 @@ class UserAdminServiceImplTest {
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
                 .email( "max.mustermann@example.com" )
+                .no( "E000001" )
                 .build();
 
 
@@ -564,7 +573,7 @@ class UserAdminServiceImplTest {
 
         when( employeeRepository.save( oldEmployee ) ).thenReturn( oldEmployee );
         when( employeeRepository.save( newEmployee ) ).thenReturn( newEmployee );
-        userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( uuid.toString() ).fullname( newEmployee.getFullname() ).build() );
+        userAdminDTO.setEmployee( EmployeeRefDTO.builder().id( uuid.toString() ).fullname( newEmployee.getFullname() ).no( newEmployee.getNo() ).build() );
         when( userAdminMapper.toUserAdminDTO( user ) ).thenReturn( userAdminDTO );
 
         UserUpdateEmployeeDTO userUpdateEmployeeDTO = UserUpdateEmployeeDTO.builder()

@@ -15,9 +15,14 @@ import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserAudit;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.models.entities.employee.Employee;
+import com.assemble.backend.models.entities.project.Project;
+import com.assemble.backend.models.entities.project.ProjectAssignment;
+import com.assemble.backend.models.entities.project.ProjectStage;
+import com.assemble.backend.models.entities.project.ProjectType;
 import com.assemble.backend.models.mappers.employee.EmployeeMapper;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
+import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
 import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,6 +58,9 @@ class EmployeeServiceImplTest {
 
     @Mock
     private EmployeeMapper employeeMapper;
+
+    @Mock
+    private ProjectAssignmentRepository projectAssignmentRepository;
 
     @InjectMocks
     private EmployeeServiceImpl service;
@@ -186,6 +194,7 @@ class EmployeeServiceImplTest {
         EmployeeRefDTO employeeRefDTO = EmployeeRefDTO.builder()
                 .id( uuid.toString() )
                 .fullname( employee.getFullname() )
+                .no( employee.getNo() )
                 .build();
 
         when( employeeMapper.employeeToEmployeeRefDTO( employee ) ).thenReturn( employeeRefDTO );
@@ -209,6 +218,7 @@ class EmployeeServiceImplTest {
         EmployeeRefDTO employeeRefDTO = EmployeeRefDTO.builder()
                 .id( uuid.toString() )
                 .fullname( employee.getFullname() )
+                .no( employee.getNo() )
                 .build();
 
         when( employeeMapper.employeeToEmployeeRefDTO( employee ) ).thenReturn( employeeRefDTO );
@@ -475,11 +485,13 @@ class EmployeeServiceImplTest {
     @DisplayName("deleteEmployee should not throw when user exists")
     void deleteEmployee_ShouldNotThrow_WhenEmployeeExists() {
         when( employeeRepository.findById( uuid ) ).thenReturn( Optional.of( employee ) );
+        when( projectAssignmentRepository.findAllByEmployeeId( uuid ) ).thenReturn( List.of() );
 
         assertDoesNotThrow( () -> service.deleteEmployee( uuid.toString() ) );
 
         verify( employeeRepository, times( 1 ) ).findById( uuid );
         verify( employeeRepository, times( 1 ) ).delete( employee );
+        verify( projectAssignmentRepository, times( 1 ) ).findAllByEmployeeId( uuid );
     }
 
     @Test
@@ -488,11 +500,40 @@ class EmployeeServiceImplTest {
         employee.setUser( user );
         user.setEmployee( null );
         when( employeeRepository.findById( uuid ) ).thenReturn( Optional.of( employee ) );
+        when( projectAssignmentRepository.findAllByEmployeeId( uuid ) ).thenReturn( List.of() );
 
         assertDoesNotThrow( () -> service.deleteEmployee( uuid.toString() ) );
 
         verify( employeeRepository, times( 1 ) ).findById( uuid );
         verify( userRepository, times( 1 ) ).save( user );
         verify( employeeRepository, times( 1 ) ).delete( employee );
+        verify( projectAssignmentRepository, times( 1 ) ).findAllByEmployeeId( uuid );
+    }
+
+    @Test
+    @DisplayName("deleteEmployee should delete assignments before deletion")
+    void deleteEmployee_ShouldDeleteAssignmentsBeforeDeletion_WhenEmployeeExists() {
+        ProjectAssignment assignment = ProjectAssignment.builder()
+                .employee( employee )
+                .project( Project.builder()
+                        .id( uuid )
+                        .no( "P000001" )
+                        .name( "Test Project" )
+                        .description( "Test Project Description" )
+                        .category( "Maintanance" )
+                        .stage( ProjectStage.PROPOSAL )
+                        .type( ProjectType.EXTERNAL )
+                        .build() )
+                .build();
+
+        when( employeeRepository.findById( uuid ) ).thenReturn( Optional.of( employee ) );
+        when( projectAssignmentRepository.findAllByEmployeeId( uuid ) ).thenReturn( List.of( assignment ) );
+
+        assertDoesNotThrow( () -> service.deleteEmployee( uuid.toString() ) );
+
+        verify( employeeRepository, times( 1 ) ).findById( uuid );
+        verify( employeeRepository, times( 1 ) ).delete( employee );
+        verify( projectAssignmentRepository, times( 1 ) ).findAllByEmployeeId( uuid );
+        verify( projectAssignmentRepository, times( 1 ) ).deleteAll( List.of( assignment ) );
     }
 }

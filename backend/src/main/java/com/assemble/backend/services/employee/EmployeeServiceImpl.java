@@ -16,6 +16,7 @@ import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.mappers.employee.EmployeeMapper;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
+import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
     private final EmployeeMapper employeeMapper;
+    private final ProjectAssignmentRepository assignmentRepository;
 
     @Override
     public List<EmployeeDTO> getAllEmployees() {
@@ -156,6 +158,12 @@ public class EmployeeServiceImpl implements EmployeeService {
             user.setEmployee( null );
             userRepository.save( user );
         }
+
+        assignmentRepository.deleteAll(
+                assignmentRepository.findAllByEmployeeId(
+                        employee.getId()
+                )
+        );
 
         employeeRepository.delete( employee );
     }

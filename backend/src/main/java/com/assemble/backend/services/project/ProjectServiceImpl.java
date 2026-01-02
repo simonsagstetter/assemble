@@ -13,7 +13,9 @@ package com.assemble.backend.services.project;
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectDTO;
 import com.assemble.backend.models.entities.project.Project;
+import com.assemble.backend.models.entities.project.ProjectAssignment;
 import com.assemble.backend.models.mappers.project.ProjectMapper;
+import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
 import com.assemble.backend.repositories.project.ProjectRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -29,6 +31,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
+    private final ProjectAssignmentRepository assignmentRepository;
 
     @Override
     public List<ProjectDTO> getAllProjects() {
@@ -72,6 +75,11 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find project with id: " + id )
                 );
+
+        assignmentRepository.deleteAll(
+                assignmentRepository
+                        .findAllByProjectId( project.getId() )
+        );
 
         projectRepository.delete( project );
     }

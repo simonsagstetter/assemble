@@ -16,8 +16,14 @@ import com.assemble.backend.models.dtos.employee.EmployeeUpdateUserDTO;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.models.entities.employee.Employee;
+import com.assemble.backend.models.entities.project.Project;
+import com.assemble.backend.models.entities.project.ProjectAssignment;
+import com.assemble.backend.models.entities.project.ProjectStage;
+import com.assemble.backend.models.entities.project.ProjectType;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
+import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
+import com.assemble.backend.repositories.project.ProjectRepository;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import com.assemble.backend.testutils.WithMockCustomUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,6 +64,12 @@ class EmployeeRestControllerTest {
     private UserRepository userRepository;
 
     @Autowired
+    private ProjectAssignmentRepository projectAssignmentRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -84,7 +96,6 @@ class EmployeeRestControllerTest {
                 .lastname( "Mustermann" )
                 .email( "testuser@example.com" )
                 .build();
-
     }
 
     @Test
@@ -621,6 +632,39 @@ class EmployeeRestControllerTest {
         ).andExpect(
                 status().isNoContent()
         );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.MANAGER })
+    @DisplayName("/DELETE deleteEmployee should return 204 and delete related assignments when employee does exist")
+    void deleteEmplyoee_ShouldReturn204AndDeleteRelatedAssignments_WhenEmployeeDoesExist() throws Exception {
+        Employee employee = employeeRepository.save( testEmployee );
+        Project project = projectRepository.save(
+                Project.builder()
+                        .name( "TestProject" )
+                        .description( "TestProjectDescription" )
+                        .category( "TestCategory" )
+                        .stage( ProjectStage.PROPOSAL )
+                        .type( ProjectType.EXTERNAL )
+                        .build()
+        );
+        projectAssignmentRepository.save(
+                ProjectAssignment.builder()
+                        .employee( employee )
+                        .project( project )
+                        .build()
+        );
+
+        assert employee.getId() != null;
+
+        mockMvc.perform(
+                delete( "/api/employees/" + employee.getId().toString() )
+                        .with( csrf() )
+        ).andExpect(
+                status().isNoContent()
+        );
+
+        assert projectAssignmentRepository.count() == 0;
     }
 
 }

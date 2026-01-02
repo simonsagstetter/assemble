@@ -13,10 +13,13 @@ package com.assemble.backend.services.project;
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectDTO;
 import com.assemble.backend.models.entities.auth.UserAudit;
+import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.entities.project.Project;
+import com.assemble.backend.models.entities.project.ProjectAssignment;
 import com.assemble.backend.models.entities.project.ProjectStage;
 import com.assemble.backend.models.entities.project.ProjectType;
 import com.assemble.backend.models.mappers.project.ProjectMapper;
+import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
 import com.assemble.backend.repositories.project.ProjectRepository;
 import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,6 +49,9 @@ class ProjectServiceImplTest {
 
     @Mock
     private ProjectMapper projectMapper;
+
+    @Mock
+    private ProjectAssignmentRepository projectAssignmentRepository;
 
     @InjectMocks
     private ProjectServiceImpl service;
@@ -212,11 +218,38 @@ class ProjectServiceImplTest {
     @DisplayName("deleteProjectById should delete project when project exists in db")
     void deleteProjectById_ShouldDeleteProject_WhenProjectExistsInDB() {
         when( projectRepository.findById( testProjectId ) ).thenReturn( Optional.of( testProject ) );
+        when( projectAssignmentRepository.findAllByProjectId( testProjectId ) ).thenReturn( List.of() );
 
         assertDoesNotThrow( () -> service.deleteProjectById( testProjectId.toString() ) );
 
         verify( projectRepository, times( 1 ) ).findById( testProjectId );
         verify( projectRepository, times( 1 ) ).delete( testProject );
+        verify( projectAssignmentRepository, times( 1 ) ).findAllByProjectId( testProjectId );
+    }
+
+    @Test
+    @DisplayName("deleteProjectById should delete assignments before deletion when project exists in db")
+    void deleteProjectById_ShouldDeleteAssignmentsBeforeDeletion_WhenProjectExistsInDB() {
+        ProjectAssignment assignment = ProjectAssignment.builder()
+                .employee( Employee.builder()
+                        .id( testProjectId )
+                        .no( "E000001" )
+                        .firstname( "Max" )
+                        .lastname( "Mustermann" )
+                        .email( "max.mustermann@example.com" )
+                        .build() )
+                .project( testProject )
+                .build();
+
+        when( projectRepository.findById( testProjectId ) ).thenReturn( Optional.of( testProject ) );
+        when( projectAssignmentRepository.findAllByProjectId( testProjectId ) ).thenReturn( List.of( assignment ) );
+
+        assertDoesNotThrow( () -> service.deleteProjectById( testProjectId.toString() ) );
+
+        verify( projectRepository, times( 1 ) ).findById( testProjectId );
+        verify( projectRepository, times( 1 ) ).delete( testProject );
+        verify( projectAssignmentRepository, times( 1 ) ).findAllByProjectId( testProjectId );
+        verify( projectAssignmentRepository, times( 1 ) ).deleteAll( List.of( assignment ) );
     }
 
 }
