@@ -15,11 +15,13 @@ import { ProjectDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import Link from "next/link";
-import { DataTable } from "@/components/custom-ui/DataTable";
-import { CheckIcon, MoreHorizontal, XIcon } from "lucide-react";
+import { DataTable, DataTableHeader } from "@/components/custom-ui/DataTable";
+import { LayersIcon, MoreHorizontal, PlusIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import ProjectActions from "@/components/manage/projects/ProjectActions";
+import Status from "@/components/custom-ui/status";
+import { Badge } from "@/components/ui/badge";
 
 type ProjectDataTableProps = {
     projects: ProjectDTO[];
@@ -57,20 +59,24 @@ export default function ProjectDataTable( { projects }: ProjectDataTableProps ) 
             },
             {
                 header: "Stage",
-                accessorKey: "stage"
+                cell( { row } ) {
+                    return <Badge variant={ "secondary" }>{ row.original.stage }</Badge>
+                }
             },
             {
                 header: "Type",
-                accessorKey: "type"
+                cell( { row } ) {
+                    return <Badge variant={ "outline" }>{ row.original.type }</Badge>
+                }
             },
             {
-                header: "Active",
+                header: "Status",
                 cell( { row } ) {
                     const project = row.original;
                     if ( project.active ) {
-                        return <CheckIcon className="size-4 text-green-600"/>
+                        return <Status label={ "Active" }/>
                     } else {
-                        return <XIcon className={ "size-4 text-red-600" }/>
+                        return <Status label={ "Inactive" } variant={ "red" }/>
                     }
                 }
             },
@@ -94,5 +100,14 @@ export default function ProjectDataTable( { projects }: ProjectDataTableProps ) 
             },
         ]
         , [] )
-    return <DataTable columns={ columns } data={ projects }/>
+    return <DataTableHeader
+        EntityIcon={ LayersIcon }
+        entity={ "Projects" }
+        currentView={ "All Projects" }
+        createActionLink={ "/app/manage/projects/create" }
+        createActionLabel={ "New" }
+        createActionIcon={ PlusIcon }
+    >
+        <DataTable columns={ columns } data={ projects }/>
+    </DataTableHeader>
 }

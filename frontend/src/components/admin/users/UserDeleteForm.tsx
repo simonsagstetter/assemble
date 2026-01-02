@@ -46,7 +46,7 @@ export default function UserDeleteForm( { user }: UserDeleteFormProps ) {
             {
                 onSuccess: async () => {
                     toast.success( "Success", {
-                        description: "User " + user.username + " was deleted",
+                        description: "User was deleted",
                     } )
                     await queryClient.invalidateQueries( {
                         queryKey: getGetAllUsersQueryKey(),

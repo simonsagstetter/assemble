@@ -9,15 +9,13 @@
  */
 "use client";
 
-import { UserAdmin, UserRolesItem } from "@/api/rest/generated/query/openAPIDefinition.schemas";
+import { UserAdmin } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import Link from "next/link";
-import { DataTable } from "@/components/custom-ui/DataTable";
+import { DataTable, DataTableHeader } from "@/components/custom-ui/DataTable";
 import {
-    CheckIcon,
-    MoreHorizontal,
-    XIcon
+    MoreHorizontal, PlusIcon, UserIcon,
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -25,6 +23,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import UserActions from "@/components/admin/users/UserActions";
+import Status from "@/components/custom-ui/status";
+import { Badge } from "@/components/ui/badge";
 
 type UserDataTableProps = {
     users: UserAdmin[];
@@ -63,47 +63,24 @@ export default function UserDataTable( { users }: UserDataTableProps ) {
             }
         },
         {
-            header: "Manager",
+            header: "Roles",
             cell( { row } ) {
                 const user = row.original;
-                if ( user.roles.includes( UserRolesItem.MANAGER ) ) {
-                    return <CheckIcon className="size-4 text-green-600"/>
-                } else {
-                    return <XIcon className={ "size-4 text-red-600" }/>
-                }
+                return user.roles.map( role => <Badge variant={ "secondary" } className={ "mx-[0.1rem] select-none" }
+                                                      key={ role }>{ role }</Badge> )
             }
         },
         {
-            header: "Admin",
+            header: "Status",
             cell( { row } ) {
                 const user = row.original;
-                if ( user.roles.includes( UserRolesItem.ADMIN ) || user.roles.includes( UserRolesItem.SUPERUSER ) ) {
-                    return <CheckIcon className="size-4 text-green-600"/>
-                } else {
-                    return <XIcon className={ "size-4 text-red-600" }/>
-                }
-            }
-        },
-        {
-            header: "Enabled",
-            cell( { row } ) {
-                const user = row.original;
-                if ( user.enabled ) {
-                    return <CheckIcon className="size-4 text-green-600"/>
-                } else {
-                    return <XIcon className={ "size-4 text-red-600" }/>
-                }
-            }
-        },
-        {
-            header: "Locked",
-            cell( { row } ) {
-                const user = row.original;
-                if ( user.locked ) {
-                    return <CheckIcon className="size-4 text-green-600"/>
-                } else {
-                    return <XIcon className={ "size-4 text-red-600" }/>
-                }
+                const fragments = [];
+                if ( user.enabled ) fragments.push( <Status key={ "Enabled" } label={ "Enabled" }/> );
+                else fragments.push( <Status key={ "Disabled" } label={ "Disabled" } variant={ "red" }/> )
+                if ( user.locked ) fragments.push( <Status key={ "Locked" } label={ "Locked" } variant={ "red" }
+                                                           className={ "mx-[0.1rem]" }/> )
+
+                return fragments;
             }
         },
         {
@@ -131,5 +108,12 @@ export default function UserDataTable( { users }: UserDataTableProps ) {
         },
     ], [] );
 
-    return <DataTable columns={ columns } data={ users }/>
+    return <DataTableHeader EntityIcon={ UserIcon }
+                            entity={ "Users" }
+                            currentView={ "All Users" }
+                            createActionLink={ "/app/admin/users/create" }
+                            createActionLabel={ "New" }
+                            createActionIcon={ PlusIcon }>
+        <DataTable columns={ columns } data={ users }/>
+    </DataTableHeader>
 }

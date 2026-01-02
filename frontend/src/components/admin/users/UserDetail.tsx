@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
     ChevronDownIcon,
-    PencilIcon,
+    PencilIcon, UserIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import UserActions from "@/components/admin/users/UserActions";
@@ -37,8 +37,13 @@ type UserDetailProps = {
 export default function UserDetail( { userDetails }: UserDetailProps ) {
     return <Card className="w-full border-0 shadow-none rounded-none">
         <CardHeader className={ "px-8 py-4" }>
-            <small className="text-xs uppercase leading-0 pt-1">user</small>
-            <CardTitle className="text-2xl leading-6">{ userDetails.username }</CardTitle>
+            <div className={ "flex flex-row gap-2 items-center" }>
+                <UserIcon className={ "size-10 bg-primary text-primary-foreground rounded-lg p-2 stroke-1" }/>
+                <div className={ "flex flex-col" }>
+                    <small className="text-xs uppercase">user</small>
+                    <CardTitle className="text-2xl leading-6">{ userDetails.username }</CardTitle>
+                </div>
+            </div>
             <CardDescription className={ "leading-6" }>
                 <div className="flex flex-row gap-10 **:[&_span]:text-xs **:[&_p]:font-semibold **:[&_p]:text-sm">
                     <div>

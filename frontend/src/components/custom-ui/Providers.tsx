@@ -46,7 +46,7 @@ export default function Providers( { children }: ProvidersProps ) {
     const queryClient = getQueryClient();
     return <AppProgressProvider
         height={ "4px" }
-        color={ "oklch(14.1% 0.005 285.823)" }
+        color={ "oklch(0.5854 0.2041 277.1173)" }
         options={ {
             showSpinner: false,
         } }
