@@ -39,9 +39,7 @@ export default function ProjectAssignmentDeleteForm( { assignment }: ProjectAssi
     const form = useForm();
     const { mutate, isPending, isSuccess, isError } = useDeleteProjectAssignmentById();
     const params = useSearchParams();
-    const from = params.get( "origin" ) || "project";
-
-    console.log( from );
+    const origin = params.get( "origin" ) || "project";
 
     const handleDeleteProjectAssignment = () => {
         mutate(
@@ -55,18 +53,18 @@ export default function ProjectAssignmentDeleteForm( { assignment }: ProjectAssi
                     } )
                     await queryClient.invalidateQueries( {
                         queryKey: getGetAllProjectAssignmentsByProjectIdQueryKey( assignment.project.id ),
-                        refetchType: "none"
+                        refetchType: "all"
                     } )
 
                     await queryClient.invalidateQueries( {
                         queryKey: getGetAllProjectAssignmentsByEmployeeIdQueryKey( assignment.employee.id ),
-                        refetchType: "none"
+                        refetchType: "all"
                     } )
 
                     if ( modalContext ) {
                         modalContext.setOpen( false );
                     }
-                    setTimeout( () => from === "project" ?
+                    setTimeout( () => origin === "project" ?
                             router.push( `/app/manage/projects/${ assignment.project.id }?tab=team` )
                             :
                             router.push( `/app/manage/employees/${ assignment.employee.id }?tab=projects` )

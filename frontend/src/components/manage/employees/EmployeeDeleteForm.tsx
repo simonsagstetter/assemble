@@ -25,6 +25,9 @@ import {
     getGetEmployeeQueryKey,
     useDeleteEmployee
 } from "@/api/rest/generated/query/employees/employees";
+import {
+    getGetAllProjectAssignmentsByEmployeeIdQueryKey
+} from "@/api/rest/generated/query/project-assignments/project-assignments";
 
 type EmployeeDeleteFormProps = {
     employee: EmployeeDTO
@@ -46,16 +49,23 @@ export default function EmployeeDeleteForm( { employee }: EmployeeDeleteFormProp
             {
                 onSuccess: async () => {
                     toast.success( "Success", {
-                        description: "Employee " + employee.fullname + " was deleted",
+                        description: "Employee was deleted",
                     } )
                     await queryClient.invalidateQueries( {
                         queryKey: getGetAllEmployeesQueryKey(),
                         refetchType: "all"
-                    } )
+                    } );
+                    
                     await queryClient.invalidateQueries( {
                         queryKey: getGetEmployeeQueryKey( employee.id ),
                         refetchType: "none"
                     } );
+
+                    await queryClient.invalidateQueries( {
+                        queryKey: getGetAllProjectAssignmentsByEmployeeIdQueryKey( employee.id ),
+                        refetchType: "all"
+                    } );
+
                     if ( modalContext ) {
                         modalContext.setOpen( false );
                     }

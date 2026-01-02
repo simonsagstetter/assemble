@@ -30,7 +30,7 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {
-    ChevronDownIcon,
+    ChevronDownIcon, IdCardIcon,
     PencilIcon, PlusIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -41,6 +41,7 @@ import {
 import Loading from "@/components/custom-ui/Loading";
 import ProjectAssignmentDataTable from "@/components/manage/projects/ProjectAssignmentDataTable";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type EmployeeDetailProps = {
     employee: EmployeeDTO
@@ -54,12 +55,24 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
         error
     } = useGetAllProjectAssignmentsByEmployeeId( employee.id );
     const params = useSearchParams();
-    const activeTab = params.get( "tab" ) ?? "details";
+    const [ activeTab, setActiveTab ] = useState( params.get( "tab" ) ?? "details" );
 
-    return <Card className="w-full border-0 shadow-none rounded-none">
+    useEffect( () => {
+        const update = () => {
+            setActiveTab( params.get( "tab" ) ?? "details" );
+        }
+        update();
+    }, [ params ] )
+
+    return <Card className="w-full border-0 shadow-none rounded-none bg-transparent">
         <CardHeader className={ "px-8 py-4" }>
-            <small className="text-xs uppercase leading-0 pt-1">employee</small>
-            <CardTitle className="text-2xl leading-6">{ employee.fullname }</CardTitle>
+            <div className={ "flex flex-row gap-2 items-center" }>
+                <IdCardIcon className={ "size-10 bg-primary text-primary-foreground rounded-lg p-2 stroke-1" }/>
+                <div className={ "flex flex-col" }>
+                    <small className="text-xs uppercase">employee</small>
+                    <CardTitle className="text-2xl leading-6">{ employee.fullname }</CardTitle>
+                </div>
+            </div>
             <CardDescription className={ "leading-6" }>
                 <div className="flex flex-row gap-10 **:[&_span]:text-xs **:[&_p]:font-semibold **:[&_p]:text-sm">
                     <div>
@@ -106,7 +119,7 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
         </CardHeader>
         <Separator></Separator>
         <CardContent className={ "px-8" }>
-            <Tabs defaultValue={ activeTab }>
+            <Tabs defaultValue={ activeTab } onValueChange={ setActiveTab }>
                 <TabsList>
                     <TabsTrigger value="details">Details</TabsTrigger>
                     <TabsTrigger value="projects">Projects</TabsTrigger>
@@ -344,7 +357,7 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
                                     className={ "size-4" }/>Assign</Link>
                             </Button>
                             <ProjectAssignmentDataTable projectAssignments={ projectAssignments }
-                                                        origin={ "Employee" }/>
+                                                        origin={ "employee" }/>
                         </div> : null }
                 </TabsContent>
             </Tabs>

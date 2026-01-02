@@ -14,7 +14,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ProjectAssignmentDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import { useMemo } from "react";
 import { DataTable } from "@/components/custom-ui/DataTable";
-import { CheckIcon, MoreHorizontal, PencilIcon, TrashIcon, XIcon } from "lucide-react";
+import { MoreHorizontal, PencilIcon, TrashIcon } from "lucide-react";
 import {
     DropdownMenu, DropdownMenuContent,
     DropdownMenuGroup,
@@ -25,25 +25,27 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@bprogress/next/app";
 import Link from "next/link";
+import Status from "@/components/custom-ui/status";
 
 type ProjectAssignmentDataTableProps = {
     projectAssignments: ProjectAssignmentDTO[];
-    origin?: "Project" | "Employee";
+    origin?: "project" | "employee";
 }
 
 export default function ProjectAssignmentDataTable(
     {
         projectAssignments,
-        origin = "Project"
+        origin = "project"
     }: ProjectAssignmentDataTableProps
 ) {
     const router = useRouter();
+
     const columns: ColumnDef<ProjectAssignmentDTO>[] = useMemo( () => [
         {
             header: "No",
             cell( { row } ) {
                 const assignment = row.original;
-                if ( origin === "Project" ) {
+                if ( origin === "project" ) {
                     return <Link
                         href={ `/app/manage/employees/${ assignment.employee.id }` }
                         className={ "hover:underline" }
@@ -64,7 +66,7 @@ export default function ProjectAssignmentDataTable(
             header: "Name",
             cell( { row } ) {
                 const assignment = row.original;
-                if ( origin === "Project" ) {
+                if ( origin === "project" ) {
                     return <Link
                         href={ `/app/manage/employees/${ assignment.employee.id }` }
                         className={ "hover:underline" }
@@ -82,13 +84,13 @@ export default function ProjectAssignmentDataTable(
             }
         },
         {
-            header: "Active",
+            header: "Status",
             cell( { row } ) {
                 const assignment = row.original;
                 if ( assignment.active ) {
-                    return <CheckIcon className="size-4 text-green-600"/>
+                    return <Status label={ "Active" }/>
                 } else {
-                    return <XIcon className={ "size-4 text-red-600" }/>
+                    return <Status label={ "Inactive" } variant={ "red" }/>
                 }
             }
         },
@@ -119,7 +121,7 @@ export default function ProjectAssignmentDataTable(
                             <DropdownMenuGroup>
                                 <DropdownMenuItem
                                     onSelect={ () => router.push(
-                                        `/app/manage/project-assignments/${ assignment.id }/edit`
+                                        `/app/manage/assignments/${ assignment.id }/edit`
                                     ) }>
                                     <PencilIcon/> Edit
                                 </DropdownMenuItem>
@@ -130,7 +132,7 @@ export default function ProjectAssignmentDataTable(
                                     variant="destructive"
                                     onSelect={
                                         () => router.push(
-                                            `/app/manage/project-assignments/${ assignment.id }/delete?origin=${ origin?.toLowerCase() }`
+                                            `/app/manage/assignments/${ assignment.id }/delete?origin=${ origin }`
                                         )
                                     }>
                                     <TrashIcon/>
