@@ -14,7 +14,7 @@ import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle }
 import Link from "next/link";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Button } from "@/components/ui/button";
-import { ChevronDownIcon, PencilIcon } from "lucide-react";
+import { ChevronDownIcon, LayersIcon, PencilIcon, PlusIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,6 +30,13 @@ import { format } from "date-fns";
 import { ProjectDTO, ProjectDTOStage } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import ProjectActions from "@/components/manage/projects/ProjectActions";
 import StageProgress from "@/components/custom-ui/StageProgress";
+import {
+    useGetAllProjectAssignmentsByProjectId
+} from "@/api/rest/generated/query/project-assignments/project-assignments";
+import Loading from "@/components/custom-ui/Loading";
+import ProjectAssignmentDataTable from "@/components/manage/projects/ProjectAssignmentDataTable";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type ProjectStage =
     typeof ProjectDTOStage[keyof typeof ProjectDTOStage];
@@ -41,12 +48,34 @@ type ProjectDetailProps = {
 }
 
 export default function ProjectDetail( { project }: ProjectDetailProps ) {
+    const {
+        data: projectAssignments,
+        isPending,
+        isError,
+        error
+    } = useGetAllProjectAssignmentsByProjectId( project.id );
+    const params = useSearchParams();
+    const [ activeTab, setActiveTab ] = useState( params.get( "tab" ) ?? "details" );
+
+    useEffect( () => {
+        const update = () => {
+            setActiveTab( params.get( "tab" ) ?? "details" );
+        }
+        update();
+    }, [ params ] )
+
     return <Card className="w-full border-0 shadow-none rounded-none">
         <CardHeader className={ "px-8 py-4" }>
-            <small className="text-xs uppercase leading-0 pt-1">project</small>
-            <CardTitle className="text-2xl leading-6">{ project.name }</CardTitle>
+            <div className={ "flex flex-row gap-2 items-center" }>
+                <LayersIcon className={ "size-10 bg-primary text-primary-foreground rounded-lg p-2 stroke-1" }/>
+                <div className={ "flex flex-col" }>
+                    <small className="text-xs uppercase">project</small>
+                    <CardTitle className="text-2xl leading-6">{ project.name }</CardTitle>
+                </div>
+            </div>
             <CardDescription className={ "leading-6" }>
-                <div className="flex flex-row gap-10 **:[&_span]:text-xs **:[&_p]:font-semibold **:[&_p]:text-sm">
+                <div
+                    className="flex flex-row gap-10 **:[&_span]:text-xs **:[&_p]:font-semibold **:[&_p]:text-sm **:text-stone-800">
                     <div>
                         <span>No.</span>
                         <p>{ project.no }</p>
@@ -89,10 +118,10 @@ export default function ProjectDetail( { project }: ProjectDetailProps ) {
                                      value={ project.stage }/>
         <Separator/>
         <CardContent className={ "px-8" }>
-            <Tabs defaultValue="details">
+            <Tabs defaultValue={ activeTab } onValueChange={ setActiveTab } value={ activeTab }>
                 <TabsList>
                     <TabsTrigger value="details">Details</TabsTrigger>
-                    <TabsTrigger value="related">Related</TabsTrigger>
+                    <TabsTrigger value="team">Team</TabsTrigger>
                 </TabsList>
                 <TabsContent value="details" className={ "py-2" }>
                     <Accordion type={ "single" } defaultValue={ "details" }>
@@ -202,8 +231,19 @@ export default function ProjectDetail( { project }: ProjectDetailProps ) {
                         </AccordionItem>
                     </Accordion>
                 </TabsContent>
-                <TabsContent value="related">
-                    <>Not Implemented Yet</>
+                <TabsContent value="team">
+                    { isPending || !projectAssignments ? <Loading/> : null }
+                    { isError ? error?.message ?? "Error loading assignments" : null }
+                    { !isPending && projectAssignments ?
+                        <div className={ "relative" }>
+                            <Button type={ "button" } className={ "absolute right-0 -top-11" }>
+                                <Link href={ `/app/manage/projects/${ project.id }/assign` }
+                                      className={ "px-4 py-3 flex flex-row items-center gap-1" }><PlusIcon
+                                    className={ "size-4" }/>Assign</Link>
+                            </Button>
+                            <ProjectAssignmentDataTable projectAssignments={ projectAssignments }/>
+                        </div>
+                        : null }
                 </TabsContent>
             </Tabs>
         </CardContent>

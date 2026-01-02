@@ -36,10 +36,10 @@ import {
 import { ErrorMessage, SuccessMessage } from "@/components/custom-ui/form/messages";
 import { Separator } from "@/components/ui/separator";
 import { FormActions } from "@/components/custom-ui/form/actions";
-import { Employee } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
+import { EmployeeDTO } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
 
 type EmployeeEditFormProps = {
-    employee: Employee
+    employee: EmployeeDTO
 }
 
 export default function EmployeeEditForm( { employee }: EmployeeEditFormProps ) {

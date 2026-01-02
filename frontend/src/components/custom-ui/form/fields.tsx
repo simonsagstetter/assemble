@@ -94,6 +94,74 @@ function InputField<TFieldValues extends FieldValues, TTransformedValues extends
     />
 }
 
+const currencyFormatter = new Intl.NumberFormat( "de-DE", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+} );
+
+const parseCurrencyInput = ( value: string ) => {
+    const onlyDigits = value.replace( /\D/g, "" );
+    if ( onlyDigits === "" ) return null;
+
+    const numberValue = Number( onlyDigits ) / 100;
+
+    return isNaN( numberValue ) ? null : numberValue;
+}
+
+function CurrencyField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
+    { fieldName, formControl, label, children, ...props }
+    :
+        {
+            fieldName: Path<TFieldValues>,
+            formControl: Control<TFieldValues, any, TTransformedValues>,
+            label: string,
+            children?: ReactNode
+        } & ComponentProps<"input">
+) {
+    return <Controller
+        name={ fieldName }
+        control={ formControl }
+        render={ ( { field, fieldState } ) => (
+            <Field data-invalid={ fieldState.invalid }>
+                <FieldLabel htmlFor={ `${ fieldName }-field` }>{ label }</FieldLabel>
+                <Input
+                    { ...props }
+                    type={ "text" }
+                    autoComplete={ "off" }
+                    inputMode={ "decimal" }
+                    value={
+                        typeof field.value === "number"
+                            ? currencyFormatter.format( field.value )
+                            : field.value ?? ""
+                    }
+                    onChange={ ( e ) => {
+                        const parsed = parseCurrencyInput( e.target.value );
+
+                        field.onChange( parsed );
+                    } }
+                    onFocus={ ( e ) => {
+                        if ( typeof field.value === "number" ) {
+                            e.target.value = String( field.value.toFixed( 2 ).replace( ".", "," ) );
+                        }
+                    } }
+                    id={ `${ fieldName }-field` }
+                    aria-invalid={ fieldState.invalid }
+                />
+                { children ?
+                    <FieldDescription>
+                        { children }
+                    </FieldDescription>
+                    : null
+                }
+
+                { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
+                </FieldError> }
+            </Field>
+        ) }
+    />
+}
 
 function TextareaField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
     { fieldName, formControl, label, children, ...props }
@@ -276,5 +344,6 @@ export {
     SwitchField,
     CalendarField,
     SelectField,
-    TextareaField
+    TextareaField,
+    CurrencyField
 }

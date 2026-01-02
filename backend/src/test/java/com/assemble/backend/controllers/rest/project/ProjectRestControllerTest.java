@@ -12,9 +12,13 @@ package com.assemble.backend.controllers.rest.project;
 
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.entities.auth.UserRole;
+import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.entities.project.Project;
+import com.assemble.backend.models.entities.project.ProjectAssignment;
 import com.assemble.backend.models.entities.project.ProjectStage;
 import com.assemble.backend.models.entities.project.ProjectType;
+import com.assemble.backend.repositories.employee.EmployeeRepository;
+import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
 import com.assemble.backend.repositories.project.ProjectRepository;
 import com.assemble.backend.testcontainers.TestcontainersConfiguration;
 import com.assemble.backend.testutils.WithMockCustomUser;
@@ -47,6 +51,12 @@ class ProjectRestControllerTest {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private ProjectAssignmentRepository projectAssignmentRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -141,6 +151,28 @@ class ProjectRestControllerTest {
                 )
                 .andExpect(
                         jsonPath( "$.name" ).value( project.getName() )
+                );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.MANAGER })
+    @DisplayName("/GET searchAllProjects should return status code 200 when project does exist in db")
+    void searchAllProjects_ShouldReturnStatusCode200_WhenProjectDoesExistInDB() throws Exception {
+        Project project = projectRepository.save( testProject );
+        assert project.getId() != null;
+        mockMvc.perform(
+                        get( "/api/projects/search/{searchTerm}", project.getName() )
+                ).andExpect(
+                        status().isOk()
+                ).andExpect(
+                        content().contentType( MediaType.APPLICATION_JSON )
+                ).andExpect(
+                        jsonPath( "$[0].id" ).value( project.getId().toString() )
+                ).andExpect(
+                        jsonPath( "$[0].no" ).value( project.getNo() )
+                )
+                .andExpect(
+                        jsonPath( "$[0].name" ).value( project.getName() )
                 );
     }
 
@@ -276,6 +308,36 @@ class ProjectRestControllerTest {
         ).andExpect(
                 status().isNoContent()
         );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.MANAGER })
+    @DisplayName("/DELETE should return status code 204 and delete related assignments when project does exist in db")
+    void deleteProjectById_ShouldReturnStatusCode204AndDeleteRelatedAssignments_WhenProjectDoesExistInDB() throws Exception {
+        Project project = projectRepository.save( testProject );
+        Employee employee = employeeRepository.save(
+                Employee.builder()
+                        .firstname( "Max" )
+                        .lastname( "Mustermann" )
+                        .email( "testuser@example.com" )
+                        .build()
+        );
+        projectAssignmentRepository.save(
+                ProjectAssignment.builder()
+                        .employee( employee )
+                        .project( project )
+                        .build()
+        );
+
+        assert project.getId() != null;
+        mockMvc.perform(
+                delete( "/api/projects/" + project.getId().toString() )
+                        .with( csrf() )
+        ).andExpect(
+                status().isNoContent()
+        );
+
+        assert projectAssignmentRepository.count() == 0;
     }
 
 }

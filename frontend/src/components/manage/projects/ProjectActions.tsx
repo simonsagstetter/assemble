@@ -36,8 +36,8 @@ export default function ProjectActions(
     return <DropdownMenuContent { ...props }>
         <DropdownMenuGroup>
             <DropdownMenuItem
-                onSelect={ () => router.push( `/app/manage/projects/${ id }/assign-employees` ) }>
-                <IdCardIcon/> Assign Employees
+                onSelect={ () => router.push( `/app/manage/projects/${ id }/assign` ) }>
+                <IdCardIcon/> Assign
             </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator/>

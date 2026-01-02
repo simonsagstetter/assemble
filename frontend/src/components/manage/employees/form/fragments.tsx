@@ -10,7 +10,7 @@
 
 import { FieldDescription, FieldGroup, FieldLegend, FieldSet } from "@/components/ui/field";
 import { CalendarField, InputField, SelectField } from "@/components/custom-ui/form/fields";
-import { EmployeeMaritalStatus } from "@/api/rest/generated/query/openAPIDefinition.schemas";
+import { EmployeeDTOMaritalStatus } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import { useFormContext } from "react-hook-form";
 import useFormActionContext from "@/hooks/useFormActionContext";
 import { UserLookupField } from "@/components/manage/employees/form/custom-fields";
@@ -91,11 +91,11 @@ function IdentityFragment() {
                              label={ "Marital Status" }
                              placeholder={ "Choose a marital status" }
                              options={ [
-                                 { label: "Single", value: EmployeeMaritalStatus.SINGLE },
-                                 { label: "Civil Partnership", value: EmployeeMaritalStatus.CIVIL },
-                                 { label: "Married", value: EmployeeMaritalStatus.MARRIED },
-                                 { label: "Divorced", value: EmployeeMaritalStatus.DIVORCED },
-                                 { label: "Widowed", value: EmployeeMaritalStatus.WIDOWED },
+                                 { label: "Single", value: EmployeeDTOMaritalStatus.SINGLE },
+                                 { label: "Civil Partnership", value: EmployeeDTOMaritalStatus.CIVIL },
+                                 { label: "Married", value: EmployeeDTOMaritalStatus.MARRIED },
+                                 { label: "Divorced", value: EmployeeDTOMaritalStatus.DIVORCED },
+                                 { label: "Widowed", value: EmployeeDTOMaritalStatus.WIDOWED },
                              ] }
                              disabled={ disabled }
                 >

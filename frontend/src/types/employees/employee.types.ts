@@ -9,7 +9,7 @@
  */
 
 import { z } from "zod";
-import { EmployeeMaritalStatus } from "@/api/rest/generated/query/openAPIDefinition.schemas";
+import { EmployeeDTOMaritalStatus } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import { optionalString, past } from "@/utils/zod";
 
 const AddressSchema = z.object( {
@@ -48,7 +48,7 @@ const EmployeeCreateSchema = z.object( {
         z.string()
             .max( 100, "Place of birth cannot be longer than 100 characters." )
     ),
-    maritalStatus: optionalString( z.enum( EmployeeMaritalStatus ) ),
+    maritalStatus: optionalString( z.enum( EmployeeDTOMaritalStatus ) ),
     citizenship: optionalString(
         z.string().max( 100, "Citizenship cannot be longer than 100 characters." )
     ),

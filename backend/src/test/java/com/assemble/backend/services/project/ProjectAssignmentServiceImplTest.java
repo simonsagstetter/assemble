@@ -13,7 +13,6 @@ package com.assemble.backend.services.project;
 import com.assemble.backend.models.dtos.employee.EmployeeRefDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDTO;
-import com.assemble.backend.models.dtos.project.ProjectAssignmentDeleteDTO;
 import com.assemble.backend.models.dtos.project.ProjectRefDTO;
 import com.assemble.backend.models.entities.auth.UserAudit;
 import com.assemble.backend.models.entities.employee.Employee;
@@ -38,6 +37,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -129,6 +129,7 @@ class ProjectAssignmentServiceImplTest {
                         EmployeeRefDTO.builder()
                                 .id( recordId.toString() )
                                 .fullname( testEmployee.getFullname() )
+                                .no( testEmployee.getNo() )
                                 .build()
                 )
                 .active( testProjectAssignment.isActive() )
@@ -138,6 +139,30 @@ class ProjectAssignmentServiceImplTest {
                 .createdBy( testProjectAssignment.getCreatedBy() )
                 .lastModifiedBy( testProjectAssignment.getLastModifiedBy() )
                 .build();
+    }
+
+    @Test
+    @DisplayName("getProjectAssignmentById should throw if ProjectAssignment does not exist")
+    void getProjectAssignmentById_ShouldThrow_WhenProjectAssignmentDoesNotExist() {
+        when( projectAssignmentRepository.findById( randomId ) ).thenReturn( Optional.empty() );
+
+        assertThrows( EntityNotFoundException.class, () -> service.getProjectAssignmentById( randomId.toString() ) );
+
+        verify( projectAssignmentRepository, times( 1 ) ).findById( randomId );
+    }
+
+    @Test
+    @DisplayName("getProjectAssignmentById should return ProjectAssignmentDTO if ProjectAssignment does exist")
+    void getProjectAssignmentById_ShouldReturnProjectAssignmentDTO_WhenProjectAssignmentExists() {
+        when( projectAssignmentRepository.findById( recordId ) ).thenReturn( Optional.of( testProjectAssignment ) );
+        when( projectAssignmentMapper.toProjectAssignmentDTO( testProjectAssignment ) ).thenReturn( testProjectAssignmentDTO );
+
+        ProjectAssignmentDTO actual = assertDoesNotThrow( () -> service.getProjectAssignmentById( recordId.toString() ) );
+
+        assertEquals( testProjectAssignmentDTO, actual );
+
+        verify( projectAssignmentRepository, times( 1 ) ).findById( recordId );
+        verify( projectAssignmentMapper, times( 1 ) ).toProjectAssignmentDTO( testProjectAssignment );
     }
 
     @Test
@@ -201,113 +226,100 @@ class ProjectAssignmentServiceImplTest {
     }
 
     @Test
-    @DisplayName("createProjectAssignments should throw when employee does not exist")
-    void createProjectAssignments_ShouldThrow_WhenEmployeeDoesNotExist() {
-        List<ProjectAssignmentCreateDTO> assignments = List.of(
-                ProjectAssignmentCreateDTO.builder()
-                        .projectId( recordId.toString() )
-                        .employeeId( randomId.toString() )
-                        .active( true )
-                        .hourlyRate( BigDecimal.valueOf( 30 ) )
-                        .build()
-        );
+    @DisplayName("createProjectAssignment should throw when employee does not exist")
+    void createProjectAssignment_ShouldThrow_WhenEmployeeDoesNotExist() {
+        ProjectAssignmentCreateDTO assignment = ProjectAssignmentCreateDTO.builder()
+                .projectId( recordId.toString() )
+                .employeeId( randomId.toString() )
+                .active( true )
+                .hourlyRate( BigDecimal.valueOf( 30 ) )
+                .build();
 
-        when( employeeRepository.findAllByIdIsIn( List.of( randomId ) ) ).thenReturn( List.of() );
-        when( projectRepository.findAllByIdIsIn( List.of( recordId ) ) ).thenReturn( List.of( testProject ) );
+        when( employeeRepository.findById( randomId ) ).thenReturn( java.util.Optional.empty() );
 
-        assertThrows( EntityNotFoundException.class, () -> service.createProjectAssignments( assignments ) );
 
-        verify( employeeRepository, times( 1 ) ).findAllByIdIsIn( List.of( randomId ) );
-        verify( projectRepository, times( 1 ) ).findAllByIdIsIn( List.of( recordId ) );
+        assertThrows( EntityNotFoundException.class, () -> service.createProjectAssignment( assignment ) );
+
+        verify( employeeRepository, times( 1 ) ).findById( randomId );
     }
 
     @Test
-    @DisplayName("createProjectAssignments should throw when project does not exist")
-    void createProjectAssignments_ShouldThrow_WhenProjectDoesNotExist() {
-        List<ProjectAssignmentCreateDTO> assignments = List.of(
-                ProjectAssignmentCreateDTO.builder()
-                        .projectId( randomId.toString() )
-                        .employeeId( recordId.toString() )
-                        .active( true )
-                        .hourlyRate( BigDecimal.valueOf( 30 ) )
-                        .build()
-        );
+    @DisplayName("createProjectAssignment should throw when project does not exist")
+    void createProjectAssignment_ShouldThrow_WhenProjectDoesNotExist() {
+        ProjectAssignmentCreateDTO assignment = ProjectAssignmentCreateDTO.builder()
+                .employeeId( recordId.toString() )
+                .projectId( randomId.toString() )
+                .active( true )
+                .hourlyRate( BigDecimal.valueOf( 30 ) )
+                .build();
 
-        when( employeeRepository.findAllByIdIsIn( List.of( recordId ) ) ).thenReturn( List.of( testEmployee ) );
-        when( projectRepository.findAllByIdIsIn( List.of( randomId ) ) ).thenReturn( List.of() );
+        when( employeeRepository.findById( recordId ) ).thenReturn( java.util.Optional.of( testEmployee ) );
+        when( projectRepository.findById( randomId ) ).thenReturn( java.util.Optional.empty() );
 
-        assertThrows( EntityNotFoundException.class, () -> service.createProjectAssignments( assignments ) );
 
-        verify( employeeRepository, times( 1 ) ).findAllByIdIsIn( List.of( recordId ) );
-        verify( projectRepository, times( 1 ) ).findAllByIdIsIn( List.of( randomId ) );
+        assertThrows( EntityNotFoundException.class, () -> service.createProjectAssignment( assignment ) );
+
+        verify( employeeRepository, times( 1 ) ).findById( recordId );
+        verify( projectRepository, times( 1 ) ).findById( randomId );
     }
 
     @Test
-    @DisplayName("createProjectAssignments should return list of ProjectAssignmentDTO when ProjectAssignmentsCreated")
-    void createProjectAssignments_ShouldReturnListOfProjectAssignmentDTO_WhenProjectAssignmentsCreated() {
-        List<ProjectAssignmentCreateDTO> assignments = List.of(
-                ProjectAssignmentCreateDTO.builder()
-                        .projectId( recordId.toString() )
-                        .employeeId( recordId.toString() )
-                        .active( true )
-                        .hourlyRate( BigDecimal.valueOf( 30 ) )
-                        .build()
-        );
+    @DisplayName("createProjectAssignment should return ProjectAssignmentDTO when ProjectAssignment was created")
+    void createProjectAssignment_ShouldReturnProjectAssignmentDTO_WhenProjectAssignmentWasCreated() {
+        ProjectAssignmentCreateDTO assignment = ProjectAssignmentCreateDTO.builder()
+                .projectId( recordId.toString() )
+                .employeeId( recordId.toString() )
+                .active( true )
+                .hourlyRate( BigDecimal.valueOf( 30 ) )
+                .build();
 
-        when( employeeRepository.findAllByIdIsIn( List.of( recordId ) ) ).thenReturn( List.of( testEmployee ) );
-        when( projectRepository.findAllByIdIsIn( List.of( recordId ) ) ).thenReturn( List.of( testProject ) );
-        when( projectAssignmentMapper.toProjectAssignment( assignments.getFirst(), testEmployee, testProject ) )
+        when( employeeRepository.findById( recordId ) ).thenReturn( java.util.Optional.of( testEmployee ) );
+        when( projectRepository.findById( recordId ) ).thenReturn( java.util.Optional.of( testProject ) );
+
+        when( projectAssignmentMapper.toProjectAssignment( assignment, testEmployee, testProject ) )
                 .thenReturn( testProjectAssignment );
 
-        when( projectAssignmentRepository.saveAll( List.of( testProjectAssignment ) ) )
-                .thenReturn( List.of( testProjectAssignment ) );
+        when( projectAssignmentRepository.save( testProjectAssignment ) )
+                .thenReturn( testProjectAssignment );
 
         when( projectAssignmentMapper.toProjectAssignmentDTO( testProjectAssignment ) )
                 .thenReturn( testProjectAssignmentDTO );
 
-        List<ProjectAssignmentDTO> actual = assertDoesNotThrow( () -> service.createProjectAssignments( assignments ) );
+        ProjectAssignmentDTO actual = assertDoesNotThrow( () -> service.createProjectAssignment( assignment ) );
 
-        assertEquals( 1, actual.size() );
-        assertEquals( testProjectAssignmentDTO, actual.getFirst() );
+        assertEquals( testProjectAssignmentDTO, actual );
 
-        verify( employeeRepository, times( 1 ) ).findAllByIdIsIn( List.of( recordId ) );
-        verify( projectRepository, times( 1 ) ).findAllByIdIsIn( List.of( recordId ) );
+        verify( employeeRepository, times( 1 ) ).findById( recordId );
+        verify( projectRepository, times( 1 ) ).findById( recordId );
         verify( projectAssignmentMapper, times( 1 ) )
-                .toProjectAssignment( assignments.getFirst(), testEmployee, testProject );
+                .toProjectAssignment( assignment, testEmployee, testProject );
         verify( projectAssignmentRepository, times( 1 ) )
-                .saveAll( List.of( testProjectAssignment ) );
+                .save( testProjectAssignment );
 
         verify( projectAssignmentMapper, times( 1 ) )
                 .toProjectAssignmentDTO( testProjectAssignment );
     }
 
     @Test
-    @DisplayName("deleteProjectAssignments should throw when ProjectAssignment does not exist")
-    void deleteProjectAssignments_ShouldThrow_WhenProjectAssignmentDoesNotExist() {
-        ProjectAssignmentDeleteDTO deleteDTO = ProjectAssignmentDeleteDTO.builder()
-                .ids( List.of( randomId.toString() ) )
-                .build();
+    @DisplayName("deleteProjectAssignment should throw when ProjectAssignment does not exist")
+    void deleteProjectAssignment_ShouldThrow_WhenProjectAssignmentDoesNotExist() {
 
-        when( projectAssignmentRepository.findAllByIdIsIn( List.of( randomId ) ) ).thenReturn( List.of() );
+        when( projectAssignmentRepository.findById( randomId ) ).thenReturn( Optional.empty() );
 
-        assertThrows( EntityNotFoundException.class, () -> service.deleteProjectAssignmentByIds( deleteDTO ) );
+        assertThrows( EntityNotFoundException.class, () -> service.deleteProjectAssignmentById( randomId.toString() ) );
 
-        verify( projectAssignmentRepository, times( 1 ) ).findAllByIdIsIn( List.of( randomId ) );
+        verify( projectAssignmentRepository, times( 1 ) ).findById( randomId );
     }
 
     @Test
-    @DisplayName("deleteProjectAssignments should delete ProjectAssignments when ProjectAssignemnts exist")
-    void deleteProjectAssignments_ShouldDeleteProjectAssignments_WhenProjectAssignmentsExist() {
-        ProjectAssignmentDeleteDTO deleteDTO = ProjectAssignmentDeleteDTO.builder()
-                .ids( List.of( recordId.toString() ) )
-                .build();
+    @DisplayName("deleteProjectAssignmentsshould delete ProjectAssignment when ProjectAssignemnt exist")
+    void deleteProjectAssignment_ShouldDeleteProjectAssignment_WhenProjectAssignmentExist() {
+        when( projectAssignmentRepository.findById( recordId ) )
+                .thenReturn( Optional.of( testProjectAssignment ) );
 
-        when( projectAssignmentRepository.findAllByIdIsIn( List.of( recordId ) ) )
-                .thenReturn( List.of( testProjectAssignment ) );
+        assertDoesNotThrow( () -> service.deleteProjectAssignmentById( recordId.toString() ) );
 
-        assertDoesNotThrow( () -> service.deleteProjectAssignmentByIds( deleteDTO ) );
-
-        verify( projectAssignmentRepository, times( 1 ) ).findAllByIdIsIn( List.of( recordId ) );
-        verify( projectAssignmentRepository, times( 1 ) ).deleteAll( List.of( testProjectAssignment ) );
+        verify( projectAssignmentRepository, times( 1 ) ).findById( recordId );
+        verify( projectAssignmentRepository, times( 1 ) ).delete( testProjectAssignment );
     }
 }

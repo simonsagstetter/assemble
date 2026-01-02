@@ -10,7 +10,7 @@
 
 "use client"
 
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check, ChevronsUpDown, XIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "@/components/ui/command"
@@ -23,6 +23,7 @@ export type LookupItem = {
     id: string,
     result: string,
     searchTerm: string,
+    disabled?: boolean,
 }
 
 type LookupProps = {
@@ -104,24 +105,31 @@ const Lookup = memo( function Lookup(
                         { items != null && items.length > 0 ?
                             <CommandGroup heading={ heading }>
                                 { items.map( ( item ) => {
-                                    const { id, result, searchTerm } = item;
+                                    const { id, result, searchTerm, disabled } = item;
                                     return <CommandItem
                                         key={ id }
                                         value={ searchTerm }
-                                        onSelect={ () => selectCallbackAction( item ) }
+                                        onSelect={ () => !disabled ? selectCallbackAction( item ) : null }
                                         className={ "flex flex-row items-center justify-between" }
                                     >
                                         <div className={ "inline-flex gap-4 items-center" }>
                                             { Icon != null ? Icon : null }
                                             { result }
                                         </div>
-                                        <Check
-                                            className={ `mr-2 h-4 w-4 ${
-                                                selectedValue?.result == result
-                                                    ? "opacity-100"
-                                                    : "opacity-0"
-                                            }` }
-                                        />
+                                        { disabled ?
+                                            <div className={ "flex flex-row gap-2 items-center" }>
+                                                <span className={ "text-sm" }>Already assigned</span>
+                                                <XIcon/>
+                                            </div>
+                                            :
+                                            <Check
+                                                className={ `mr-2 h-4 w-4 ${
+                                                    selectedValue?.result == result
+                                                        ? "opacity-100"
+                                                        : "opacity-0"
+                                                }` }
+                                            />
+                                        }
                                     </CommandItem>
                                 } ) }
                             </CommandGroup>

@@ -11,9 +11,9 @@
 package com.assemble.backend.controllers.rest.project;
 
 import com.assemble.backend.models.dtos.global.ErrorResponse;
+import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDTO;
-import com.assemble.backend.models.dtos.project.ProjectAssignmentDeleteDTO;
 import com.assemble.backend.services.project.ProjectAssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -39,6 +39,39 @@ import java.util.List;
 public class ProjectAssignmentRestController {
 
     private ProjectAssignmentService service;
+
+    @Operation(
+            summary = "Get Project Assignment By ID"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(
+                            implementation = ProjectAssignmentDTO.class
+                    )
+            )
+    )
+    @ApiResponse(
+            description = "Not Found",
+            responseCode = "404",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(
+                            implementation = ErrorResponse.class
+                    )
+            )
+    )
+    @GetMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<ProjectAssignmentDTO> getProjectAssignmentById(
+            @PathVariable String id
+    ) {
+        return ResponseEntity.ok( service.getProjectAssignmentById( id ) );
+    }
 
     @Operation(
             summary = "Get All Assignments By Project ID"
@@ -91,17 +124,15 @@ public class ProjectAssignmentRestController {
     }
 
     @Operation(
-            summary = "Create ProjectAssignments"
+            summary = "Create ProjectAssignment"
     )
     @ApiResponse(
             description = "Created",
             responseCode = "201",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(
-                            schema = @Schema(
-                                    implementation = ProjectAssignmentDTO.class
-                            )
+                    schema = @Schema(
+                            implementation = ProjectAssignmentDTO.class
                     )
             )
     )
@@ -111,13 +142,23 @@ public class ProjectAssignmentRestController {
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(
-                            implementation = ErrorResponse.class
+                            implementation = ValidationErrorResponse.class
                     )
             )
     )
     @ApiResponse(
             description = "Not Found",
             responseCode = "404",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(
+                            implementation = ErrorResponse.class
+                    )
+            )
+    )
+    @ApiResponse(
+            description = "Conflict",
+            responseCode = "409",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(
@@ -130,11 +171,11 @@ public class ProjectAssignmentRestController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<ProjectAssignmentDTO>> createProjectAssignments(
-            @RequestBody List<@Valid ProjectAssignmentCreateDTO> projectAssignmentCreateDTOList
+    public ResponseEntity<ProjectAssignmentDTO> createProjectAssignment(
+            @RequestBody @Valid ProjectAssignmentCreateDTO projectAssignmentCreateDTO
     ) {
         return ResponseEntity.status( HttpStatus.CREATED )
-                .body( service.createProjectAssignments( projectAssignmentCreateDTOList ) );
+                .body( service.createProjectAssignment( projectAssignmentCreateDTO ) );
     }
 
     @Operation(
@@ -143,16 +184,6 @@ public class ProjectAssignmentRestController {
     @ApiResponse(
             description = "No Content",
             responseCode = "204"
-    )
-    @ApiResponse(
-            description = "Bad Request",
-            responseCode = "400",
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(
-                            implementation = ErrorResponse.class
-                    )
-            )
     )
     @ApiResponse(
             description = "Not Found",
@@ -164,11 +195,11 @@ public class ProjectAssignmentRestController {
                     )
             )
     )
-    @DeleteMapping("")
-    public ResponseEntity<Void> deleteProjectAssignmentsByIds(
-            @RequestBody @Valid ProjectAssignmentDeleteDTO deleteDTO
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProjectAssignmentById(
+            @PathVariable String id
     ) {
-        service.deleteProjectAssignmentByIds( deleteDTO );
+        service.deleteProjectAssignmentById( id );
         return ResponseEntity.noContent().build();
     }
 }

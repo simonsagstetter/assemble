@@ -12,7 +12,6 @@ package com.assemble.backend.services.project;
 
 import com.assemble.backend.models.dtos.project.ProjectAssignmentCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDTO;
-import com.assemble.backend.models.dtos.project.ProjectAssignmentDeleteDTO;
 import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.entities.project.Project;
 import com.assemble.backend.models.entities.project.ProjectAssignment;
@@ -26,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -37,6 +34,16 @@ public class ProjectAssignmentServiceImpl implements ProjectAssignmentService {
     private ProjectAssignmentMapper projectAssignmentMapper;
     private EmployeeRepository employeeRepository;
     private ProjectRepository projectRepository;
+
+    @Override
+    public ProjectAssignmentDTO getProjectAssignmentById( String id ) {
+        ProjectAssignment projectAssignment = projectAssignmentRepository.findById( UUID.fromString( id ) )
+                .orElseThrow(
+                        () -> new EntityNotFoundException( "Could not find project assignment with id: " + id )
+                );
+
+        return projectAssignmentMapper.toProjectAssignmentDTO( projectAssignment );
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -60,72 +67,38 @@ public class ProjectAssignmentServiceImpl implements ProjectAssignmentService {
 
     @Override
     @Transactional
-    public List<ProjectAssignmentDTO> createProjectAssignments( List<ProjectAssignmentCreateDTO> assignments ) {
-        Collection<UUID> employeeIds = assignments.stream()
-                .map( assignment -> UUID.fromString( assignment.getEmployeeId() ) )
-                .toList();
-        Collection<UUID> projectIds = assignments.stream()
-                .map( assignment -> UUID.fromString( assignment.getProjectId() ) )
-                .toList();
+    public ProjectAssignmentDTO createProjectAssignment( ProjectAssignmentCreateDTO projectAssignmentCreateDTO ) {
+        Employee employee = employeeRepository.findById( UUID.fromString( projectAssignmentCreateDTO.getEmployeeId() ) )
+                .orElseThrow(
+                        () -> new EntityNotFoundException(
+                                "Could not find employee with id: " + projectAssignmentCreateDTO.getEmployeeId()
+                        )
+                );
 
-        List<Employee> employees = employeeRepository.findAllByIdIsIn( employeeIds );
-        List<Project> projects = projectRepository.findAllByIdIsIn( projectIds );
+        Project project = projectRepository.findById( UUID.fromString( projectAssignmentCreateDTO.getProjectId() ) )
+                .orElseThrow(
+                        () -> new EntityNotFoundException(
+                                "Could not find project with id: " + projectAssignmentCreateDTO.getProjectId()
+                        )
+                );
 
-        Map<UUID, Employee> employeesMap = employees.stream()
-                .collect( Collectors.toMap(
-                        Employee::getId,
-                        Function.identity()
-                ) );
-        Map<UUID, Project> projectsMap = projects.stream()
-                .collect( Collectors.toMap(
-                        Project::getId,
-                        Function.identity()
-                ) );
+        ProjectAssignment projectAssignment = projectAssignmentRepository.save( projectAssignmentMapper
+                .toProjectAssignment( projectAssignmentCreateDTO, employee, project )
+        );
 
-        List<ProjectAssignment> projectAssignments = new ArrayList<>();
 
-        for ( ProjectAssignmentCreateDTO assignment : assignments ) {
-            Employee employee = employeesMap.get( UUID.fromString( assignment.getEmployeeId() ) );
-            Project project = projectsMap.get( UUID.fromString( assignment.getProjectId() ) );
-            if ( employee == null || project == null )
-                throw new EntityNotFoundException( "Employee or Project not found" );
-
-            projectAssignments.add(
-                    projectAssignmentMapper
-                            .toProjectAssignment( assignment, employee, project )
-            );
-        }
-
-        List<ProjectAssignment> savedProjectAssignments = projectAssignmentRepository.saveAll( projectAssignments );
-
-        return savedProjectAssignments.stream()
-                .map( projectAssignmentMapper::toProjectAssignmentDTO )
-                .toList();
+        return projectAssignmentMapper.toProjectAssignmentDTO( projectAssignment );
 
     }
 
     @Override
     @Transactional
-    public void deleteProjectAssignmentByIds( ProjectAssignmentDeleteDTO deleteDTO ) {
-        List<ProjectAssignment> assignments = projectAssignmentRepository
-                .findAllByIdIsIn(
-                        deleteDTO.getIds()
-                                .stream()
-                                .map( UUID::fromString )
-                                .toList()
+    public void deleteProjectAssignmentById( String id ) {
+        ProjectAssignment projectAssignment = projectAssignmentRepository.findById( UUID.fromString( id ) )
+                .orElseThrow(
+                        () -> new EntityNotFoundException( "Could not find project assignment with id: " + id )
                 );
 
-        Map<UUID, ProjectAssignment> assignmentMap = assignments.stream()
-                .collect( Collectors.toMap(
-                        ProjectAssignment::getId,
-                        Function.identity()
-                ) );
-
-        for ( String id : deleteDTO.getIds() ) {
-            ProjectAssignment assignment = assignmentMap.get( UUID.fromString( id ) );
-            if ( assignment == null ) throw new EntityNotFoundException( "Assignment not found" );
-        }
-
-        projectAssignmentRepository.deleteAll( assignments );
+        projectAssignmentRepository.delete( projectAssignment );
     }
 }

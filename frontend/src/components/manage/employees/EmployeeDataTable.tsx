@@ -8,22 +8,22 @@
  * All rights reserved.
  */
 
-import { Employee } from "@/api/rest/generated/query/openAPIDefinition.schemas";
+import { EmployeeDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import Link from "next/link";
-import { DataTable } from "@/components/custom-ui/DataTable";
+import { DataTable, DataTableHeader } from "@/components/custom-ui/DataTable";
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { IdCardIcon, MoreHorizontal, PlusIcon } from "lucide-react";
 import EmployeeActions from "@/components/manage/employees/EmployeeActions";
 
 type EmployeeDataTableProps = {
-    employees: Employee[]
+    employees: EmployeeDTO[]
 }
 
 export default function EmployeeDataTable( { employees }: EmployeeDataTableProps ) {
-    const columns: ColumnDef<Employee>[] = useMemo( () => [
+    const columns: ColumnDef<EmployeeDTO>[] = useMemo( () => [
         {
             header: "No",
             cell( { row } ) {
@@ -93,5 +93,11 @@ export default function EmployeeDataTable( { employees }: EmployeeDataTableProps
         },
     ], [] )
 
-    return <DataTable columns={ columns } data={ employees }/>
+    return <DataTableHeader EntityIcon={ IdCardIcon }
+                            entity={ "Employees" } currentView={ "All Employees" }
+                            createActionLink={ "/app/manage/employees/create" }
+                            createActionLabel={ "New" }
+                            createActionIcon={ PlusIcon }>
+        <DataTable columns={ columns } data={ employees }/>
+    </DataTableHeader>
 }

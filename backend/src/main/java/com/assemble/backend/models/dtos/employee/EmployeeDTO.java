@@ -26,7 +26,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-@Schema(name = "Employee", description = "Employee details")
+@Schema(name = "EmployeeDTO", description = "Employee details")
 public class EmployeeDTO {
 
     @Schema(

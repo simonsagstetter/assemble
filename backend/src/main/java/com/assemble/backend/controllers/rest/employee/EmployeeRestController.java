@@ -107,6 +107,27 @@ public class EmployeeRestController {
     }
 
     @Operation(
+            summary = "Search all employees by first or last name"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = EmployeeRefDTO.class))
+            )
+    )
+    @GetMapping(
+            path = "/search-all/{searchTerm}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<EmployeeRefDTO>> searchAllEmployees(
+            @PathVariable String searchTerm
+    ) {
+        return ResponseEntity.ok( employeeService.searchAllEmployees( searchTerm ) );
+    }
+
+    @Operation(
             summary = "Create Employee"
     )
     @ApiResponse(

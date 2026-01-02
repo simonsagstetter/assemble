@@ -10,62 +10,39 @@
 
 "use client"
 
-import { ListIcon, MoreHorizontal, PlusIcon, UserIcon } from "lucide-react"
-
 import {
     SidebarGroup,
     SidebarGroupLabel,
-    SidebarMenu, SidebarMenuAction,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar,
+    SidebarMenu,
 } from "@/components/ui/sidebar"
-import Link from "next/link";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import { useRouter } from "@bprogress/next/app";
+
+import MenuItem from "@/components/nav/menus/MenuItem";
+import { ListIcon, PlusIcon, UserIcon } from "lucide-react";
+
+const userActions = [
+    {
+        label: "View All",
+        href: "/app/admin/users",
+        Icon: ListIcon
+    },
+    {
+        label: "New",
+        href: "/app/admin/users/create",
+        Icon: PlusIcon
+    }
+]
 
 export function AdministrationMenu() {
-    const router = useRouter();
-    const { isMobile } = useSidebar();
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Administration</SidebarGroupLabel>
             <SidebarMenu>
-                <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                        <Link href="/app/admin/users">
-                            <UserIcon></UserIcon>
-                            <span>Users</span>
-                        </Link>
-                    </SidebarMenuButton>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <SidebarMenuAction showOnHover>
-                                <MoreHorizontal/>
-                                <span className="sr-only">More</span>
-                            </SidebarMenuAction>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                            className="w-48 rounded-lg"
-                            side={ isMobile ? "bottom" : "right" }
-                            align={ isMobile ? "end" : "start" }
-                        >
-                            <DropdownMenuItem onSelect={ () => router.push( "/app/admin/users" ) }>
-                                <ListIcon className="text-muted-foreground"/>
-                                <span>View All</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onSelect={ () => router.push( "/app/admin/users/create" ) }>
-                                <PlusIcon className="text-muted-foreground"/>
-                                <span>New</span>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </SidebarMenuItem>
+                <MenuItem
+                    label={ "Users" }
+                    href={ "/app/admin/users" }
+                    Icon={ UserIcon }
+                    actions={ userActions }
+                ></MenuItem>
             </SidebarMenu>
         </SidebarGroup>
 

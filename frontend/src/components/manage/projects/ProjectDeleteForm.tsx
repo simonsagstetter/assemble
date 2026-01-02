@@ -24,6 +24,9 @@ import {
     getGetProjectByIdQueryKey,
     useDeleteProjectById
 } from "@/api/rest/generated/query/projects/projects";
+import {
+    getGetAllProjectAssignmentsByProjectIdQueryKey
+} from "@/api/rest/generated/query/project-assignments/project-assignments";
 
 type ProjectDeleteFormProps = {
     project: ProjectDTO
@@ -49,11 +52,16 @@ export default function ProjectDeleteForm( { project }: ProjectDeleteFormProps )
                     await queryClient.invalidateQueries( {
                         queryKey: getGetAllProjectsQueryKey(),
                         refetchType: "all"
-                    } )
+                    } );
                     await queryClient.invalidateQueries( {
                         queryKey: getGetProjectByIdQueryKey( project.id ),
                         refetchType: "none"
                     } );
+                    await queryClient.invalidateQueries( {
+                        queryKey: getGetAllProjectAssignmentsByProjectIdQueryKey( project.id ),
+                        refetchType: "all"
+                    } );
+
                     if ( modalContext ) {
                         modalContext.setOpen( false );
                     }

@@ -95,6 +95,29 @@ public class ProjectRestController {
     }
 
     @Operation(
+            summary = "Search all projects by name"
+    )
+    @ApiResponse(
+            description = "OK",
+            responseCode = "200",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(
+                            schema = @Schema(
+                                    implementation = ProjectDTO.class
+                            )
+                    )
+            )
+    )
+    @GetMapping(
+            path = "/search/{searchTerm}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<ProjectDTO>> searchAllProjects( @PathVariable String searchTerm ) {
+        return ResponseEntity.ok( projectService.searchAllProjects( searchTerm ) );
+    }
+
+    @Operation(
             summary = "Create a project"
     )
     @ApiResponse(

@@ -13,6 +13,10 @@
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable, } from "@tanstack/react-table"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
+import { LucideProps, PlusIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ForwardRefExoticComponent, ReactNode, RefAttributes } from "react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -76,3 +80,38 @@ export function DataTable<TData, TValue>( {
         </div>
     )
 }
+
+function DataTableHeader(
+    { entity, currentView, EntityIcon, createActionLink, createActionLabel, children }
+    :
+    {
+        EntityIcon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>,
+        entity: string,
+        currentView: string,
+        createActionLink: string,
+        createActionLabel: string,
+        createActionIcon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>,
+        children: ReactNode
+    }
+) {
+
+    return <div className={ "p-8 flex flex-col gap-4 items-stretch justify-center pt-[2.49rem]" }>
+        <div className={ "flex flex-row justify-between items-center" }>
+            <div className={ "flex flex-row items-center gap-2 justify-center" }>
+                <EntityIcon className={ "size-10 bg-primary text-primary-foreground rounded-lg p-2 stroke-1" }/>
+                <div className={ "flex flex-col gap-0" }>
+                    <small className={ "text-xs uppercase" }>{ entity }</small>
+                    <h3 className={ "text-2xl font-bold leading-6" }>{ currentView }</h3>
+                </div>
+            </div>
+            <Button type={ "button" } className={ "self-end p-0" }>
+                <Link href={ createActionLink }
+                      className={ "px-4 py-3 flex flex-row items-center gap-1" }><PlusIcon
+                    className={ "size-4" }/>{ createActionLabel }</Link>
+            </Button>
+        </div>
+        { children }
+    </div>
+}
+
+export { DataTableHeader }

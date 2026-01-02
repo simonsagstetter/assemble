@@ -21,6 +21,8 @@ public interface ProjectService {
 
     ProjectDTO getProjectById( String id );
 
+    List<ProjectDTO> searchAllProjects( String searchTerm );
+
     ProjectDTO createProject( ProjectCreateDTO projectCreateDTO );
 
     void deleteProjectById( String id );

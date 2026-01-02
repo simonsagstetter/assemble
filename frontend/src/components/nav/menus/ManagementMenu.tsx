@@ -11,96 +11,56 @@
 "use client"
 
 import {
-    MoreHorizontal,
-    ListIcon, PlusIcon, IdCardIcon, LayersIcon,
-} from "lucide-react"
+    PlusIcon, IdCardIcon, LayersIcon,
+} from "lucide-react";
 
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
     SidebarGroup,
     SidebarGroupLabel,
     SidebarMenu,
-    SidebarMenuAction,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar,
 } from "@/components/ui/sidebar"
-import Link from "next/link";
-import { useRouter } from "@bprogress/next/app";
+import MenuItem from "@/components/nav/menus/MenuItem";
+
+const employeeActions = [
+    {
+        label: "View All",
+        href: "/app/manage/employees",
+        Icon: IdCardIcon
+    },
+    {
+        label: "New",
+        href: "/app/manage/employees/create",
+        Icon: PlusIcon
+    }
+]
+
+const projectActions = [
+    {
+        label: "View All",
+        href: "/app/manage/projects",
+        Icon: LayersIcon
+    },
+    {
+        label: "New",
+        href: "/app/manage/projects/create",
+        Icon: PlusIcon
+    }
+]
 
 export default function ManagementMenu() {
-    const router = useRouter();
-    const { isMobile } = useSidebar()
 
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Management</SidebarGroupLabel>
             <SidebarMenu>
-                <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                        <Link href="/app/manage/projects">
-                            <LayersIcon></LayersIcon>
-                            <span>Projects</span>
-                        </Link>
-                    </SidebarMenuButton>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <SidebarMenuAction showOnHover>
-                                <MoreHorizontal/>
-                                <span className="sr-only">More</span>
-                            </SidebarMenuAction>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                            className="w-48 rounded-lg"
-                            side={ isMobile ? "bottom" : "right" }
-                            align={ isMobile ? "end" : "start" }
-                        >
-                            <DropdownMenuItem onSelect={ () => router.push( "/app/manage/projects" ) }>
-                                <ListIcon className="text-muted-foreground"/>
-                                <span>View All</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onSelect={ () => router.push( "/app/manage/projects/create" ) }>
-                                <PlusIcon className="text-muted-foreground"/>
-                                <span>New</span>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                        <Link href="/app/manage/employees">
-                            <IdCardIcon></IdCardIcon>
-                            <span>Employees</span>
-                        </Link>
-                    </SidebarMenuButton>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <SidebarMenuAction showOnHover>
-                                <MoreHorizontal/>
-                                <span className="sr-only">More</span>
-                            </SidebarMenuAction>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                            className="w-48 rounded-lg"
-                            side={ isMobile ? "bottom" : "right" }
-                            align={ isMobile ? "end" : "start" }
-                        >
-                            <DropdownMenuItem onSelect={ () => router.push( "/app/manage/employees" ) }>
-                                <ListIcon className="text-muted-foreground"/>
-                                <span>View All</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onSelect={ () => router.push( "/app/manage/employees/create" ) }>
-                                <PlusIcon className="text-muted-foreground"/>
-                                <span>New</span>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </SidebarMenuItem>
+                <MenuItem href={ "/app/manage/projects" }
+                          label={ "Projects" }
+                          Icon={ LayersIcon }
+                          actions={ projectActions }/>
+                <MenuItem href={ "/app/manage/employees" }
+                          label={ "Employees" }
+                          Icon={ IdCardIcon }
+                          actions={ employeeActions }/>
             </SidebarMenu>
         </SidebarGroup>
     )
