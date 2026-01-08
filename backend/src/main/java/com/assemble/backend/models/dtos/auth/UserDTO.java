@@ -80,4 +80,10 @@ public class UserDTO {
     )
     @NonNull
     private List<UserRole> roles;
+
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+    )
+    private String employeeId;
 }
