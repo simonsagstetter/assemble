@@ -10,7 +10,7 @@
 
 const LOGIN_PATH = "/auth/login";
 
-const LOGIN_REDIRECT_PATH = "/app";
+const LOGIN_REDIRECT_PATH = "/app/timetracking/calendar";
 
 const LOGOUT_PATH = "/auth/logout";
 
