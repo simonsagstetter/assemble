@@ -20,6 +20,7 @@ import lombok.experimental.SuperBuilder;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @SuperBuilder
 @AllArgsConstructor
@@ -60,6 +61,12 @@ public class TimeEntryDTO extends BaseEntityDTO {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private LocalDate date;
+
+    @Schema(
+            accessMode = Schema.AccessMode.READ_ONLY,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
     private Instant startTime;
@@ -72,14 +79,16 @@ public class TimeEntryDTO extends BaseEntityDTO {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
+    @NonNull
     private Duration pauseTime;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_ONLY,
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
+    @NonNull
     private Duration totalTime;
 
     @Schema(
