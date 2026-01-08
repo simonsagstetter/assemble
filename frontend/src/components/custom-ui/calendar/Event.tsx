@@ -8,7 +8,6 @@
  * All rights reserved.
  */
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { msToHHmm } from "@/utils/duration";
 import { colorClasses, colorMobileClasses } from "@/config/calendar/calendar.config";
 import { EventData } from "@/types/calendar/calendar.types";
@@ -23,6 +22,7 @@ import {
 import { PencilIcon, TrashIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { PopoverArrow } from "@radix-ui/react-popover";
+import { Compact } from "@/components/custom-ui/compact";
 
 type EventProps = {
     event: EventData;
@@ -74,10 +74,11 @@ export default function Event( { event, isReadOnly = false }: EventProps ) {
                         </div>
                     </ContextMenuTrigger>
                 </PopoverTrigger>
-                { !isReadOnly ?
-                    <PopoverContent className={ "py-2 max-md:hidden max-w-[200px] text-center" } arrowPadding={ 10 }>
+                { !isReadOnly && event.compact ?
+                    <PopoverContent className={ "py-2 max-md:hidden max-w-[500px] text-center p-0" }
+                                    arrowPadding={ 10 }>
                         <PopoverArrow className={ "fill-primary" }></PopoverArrow>
-                        { event.tooltip }
+                        <Compact { ...event.compact }/>
                     </PopoverContent>
                     : null }
             </Popover>

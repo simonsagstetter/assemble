@@ -9,7 +9,7 @@
  */
 
 import { TimeEntryDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import { isoDurationToMs } from "@/utils/duration";
+import { isoDurationToMs, msToHHmm } from "@/utils/duration";
 import { DayInfo, EventData, MonthDayRange } from "@/types/calendar/calendar.types";
 import {
     addDays,
@@ -24,6 +24,7 @@ import {
 import { getDayMondayBased } from "@/utils/datetime";
 import { TimeEntriesByDate } from "@/store/calendar-store";
 import { colorClasses } from "@/config/calendar/calendar.config";
+import { CalendarIcon } from "lucide-react";
 
 function calculateDayTotal( timeentries: TimeEntryDTO[] ): number {
     return timeentries.reduce( ( sum, entry ) => {
@@ -40,7 +41,15 @@ function mapTimeEntriesToDayEvents( timeentries: TimeEntryDTO[] ): EventData[] {
         time: isoDurationToMs( entry.totalTime ) - isoDurationToMs( entry.pauseTime ),
         isMultiDay: false,
         color: entry.project.color.toLowerCase() as keyof typeof colorClasses,
-        tooltip: entry.description
+        compact: {
+            Icon: CalendarIcon,
+            title: entry.project.name,
+            details: [
+                { label: "Description", value: entry.description },
+                { label: "Duration", value: msToHHmm( isoDurationToMs( entry.totalTime ) ) },
+                { label: "Pause", value: msToHHmm( isoDurationToMs( entry.pauseTime ) ) }
+            ]
+        }
     } satisfies EventData ) );
 }
 

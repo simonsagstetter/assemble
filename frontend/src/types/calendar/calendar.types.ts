@@ -9,6 +9,7 @@
  */
 
 import { type colorClasses } from "@/config/calendar/calendar.config";
+import { CompactProps } from "@/components/custom-ui/compact";
 
 type EventData = {
     id: string;
@@ -18,7 +19,7 @@ type EventData = {
     title: string;
     time: number;
     color: ( keyof typeof colorClasses );
-    tooltip?: string;
+    compact?: CompactProps;
 }
 
 type DayInfo = {
