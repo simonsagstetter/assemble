@@ -69,9 +69,9 @@ function useTimeEntryAdminFormHandlers(
         hasPriviledge = true
     }: UseTimeEntryFormHandlersProps
 ) {
-    const create = useCreateOwnTimeEntry(),
-        update = useUpdateOwnTimeEntry();
-    
+    const create = useCreateTimeEntry(),
+        update = useUpdateTimeEntry();
+
 
     return useTimeEntryFormHandlers( {
         isNew,
@@ -98,8 +98,8 @@ function useTimeEntryUserFormHandlers(
         hasPriviledge = false
     }: UseTimeEntryFormHandlersProps
 ) {
-    const create = useCreateTimeEntry(),
-        update = useUpdateTimeEntry();
+    const create = useCreateOwnTimeEntry(),
+        update = useUpdateOwnTimeEntry();
 
     return useTimeEntryFormHandlers( {
         isNew,
