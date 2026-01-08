@@ -20,7 +20,7 @@ function UserLookupField<TFieldValues extends FieldValues, TTransformedValues ex
     :
     {
         fieldName: Path<TFieldValues>,
-        formControl: Control<TFieldValues, any, TTransformedValues>,
+        formControl: Control<TFieldValues, unknown, TTransformedValues>,
         disabled: boolean
     }
 ) {
@@ -46,7 +46,7 @@ function EmployeeLookupField<TFieldValues extends FieldValues, TTransformedValue
     :
     {
         fieldName: Path<TFieldValues>,
-        formControl: Control<TFieldValues, any, TTransformedValues>,
+        formControl: Control<TFieldValues, unknown, TTransformedValues>,
         disabled: boolean,
         excludeValues: string[],
         onSelectHandler?: ( value: string ) => void
@@ -74,7 +74,7 @@ function UnlinkedEmployeeLookupField<TFieldValues extends FieldValues, TTransfor
     :
     {
         fieldName: Path<TFieldValues>,
-        formControl: Control<TFieldValues, any, TTransformedValues>,
+        formControl: Control<TFieldValues, unknown, TTransformedValues>,
         disabled: boolean
     }
 ) {

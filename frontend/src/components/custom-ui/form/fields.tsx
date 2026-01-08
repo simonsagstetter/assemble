@@ -42,7 +42,7 @@ function CustomField<TFieldValues extends FieldValues, TTransformedValues extend
     :
     {
         fieldName: Path<TFieldValues>,
-        formControl: Control<TFieldValues, any, TTransformedValues>,
+        formControl: Control<TFieldValues, unknown, TTransformedValues>,
         renderAction: ( { field, fieldState, formState }: {
             field: ControllerRenderProps<TFieldValues, Path<TFieldValues>>,
             fieldState: ControllerFieldState,
@@ -62,7 +62,7 @@ function InputField<TFieldValues extends FieldValues, TTransformedValues extends
     :
         {
             fieldName: Path<TFieldValues>,
-            formControl: Control<TFieldValues, any, TTransformedValues>,
+            formControl: Control<TFieldValues, unknown, TTransformedValues>,
             label: string,
             children?: ReactNode
         } & ComponentProps<"input">
@@ -99,7 +99,7 @@ function TimeField<TFieldValues extends FieldValues, TTransformedValues extends 
     :
         {
             fieldName: Path<TFieldValues>,
-            formControl: Control<TFieldValues, any, TTransformedValues>,
+            formControl: Control<TFieldValues, unknown, TTransformedValues>,
             label: string,
             children?: ReactNode
         } & ComponentProps<"input">
@@ -151,7 +151,7 @@ function CurrencyField<TFieldValues extends FieldValues, TTransformedValues exte
     :
         {
             fieldName: Path<TFieldValues>,
-            formControl: Control<TFieldValues, any, TTransformedValues>,
+            formControl: Control<TFieldValues, unknown, TTransformedValues>,
             label: string,
             children?: ReactNode
         } & ComponentProps<"input">
@@ -204,7 +204,7 @@ function TextareaField<TFieldValues extends FieldValues, TTransformedValues exte
     :
         {
             fieldName: Path<TFieldValues>,
-            formControl: Control<TFieldValues, any, TTransformedValues>,
+            formControl: Control<TFieldValues, unknown, TTransformedValues>,
             label: string,
             children?: ReactNode
         } & ComponentProps<"textarea">
@@ -239,7 +239,7 @@ function SwitchField<TFieldValues extends FieldValues, TTransformedValues extend
     { fieldName, formControl, label, children, ...props }:
         {
             fieldName: Path<TFieldValues>,
-            formControl: Control<TFieldValues, any, TTransformedValues>,
+            formControl: Control<TFieldValues, unknown, TTransformedValues>,
             label: string,
             children: ReactNode,
         } & React.ComponentProps<ForwardRefExoticComponent<SwitchProps & RefAttributes<HTMLButtonElement>>>
@@ -276,7 +276,7 @@ function CalendarField<TFieldValues extends FieldValues, TTransformedValues exte
     { fieldName, formControl, label, placeholder, children, ...props }:
         {
             fieldName: Path<TFieldValues>,
-            formControl: Control<TFieldValues, any, TTransformedValues>,
+            formControl: Control<TFieldValues, unknown, TTransformedValues>,
             placeholder: string,
             label: string,
             children?: ReactNode,
@@ -333,7 +333,7 @@ function SelectField<TFieldValues extends FieldValues, TTransformedValues extend
     { fieldName, formControl, label, placeholder, options, children, ...props }:
         {
             fieldName: Path<TFieldValues>,
-            formControl: Control<TFieldValues, any, TTransformedValues>,
+            formControl: Control<TFieldValues, unknown, TTransformedValues>,
             label: string,
             placeholder: string,
             options: { label: string, value: string, className?: string, elem?: ReactNode }[],

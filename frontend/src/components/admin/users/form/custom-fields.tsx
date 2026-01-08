@@ -18,7 +18,7 @@ function RolesLookupField<TFieldValues extends FieldValues, TTransformedValues e
     :
     {
         fieldName: Path<TFieldValues>,
-        formControl: Control<TFieldValues, any, TTransformedValues>,
+        formControl: Control<TFieldValues, unknown, TTransformedValues>,
         disabled: boolean
     }
 ) {

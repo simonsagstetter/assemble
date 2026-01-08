@@ -10,8 +10,6 @@
 
 package com.assemble.backend.models.dtos.timeentry.validators;
 
-import com.assemble.backend.models.dtos.timeentry.TimeEntryCreateDTO;
-import com.assemble.backend.models.dtos.timeentry.TimeEntryUpdateDTO;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
