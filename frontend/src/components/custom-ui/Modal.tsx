@@ -18,12 +18,12 @@ type ModalProps = {
     children: ReactNode;
 }
 
-interface ModalContext {
+export type ModalContextType = {
     open: boolean;
     setOpen: ( open: boolean ) => void;
 }
 
-export const ModalContext = createContext<ModalContext | null>( null );
+export const ModalContext = createContext<ModalContextType | null>( null );
 
 export default function Modal( { children }: ModalProps ) {
     const [ open, setOpen ] = useState<boolean>( true );
@@ -33,7 +33,7 @@ export default function Modal( { children }: ModalProps ) {
         if ( !open ) router.back();
     }
 
-    const value: ModalContext = { open, setOpen };
+    const value: ModalContextType = { open, setOpen };
 
     return <ModalContext.Provider value={ value }>
         <Dialog open={ open } onOpenChange={ handleOpenChange }>
