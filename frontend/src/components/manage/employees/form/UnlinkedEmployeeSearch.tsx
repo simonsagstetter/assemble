@@ -1,6 +1,6 @@
 /*
  * assemble
- * EmployeeSearch.tsx
+ * UnlinkedEmployeeSearch.tsx
  *
  * Copyright (c) 2025 Simon Sagstetter
  *
@@ -10,7 +10,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useSearchAllEmployees } from "@/api/rest/generated/query/employees/employees";
+import { useSearchUnlinkedEmployees } from "@/api/rest/generated/query/employees/employees";
 import { IdCardIcon } from "lucide-react";
 import Lookup, { type LookupItem } from "@/components/custom-ui/form/Lookup";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
@@ -30,13 +30,12 @@ const initialState = {
 
 type EmployeeSearchProps = {
     field: ControllerRenderProps<FieldValues, string>,
-    disabled: boolean,
-    excludeValues: string[]
+    disabled: boolean
 }
 
-export default function EmployeeSearch( { field, disabled, excludeValues }: EmployeeSearchProps ) {
+export default function UnlinkedEmployeeSearch( { field, disabled }: EmployeeSearchProps ) {
     const [ state, setState ] = useState<SearchState>( initialState );
-    const { data, isError, isLoading } = useSearchAllEmployees(
+    const { data, isError, isLoading } = useSearchUnlinkedEmployees(
         state.searchTerm,
         {
             query: {
@@ -54,14 +53,12 @@ export default function EmployeeSearch( { field, disabled, excludeValues }: Empl
         , []
     );
 
-    const items: LookupItem[] | null = data != null ? data
-        .map( employee => ( {
-            id: employee.id,
-            result: employee.fullname,
-            Icon: <IdCardIcon/>,
-            searchTerm: state.searchTerm,
-            disabled: excludeValues.includes( employee.id )
-        } ) ) : null;
+    const items: LookupItem[] | null = data != null ? data.map( employee => ( {
+        id: employee.id,
+        result: employee.fullname,
+        Icon: <IdCardIcon/>,
+        searchTerm: state.searchTerm
+    } ) ) : null;
 
     const onSelect = useCallback( ( selectedValue: LookupItem ) => {
         if ( selectedValue.id === state.selectedValue?.id ) {
@@ -82,7 +79,7 @@ export default function EmployeeSearch( { field, disabled, excludeValues }: Empl
         open={ state.open }
         setOpenAction={ ( open ) => setState( ( prev ) => ( { ...prev, open } ) ) }
         placeholder={ "Search employees..." }
-        heading={ "Employees" }
+        heading={ "Unlinked Employees" }
         emptyMessage={ "No employees found." }
         searchTerm={ state.searchTerm }
         searchCallbackAction={ onSearch }

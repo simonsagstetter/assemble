@@ -12,23 +12,25 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Field } from "@/components/ui/field";
 import { useFormContext } from "react-hook-form";
-import { ComponentProps } from "react";
+import { ComponentProps, ReactNode } from "react";
 import useFormActionContext from "@/hooks/useFormActionContext";
 
 type Variants = ComponentProps<typeof Button>["variant"];
 
 function FormActions(
-    { formId, variant, label }
+    { formId, variant, label, children }
     :
     {
         formId: string,
         variant?: Variants,
-        label: string
+        label: string,
+        children?: ReactNode
     }
 ) {
     const { formState: { isSubmitting } } = useFormContext();
     const { isPending, isSuccess, handleCancel, disableOnSuccess } = useFormActionContext();
     return <Field orientation={ "horizontal" } className={ "p-8" }>
+        { children ? children : null }
         <Button type="button"
                 variant="secondary"
                 className={ `${ variant === "destructive" ? "flex-2/3" : "flex-1/3" } grow cursor-pointer` }
