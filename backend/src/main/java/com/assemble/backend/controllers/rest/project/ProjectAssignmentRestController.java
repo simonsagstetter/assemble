@@ -14,6 +14,7 @@ import com.assemble.backend.models.dtos.global.ErrorResponse;
 import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDTO;
+import com.assemble.backend.models.entities.auth.SecurityUser;
 import com.assemble.backend.services.project.ProjectAssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -27,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -121,6 +123,30 @@ public class ProjectAssignmentRestController {
             @PathVariable String id
     ) {
         return ResponseEntity.ok( service.getProjectAssignmentsByEmployeeId( id ) );
+    }
+
+    @Operation(
+            summary = "Get Own Assignments"
+    )
+    @ApiResponse(
+            description = "OK",
+            responseCode = "200",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(
+                            schema = @Schema(
+                                    implementation = ProjectAssignmentDTO.class
+                            )
+                    )
+            )
+    )
+    @GetMapping(
+            path = "/me",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('USER') || hasRole('MANAGER') || hasRole('ADMIN') || hasRole('SUPERUSER')")
+    public ResponseEntity<List<ProjectAssignmentDTO>> getOwnProjectAssignments( @AuthenticationPrincipal SecurityUser user ) {
+        return ResponseEntity.ok( service.getOwnProjectAssignments( user ) );
     }
 
     @Operation(

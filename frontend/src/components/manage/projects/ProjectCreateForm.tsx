@@ -18,7 +18,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import {
-    FieldValidationError,
+    FieldValidationError, ProjectDTOColor,
     ProjectDTOStage,
     ProjectDTOType
 } from "@/api/rest/generated/query/openAPIDefinition.schemas";
@@ -34,6 +34,7 @@ import {
 } from "@/types/projects/project.types";
 import { getGetAllProjectsQueryKey, useCreateProject } from "@/api/rest/generated/query/projects/projects";
 import { InputField, SelectField, SwitchField, TextareaField } from "@/components/custom-ui/form/fields";
+import { colorClasses, colorMobileClasses } from "@/config/calendar/calendar.config";
 
 export default function ProjectCreateForm() {
     const modalContext = useModalContext();
@@ -49,6 +50,7 @@ export default function ProjectCreateForm() {
             stage: ProjectDTOStage.PROPOSAL,
             category: "",
             description: "",
+            color: ProjectDTOColor.PURPLE,
         }
     } )
 
@@ -171,19 +173,39 @@ export default function ProjectCreateForm() {
                                     />
                                 </div>
                                 <div className={ "grid grid-cols-2 gap-16" }>
-                                    <TextareaField fieldName={ "description" }
-                                                   formControl={ form.control }
-                                                   label={ "Description" }
-                                                   placeholder={ "e.g. The project is about the construction of a new building in Berlin." }
-                                                   disabled={ disabled }
-                                    />
                                     <InputField fieldName={ "category" }
                                                 formControl={ form.control }
                                                 label={ "Category" }
                                                 placeholder={ "e.g. Sanierung" }
                                                 disabled={ disabled }
                                     />
+                                    <SelectField fieldName={ "color" }
+                                                 formControl={ form.control }
+                                                 label={ "Project Color" }
+                                                 placeholder={ "Choose a color" }
+                                                 options={ Object.keys( colorClasses ).map( key => {
+                                                     const value = ProjectDTOColor[ key.toUpperCase() as keyof typeof ProjectDTOColor ];
+                                                     return {
+                                                         label: key,
+                                                         value,
+                                                         elem: <>
+                                                             <span
+                                                                 className={ "size-2 rounded-full " + colorMobileClasses[ key as keyof typeof colorClasses ] }>
+                                                             </span>
+                                                             { value.toLowerCase() }
+                                                         </>
+                                                     }
+                                                 } ) }
+                                                 disabled={ disabled }>
+                                        These colors are used to visualize the project in the calendar.
+                                    </SelectField>
                                 </div>
+                                <TextareaField fieldName={ "description" }
+                                               formControl={ form.control }
+                                               label={ "Description" }
+                                               placeholder={ "e.g. The project is about the construction of a new building in Berlin." }
+                                               disabled={ disabled }
+                                />
                             </FieldGroup>
                         </FieldSet>
                         <ErrorMessage/>

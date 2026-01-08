@@ -8,37 +8,16 @@
  * All rights reserved.
  */
 
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { CustomField } from "@/components/custom-ui/form/fields";
-import EmployeeSearch from "@/components/manage/projects/form/EmployeeSearch";
 import ProjectSearch from "@/components/manage/projects/form/ProjectSearch";
+import {
+    AdminProjectAssignmentSearch,
+    UserProjectAssignmentSearch
+} from "@/components/manage/projects/form/ProjectAssignmentSearch";
+import { ReactNode } from "react";
 
-
-function EmployeeLookupField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
-    { fieldName, formControl, disabled, excludeValues }
-    :
-    {
-        fieldName: Path<TFieldValues>,
-        formControl: Control<TFieldValues, any, TTransformedValues>,
-        disabled: boolean,
-        excludeValues: string[]
-    }
-) {
-    return <CustomField
-        fieldName={ fieldName }
-        formControl={ formControl }
-        renderAction={ ( { field, fieldState } ) => (
-            <Field data-invalid={ fieldState.invalid }>
-                <FieldLabel htmlFor={ `${ fieldName }-field` }>Employee</FieldLabel>
-                <EmployeeSearch field={ field }
-                                disabled={ disabled }
-                                excludeValues={ excludeValues }/>
-                { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
-                </FieldError> }
-            </Field>
-        ) }/>
-}
 
 function ProjectLookupField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
     { fieldName, formControl, disabled, excludeValues }
@@ -65,8 +44,43 @@ function ProjectLookupField<TFieldValues extends FieldValues, TTransformedValues
         ) }/>
 }
 
+function ProjectAssignmentLookupField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
+    { fieldName, formControl, disabled, selectedId, employeeId, isRestrictedSerach = true, children }
+    :
+    {
+        fieldName: Path<TFieldValues>,
+        formControl: Control<TFieldValues, any, TTransformedValues>,
+        disabled: boolean,
+        selectedId?: string,
+        employeeId: string,
+        children?: ReactNode,
+        isRestrictedSerach?: boolean
+    }
+) {
+    return <CustomField
+        fieldName={ fieldName }
+        formControl={ formControl }
+        renderAction={ ( { field, fieldState } ) => (
+            <Field data-invalid={ fieldState.invalid }>
+                <FieldLabel htmlFor={ `${ fieldName }-field` }>Project</FieldLabel>
+                { isRestrictedSerach ?
+                    <UserProjectAssignmentSearch field={ field }
+                                                 disabled={ disabled }
+                                                 selectedId={ selectedId } employeeId={ employeeId }/>
+                    :
+                    <AdminProjectAssignmentSearch field={ field }
+                                                  disabled={ disabled }
+                                                  selectedId={ selectedId } employeeId={ employeeId }/>
+
+                }
+                { children ? <FieldDescription>{ children }</FieldDescription> : null }
+                { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
+                </FieldError> }
+            </Field>
+        ) }/>
+}
 
 export {
-    EmployeeLookupField,
-    ProjectLookupField
+    ProjectLookupField,
+    ProjectAssignmentLookupField
 }

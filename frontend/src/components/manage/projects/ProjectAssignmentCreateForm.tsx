@@ -30,12 +30,13 @@ import { FormActions } from "@/components/custom-ui/form/actions";
 import { ProjectAssignmentCreateFormData, ProjectAssignmentCreateSchema } from "@/types/projects/project.types";
 import {
     getGetAllProjectAssignmentsByEmployeeIdQueryKey,
-    getGetAllProjectAssignmentsByProjectIdQueryKey,
+    getGetAllProjectAssignmentsByProjectIdQueryKey, getGetOwnProjectAssignmentsQueryKey,
     useCreateProjectAssignment
 } from "@/api/rest/generated/query/project-assignments/project-assignments";
-import { EmployeeLookupField, ProjectLookupField } from "@/components/manage/projects/form/custom-fields";
+import { ProjectLookupField } from "@/components/manage/projects/form/custom-fields";
 import { CurrencyField, SwitchField } from "@/components/custom-ui/form/fields";
 import { EmployeeDTO } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
+import { EmployeeLookupField } from "@/components/manage/employees/form/custom-fields";
 
 type ProjectAssignmentFormProps = {
     project?: ProjectDTO,
@@ -62,7 +63,7 @@ export default function ProjectAssignmentCreateForm(
             employeeId: employee?.id ?? "",
             projectId: project?.id ?? "",
             active: true,
-            hourlyRate: 0.0,
+            hourlyRate: 0.0
         }
     } );
 
@@ -86,6 +87,9 @@ export default function ProjectAssignmentCreateForm(
                     } );
                     await queryClient.invalidateQueries( {
                         queryKey: getGetAllProjectAssignmentsByEmployeeIdQueryKey( assignment.employee.id )
+                    } );
+                    await queryClient.invalidateQueries( {
+                        queryKey: getGetOwnProjectAssignmentsQueryKey()
                     } );
 
                     form.clearErrors();
@@ -184,7 +188,7 @@ export default function ProjectAssignmentCreateForm(
                         </FieldSet>
                         <ErrorMessage/>
                         <SuccessMessage
-                            message={ isProject ? "Employee" : "Project" + " was assigned to the project successfully" }/>
+                            message={ ( isProject ? "Employee" : "Project" ) + " was assigned to the project successfully" }/>
                     </FieldGroup>
                 </ScrollArea>
                 <Separator className={ "my-0" }/>

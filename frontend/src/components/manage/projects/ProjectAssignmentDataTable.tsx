@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "@bprogress/next/app";
 import Link from "next/link";
 import Status from "@/components/custom-ui/status";
+import { colorMobileClasses } from "@/config/calendar/calendar.config";
 
 type ProjectAssignmentDataTableProps = {
     projectAssignments: ProjectAssignmentDTO[];
@@ -76,8 +77,10 @@ export default function ProjectAssignmentDataTable(
                 } else {
                     return <Link
                         href={ `/app/manage/projects/${ assignment.project.id }` }
-                        className={ "hover:underline" }
+                        className={ "hover:underline flex flexrow items-center gap-1.5" }
                     >
+                        <span
+                            className={ `size-2 rounded-full ${ colorMobileClasses[ assignment.project.color.toLowerCase() as keyof typeof colorMobileClasses ] }` }></span>
                         { assignment.project.name }
                     </Link>
                 }

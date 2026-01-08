@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ProjectAssignmentRepository extends JpaRepository<ProjectAssignment, UUID> {
@@ -23,5 +24,5 @@ public interface ProjectAssignmentRepository extends JpaRepository<ProjectAssign
 
     List<ProjectAssignment> findAllByEmployeeId( UUID employeeId );
 
-    List<ProjectAssignment> findAllByIdIsIn( Collection<UUID> ids );
+    Optional<ProjectAssignment> findByProject_IdAndEmployee_Id( UUID projectId, UUID employeeId );
 }

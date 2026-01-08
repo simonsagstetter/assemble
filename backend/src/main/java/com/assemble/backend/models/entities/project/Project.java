@@ -55,4 +55,8 @@ public class Project extends BaseJPAEntity {
     @Builder.Default
     private Set<TimeEntry> timeEntries = new HashSet<>();
 
+    @Column(name = "COLOR", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ProjectColor color;
+
 }

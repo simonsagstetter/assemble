@@ -10,6 +10,7 @@
 
 package com.assemble.backend.models.dtos.project;
 
+import com.assemble.backend.models.entities.project.ProjectColor;
 import com.assemble.backend.models.entities.project.ProjectStage;
 import com.assemble.backend.models.entities.project.ProjectType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -67,4 +68,11 @@ public class ProjectCreateDTO {
     )
     @Size(min = 1)
     private String description;
+
+    @Schema(
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            accessMode = Schema.AccessMode.READ_WRITE
+    )
+    @Builder.Default
+    private ProjectColor color = ProjectColor.PURPLE;
 }

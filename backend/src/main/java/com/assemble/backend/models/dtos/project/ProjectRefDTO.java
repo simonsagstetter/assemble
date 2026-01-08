@@ -10,6 +10,7 @@
 
 package com.assemble.backend.models.dtos.project;
 
+import com.assemble.backend.models.entities.project.ProjectColor;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -43,4 +44,11 @@ public class ProjectRefDTO {
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     private String name;
+
+    @NonNull
+    @Schema(
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            accessMode = Schema.AccessMode.READ_ONLY
+    )
+    private ProjectColor color;
 }
