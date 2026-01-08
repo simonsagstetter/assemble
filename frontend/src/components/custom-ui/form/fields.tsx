@@ -94,6 +94,42 @@ function InputField<TFieldValues extends FieldValues, TTransformedValues extends
     />
 }
 
+function TimeField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
+    { fieldName, formControl, label, children, ...props }
+    :
+        {
+            fieldName: Path<TFieldValues>,
+            formControl: Control<TFieldValues, any, TTransformedValues>,
+            label: string,
+            children?: ReactNode
+        } & ComponentProps<"input">
+) {
+    return <Controller name={ fieldName }
+                       control={ formControl }
+                       render={ ( { field, fieldState } ) => (
+                           <Field data-invalid={ fieldState.invalid }>
+                               <FieldLabel htmlFor={ `${ fieldName }-field` }>{ label }</FieldLabel>
+                               <Input
+                                   { ...props }
+                                   { ...field }
+                                   type="time"
+                                   min={ "00:00" }
+                                   max={ "23:59" }
+                                   id={ `${ fieldName }-field` }
+                                   aria-invalid={ fieldState.invalid }
+                               />
+                               { children ?
+                                   <FieldDescription>
+                                       { children }
+                                   </FieldDescription>
+                                   : null
+                               }
+
+                               { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }></FieldError> }
+                           </Field>
+                       ) }/>
+}
+
 const currencyFormatter = new Intl.NumberFormat( "de-DE", {
     style: "currency",
     currency: "EUR",
@@ -300,7 +336,7 @@ function SelectField<TFieldValues extends FieldValues, TTransformedValues extend
             formControl: Control<TFieldValues, any, TTransformedValues>,
             label: string,
             placeholder: string,
-            options: { label: string, value: string }[],
+            options: { label: string, value: string, className?: string, elem?: ReactNode }[],
             children?: ReactNode,
             disabled: boolean
         } & ComponentProps<FC<SelectProps>>
@@ -320,8 +356,8 @@ function SelectField<TFieldValues extends FieldValues, TTransformedValues extend
                     </SelectTrigger>
                     <SelectContent>
                         { options.map( ( option ) => (
-                            <SelectItem key={ option.value } value={ option.value }>
-                                { option.label }
+                            <SelectItem key={ option.value } value={ option.value } className={ option.className }>
+                                { option.elem ? option.elem : option.label }
                             </SelectItem> ) ) }
                     </SelectContent>
                 </Select>
@@ -345,5 +381,6 @@ export {
     CalendarField,
     SelectField,
     TextareaField,
-    CurrencyField
+    CurrencyField,
+    TimeField
 }
