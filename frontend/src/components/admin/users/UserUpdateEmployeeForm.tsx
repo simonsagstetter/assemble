@@ -25,11 +25,12 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { FieldGroup, FieldSet } from "@/components/ui/field";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { EmployeeLookupField } from "@/components/admin/users/form/custom-fields";
 import useModalContext from "@/hooks/useModalContext";
 import { FormActionContext } from "@/store/formActionStore";
 import { ErrorMessage, SuccessMessage } from "@/components/custom-ui/form/messages";
 import { FormActions } from "@/components/custom-ui/form/actions";
+import { getMeQueryKey } from "@/api/rest/generated/query/users/users";
+import { UnlinkedEmployeeLookupField } from "@/components/manage/employees/form/custom-fields";
 
 type UpdateEmployeeFormProps = {
     user: UserAdmin
@@ -66,6 +67,9 @@ export default function UserUpdateEmployeeForm( { user }: UpdateEmployeeFormProp
                     await queryClient.invalidateQueries( {
                         queryKey: getGetUserByIdQueryKey( user.id ),
                         refetchType: "all"
+                    } )
+                    await queryClient.invalidateQueries( {
+                        queryKey: getMeQueryKey()
                     } )
                     toast.success( "Success", {
                         description: "User " + user.username + " was updated",
@@ -111,8 +115,8 @@ export default function UserUpdateEmployeeForm( { user }: UpdateEmployeeFormProp
                     <FieldGroup className={ "py-4 px-8" }>
                         <FieldSet>
                             <FieldGroup>
-                                <EmployeeLookupField fieldName={ "employeeId" } formControl={ form.control }
-                                                     disabled={ isPending || isSubmitting || isSuccess }/>
+                                <UnlinkedEmployeeLookupField fieldName={ "employeeId" } formControl={ form.control }
+                                                             disabled={ isPending || isSubmitting || isSuccess }/>
                             </FieldGroup>
                         </FieldSet>
                         <ErrorMessage/>

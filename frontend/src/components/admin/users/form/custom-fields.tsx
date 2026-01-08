@@ -9,38 +9,9 @@
  */
 
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
-import EmployeeSearch from "@/components/admin/users/form/EmployeeSearch";
 import { Control, FieldValues, Path } from "react-hook-form";
 import RoleSearch from "@/components/admin/users/form/RoleSearch";
 import { CustomField } from "@/components/custom-ui/form/fields";
-
-
-function EmployeeLookupField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
-    { fieldName, formControl, disabled }
-    :
-    {
-        fieldName: Path<TFieldValues>,
-        formControl: Control<TFieldValues, any, TTransformedValues>,
-        disabled: boolean
-    }
-) {
-    return <CustomField
-        fieldName={ fieldName }
-        formControl={ formControl }
-        renderAction={ ( { field, fieldState } ) => (
-            <Field data-invalid={ fieldState.invalid }>
-                <FieldLabel htmlFor={ `${ fieldName }-field` }>Employee</FieldLabel>
-                <EmployeeSearch field={ field }
-                                disabled={ disabled }/>
-                <FieldDescription>
-                    Connect an employee to user. Leave this field empty if you want to
-                    assign an employee later.
-                </FieldDescription>
-                { fieldState.invalid && <FieldError errors={ [ fieldState.error ] }>
-                </FieldError> }
-            </Field>
-        ) }/>
-}
 
 function RolesLookupField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
     { fieldName, formControl, disabled }
@@ -69,6 +40,5 @@ function RolesLookupField<TFieldValues extends FieldValues, TTransformedValues e
 }
 
 export {
-    EmployeeLookupField,
     RolesLookupField
 }
