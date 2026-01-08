@@ -8,8 +8,9 @@
  * All rights reserved.
  */
 
-import { ReactNode, useState } from "react";
+import { ComponentProps, ReactNode, useState } from "react";
 import { EyeClosedIcon, EyeIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export function DetailSection( { children }: { children: Readonly<ReactNode> } ) {
     return <div className={ "flex flex-col gap-4" }>{ children }</div>
@@ -32,6 +33,15 @@ export function DetailLabel( { children }: { children: string } ) {
 export function DetailValue( { children }: { children: Readonly<ReactNode> } ) {
     return <span
         className={ "border-b-1 block pt-2 pb-1 text-zinc-900 text-sm" }>{ children ? children : "-" }</span>
+}
+
+export function BadgeDetailValue( { children, ...props }: {
+    children: Readonly<ReactNode>
+} & ComponentProps<typeof Badge> ) {
+    return <span
+        className={ "border-b-1 block pt-2 pb-1 text-zinc-900 text-sm" }>
+            <Badge { ...props }>{ children }</Badge>
+        </span>
 }
 
 export function SensitiveDetailValue( { children }: { children: Readonly<ReactNode> } ) {

@@ -12,7 +12,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { FieldDescription, FieldLegend, FieldSet } from "@/components/ui/field";
 import { User } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
 import ChangePasswordForm from "@/components/account/ChangePasswordForm";
-import { Detail, DetailLabel, DetailRow, DetailSection, DetailValue } from "@/components/custom-ui/detail";
+import {
+    Detail,
+    DetailLabel,
+    DetailRow,
+    DetailSection,
+    DetailValue
+} from "@/components/custom-ui/record-detail/detail";
 
 type AccountDetailProps = {
     userDetails: User;
