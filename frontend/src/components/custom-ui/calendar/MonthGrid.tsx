@@ -19,6 +19,11 @@ import { ReactElement } from "react";
 import { MonthDayRange } from "@/types/calendar/calendar.types";
 import { TimeEntriesByDate } from "@/store/calendar-store";
 
+const rowClasses = {
+    4: "grid-rows-4",
+    5: "grid-rows-5",
+    6: "grid-rows-6"
+}
 
 export default function MonthGrid() {
     const { currentDate, events, selectedDate } = useCalendar();
@@ -35,7 +40,7 @@ export default function MonthGrid() {
     days.push( ...renderNextMonthDays( range, events, weekTotals ) );
 
     const rows = Math.ceil( days.length / 7 );
-    const cssClasses = `grid flex-1 grid-rows-${ rows } grid-cols-7`;
+    const cssClasses = `grid flex-1 ${ rowClasses[ rows as keyof typeof rowClasses ] } grid-cols-7`;
 
     return <div className={ cssClasses }>
         { days }
