@@ -24,11 +24,11 @@ export function getTimeEntryDefaultValues(
         employeeId: isNew ? ( employeeId ?? "" ) : ( timeentry?.employee.id ?? "" ),
         date: isNew
             ? ( dateParam ? parseISO( dateParam ) : new Date() )
-            : new Date( timeentry!.date ),
+            : parseISO( String( timeentry!.date ) ),
         startTime: "",
         endTime: "",
-        totalTime: isNew ? "00:00:00" : msToHHmm( isoDurationToMs( timeentry!.totalTime ) ),
-        pauseTime: isNew ? "00:00:00" : msToHHmm( isoDurationToMs( timeentry!.pauseTime ) ),
+        totalTime: isNew ? "00:00:00" : msToHHmm( isoDurationToMs( timeentry!.totalTime ) ) + ":00",
+        pauseTime: isNew ? "00:00:00" : msToHHmm( isoDurationToMs( timeentry!.pauseTime ) ) + ":00",
         description: isNew ? "" : timeentry!.description
     };
 }
