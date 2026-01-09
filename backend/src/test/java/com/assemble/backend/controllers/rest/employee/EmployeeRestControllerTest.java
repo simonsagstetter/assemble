@@ -43,6 +43,7 @@ import java.util.UUID;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)
@@ -141,7 +142,7 @@ class EmployeeRestControllerTest {
     void getEmployee_ShouldReturn200_WhenEmployeeExists() throws Exception {
         Employee employee = employeeRepository.save( testEmployee );
 
-        assert employee.getId() != null;
+        assertNotNull( employee.getId() );
 
         mockMvc.perform(
                 get( "/api/employees/" + employee.getId().toString() )
@@ -265,7 +266,7 @@ class EmployeeRestControllerTest {
         testEmployee.setUser( user );
         employeeRepository.save( testEmployee );
 
-        assert user.getId() != null;
+        assertNotNull( user.getId() );
 
         EmployeeCreateDTO employeeCreateDTO = EmployeeCreateDTO.builder()
                 .firstname( "Max" )
@@ -329,7 +330,7 @@ class EmployeeRestControllerTest {
         User user = userRepository.save( testUser );
         employeeRepository.save( testEmployee );
 
-        assert user.getId() != null;
+        assertNotNull( user.getId() );
 
         EmployeeCreateDTO employeeCreateDTO = EmployeeCreateDTO.builder()
                 .firstname( "Max" )
@@ -390,7 +391,7 @@ class EmployeeRestControllerTest {
     void updateEmployeeUser_ShouldReturn404_WhenUserNotFound() throws Exception {
         Employee employee = employeeRepository.save( testEmployee );
 
-        assert employee.getId() != null;
+        assertNotNull( employee.getId() );
 
         UUID randomId = UuidCreator.getTimeOrderedEpoch();
 
@@ -420,12 +421,12 @@ class EmployeeRestControllerTest {
     @DisplayName("/PATCH updateEmployeeUser should return 400 when user is already linked")
     void updateEmployeeUser_ShouldReturn400_WhenUserIsAlreadyLinked() throws Exception {
         User user = userRepository.save( testUser );
-        assert user.getId() != null;
+        assertNotNull( user.getId() );
 
         testEmployee.setUser( user );
         Employee employee = employeeRepository.save( testEmployee );
 
-        assert employee.getId() != null;
+        assertNotNull( employee.getId() );
 
         EmployeeUpdateUserDTO employeeUpdateUserDTO = EmployeeUpdateUserDTO.builder()
                 .userId( user.getId().toString() )
@@ -453,7 +454,7 @@ class EmployeeRestControllerTest {
     void updateEmployeeUser_ShouldReturn200AndUserShouldBeNull_WhenCalled() throws Exception {
         Employee employee = employeeRepository.save( testEmployee );
 
-        assert employee.getId() != null;
+        assertNotNull( employee.getId() );
 
         EmployeeUpdateUserDTO employeeUpdateUserDTO = EmployeeUpdateUserDTO.builder()
                 .userId( null )
@@ -482,8 +483,8 @@ class EmployeeRestControllerTest {
         User user = userRepository.save( testUser );
         Employee employee = employeeRepository.save( testEmployee );
 
-        assert employee.getId() != null;
-        assert user.getId() != null;
+        assertNotNull( employee.getId() );
+        assertNotNull( user.getId() );
 
         EmployeeUpdateUserDTO employeeUpdateUserDTO = EmployeeUpdateUserDTO.builder()
                 .userId( user.getId().toString() )
@@ -511,7 +512,7 @@ class EmployeeRestControllerTest {
     void updateEmployee_ShouldReturn400_WhenDTOIsInvalid() throws Exception {
         Employee employee = employeeRepository.save( testEmployee );
 
-        assert employee.getId() != null;
+        assertNotNull( employee.getId() );
 
         EmployeeUpdateDTO employeeUpdateDTO = EmployeeUpdateDTO.builder()
                 .firstname( "" )
@@ -571,7 +572,7 @@ class EmployeeRestControllerTest {
     void updateEmployee_ShouldReturn200_WhenRequestBodyIsValid() throws Exception {
         Employee employee = employeeRepository.save( testEmployee );
 
-        assert employee.getId() != null;
+        assertNotNull( employee.getId() );
 
         EmployeeUpdateDTO employeeUpdateDTO = EmployeeUpdateDTO.builder()
                 .firstname( "max" )
@@ -621,7 +622,7 @@ class EmployeeRestControllerTest {
     void deleteEmployee_ShouldReturn204_WhenEmployeeDoesExist() throws Exception {
         Employee employee = employeeRepository.save( testEmployee );
 
-        assert employee.getId() != null;
+        assertNotNull( employee.getId() );
 
         mockMvc.perform(
                 delete( "/api/employees/" + employee.getId().toString() )
@@ -653,7 +654,7 @@ class EmployeeRestControllerTest {
                         .build()
         );
 
-        assert employee.getId() != null;
+        assertNotNull( employee.getId() );
 
         mockMvc.perform(
                 delete( "/api/employees/" + employee.getId().toString() )

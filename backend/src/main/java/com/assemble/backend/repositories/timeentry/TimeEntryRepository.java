@@ -25,5 +25,4 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, UUID> {
 
     List<TimeEntry> findAllByEmployee_IdAndDateIsBetween( UUID employeeId, LocalDate dateAfter, LocalDate dateBefore );
 
-    UUID no( String no );
 }
