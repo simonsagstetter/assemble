@@ -24,7 +24,8 @@ type CalendarState = {
     currentDate: Date,
     selectedDate: Date,
     events: TimeEntriesByDate,
-    settings: CalendarSettings
+    settings: CalendarSettings,
+    isLoading: boolean
 }
 
 const DEFAULT_STATE: CalendarState = {
@@ -34,7 +35,8 @@ const DEFAULT_STATE: CalendarState = {
     settings: {
         newLink: "",
         view: "month"
-    }
+    },
+    isLoading: false
 }
 
 interface CalendarContext extends CalendarState {
@@ -45,6 +47,7 @@ interface CalendarContext extends CalendarState {
     setSelectedDate: ( date: Date ) => void,
     setEvents: ( events: TimeEntriesByDate ) => void,
     setSettings: ( settings: CalendarSettings ) => void
+    setIsLoading: ( isLoading: boolean ) => void
 }
 
 const CalendarContext = createContext<CalendarContext | null>( null );
@@ -57,6 +60,7 @@ enum ActionKind {
     SET_SELECTED_DATE,
     SET_EVENTS,
     SET_SETTINGS,
+    SET_IS_LOADING
 }
 
 type Action = | {
@@ -73,6 +77,8 @@ type Action = | {
     type: ActionKind.SET_EVENTS, payload: TimeEntriesByDate
 } | {
     type: ActionKind.SET_SETTINGS, payload: CalendarSettings
+} | {
+    type: ActionKind.SET_IS_LOADING, payload: boolean
 }
 
 const reducer = ( state: CalendarState, action: Action ) => {
@@ -87,7 +93,11 @@ const reducer = ( state: CalendarState, action: Action ) => {
     } )
     if ( action.type === ActionKind.TODAY ) return ( {
         ...state,
-        currentDate: new Date()
+        currentDate: DEFAULT_STATE.currentDate
+    } )
+    if ( action.type === ActionKind.SET_IS_LOADING ) return ( {
+        ...state,
+        isLoading: action.payload
     } )
 
     // DATE ACTIONS
@@ -124,6 +134,9 @@ function CalendarProvider(
     const previousMonth = useCallback( () => dispatch( { type: ActionKind.PREVIOUS_MONTH } ), [] );
     const nextMonth = useCallback( () => dispatch( { type: ActionKind.NEXT_MONTH } ), [] );
     const today = useCallback( () => dispatch( { type: ActionKind.TODAY } ), [] );
+    const setIsLoading = useCallback( ( isLoading: boolean ) =>
+            dispatch( { type: ActionKind.SET_IS_LOADING, payload: isLoading } )
+        , [] );
 
     const setCurrentDate = useCallback( ( date: Date ) => dispatch( {
         type: ActionKind.SET_CURRENT_DATE,
@@ -152,7 +165,8 @@ function CalendarProvider(
         setCurrentDate,
         setSelectedDate,
         setEvents,
-        setSettings
+        setSettings,
+        setIsLoading,
     } satisfies CalendarContext;
 
     return <CalendarContext.Provider value={ ctx }>{ children }</CalendarContext.Provider>;

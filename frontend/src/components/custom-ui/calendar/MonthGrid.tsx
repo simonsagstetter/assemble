@@ -23,24 +23,24 @@ import { TimeEntriesByDate } from "@/store/calendar-store";
 export default function MonthGrid() {
     const { currentDate, events, selectedDate } = useCalendar();
 
-    const renderCalendarDays = () => {
-        const range = getMonthDayRange( currentDate );
-        const days: ReactElement[] = [];
+    const range = getMonthDayRange( currentDate );
+    const days: ReactElement[] = [];
 
-        const rangeStart = subDays( range.firstDay, range.firstDayWeekDay );
-        const rangeEnd = addDays( range.lastDay, range.nextMonthDays );
-        const weekTotals = calculateWeekTotals( events, rangeStart, rangeEnd );
+    const rangeStart = subDays( range.firstDay, range.firstDayWeekDay );
+    const rangeEnd = addDays( range.lastDay, range.nextMonthDays );
+    const weekTotals = calculateWeekTotals( events, rangeStart, rangeEnd );
 
-        days.push( ...renderPreviousMonthDays( range, events, weekTotals ) );
-        days.push( ...renderCurrentMonthDays( range, events, weekTotals, selectedDate ) );
-        days.push( ...renderNextMonthDays( range, events, weekTotals ) );
+    days.push( ...renderPreviousMonthDays( range, events, weekTotals ) );
+    days.push( ...renderCurrentMonthDays( range, events, weekTotals, selectedDate ) );
+    days.push( ...renderNextMonthDays( range, events, weekTotals ) );
 
-        return days;
-    }
+    const rows = Math.ceil( days.length / 7 );
+    const cssClasses = `grid flex-1 grid-rows-${ rows } grid-cols-7`;
 
-    return <div className="grid flex-1 grid-cols-7 grid-rows-5">
-        { renderCalendarDays() }
+    return <div className={ cssClasses }>
+        { days }
     </div>
+
 }
 
 function renderPreviousMonthDays(

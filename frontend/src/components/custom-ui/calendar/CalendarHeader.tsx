@@ -7,24 +7,91 @@
  * This software is the property of Simon Sagstetter.
  * All rights reserved.
  */
-
-import { format, lastDayOfMonth, startOfMonth } from "date-fns";
+"use client";
+import { addMonths, format, isSameDay, lastDayOfMonth, startOfMonth, subMonths } from "date-fns";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import Link from "next/link";
 import useCalendar from "@/hooks/useCalendar";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Badge } from "@/components/ui/badge";
+import {
+    getGetOwnTimeEntriesQueryKey,
+    getOwnTimeEntries
+} from "@/api/rest/generated/query/timeentries/timeentries";
+import { useQueryClient } from "@tanstack/react-query";
+import { startTransition, useCallback } from "react";
+import { toast } from "sonner";
 
 
 export default function CalendarHeader() {
-    const { currentDate, previousMonth, nextMonth, today, settings, selectedDate, setSettings } = useCalendar();
+    const {
+        currentDate,
+        previousMonth,
+        nextMonth,
+        today,
+        settings,
+        selectedDate,
+        setEvents,
+        setCurrentDate,
+        setIsLoading,
+        isLoading
+    } = useCalendar();
+    const queryClient = useQueryClient();
+
     const monthName = format( currentDate, "MMMM" ),
         shortMonthName = format( new Date(), "MMM" ).toUpperCase(),
         year = format( currentDate, "yyyy" ),
         begin = startOfMonth( currentDate ),
         end = lastDayOfMonth( currentDate );
+
+    const getTimeEntries = useCallback( async ( date: Date ) => {
+        const aroundDate = format( date, "yyyy-MM-dd" );
+        const timeEntries = await queryClient.fetchQuery( {
+            queryKey: getGetOwnTimeEntriesQueryKey( { aroundDate } ),
+            queryFn: () => getOwnTimeEntries( { aroundDate } )
+        } );
+        if ( timeEntries ) {
+            const eventData = Object.groupBy(
+                timeEntries,
+                event => event.date
+            );
+            setEvents( eventData );
+        } else {
+            setCurrentDate( currentDate );
+            toast.error( "Error", {
+                description: "Could not fetch time entries",
+            } );
+        }
+    }, [ queryClient, setEvents, currentDate, setCurrentDate ] );
+
+    const handlePreviousMonth = async () => {
+        previousMonth();
+        await getTimeEntries( subMonths( currentDate, 1 ) );
+    }
+
+    const handleToday = async () => {
+        today();
+        await getTimeEntries( new Date() );
+    }
+
+
+    const handleNextMonth = async () => {
+        nextMonth();
+        await getTimeEntries( addMonths( currentDate, 1 ) );
+    }
+
+    const handleMonthChange = async ( dir: "prev" | "today" | "next" = "today" ) => {
+        if ( dir === "today" && isSameDay( currentDate, new Date() ) ) return;
+        setIsLoading( true );
+        startTransition( async () => {
+            if ( dir === "prev" ) await handlePreviousMonth();
+            else if ( dir === "next" ) await handleNextMonth();
+            else await handleToday();
+            setIsLoading( false );
+        } )
+    }
+
 
     return <div
         className="relative flex flex-col items-center justify-between gap-4 bg-background px-4 py-5 md:flex-row md:px-6 max-md:items-start">
@@ -51,29 +118,16 @@ export default function CalendarHeader() {
 
         <div className="flex flex-wrap items-center gap-3 gap-y-4 max-md:w-full">
             <ButtonGroup className={ "**:shadow-none" }>
-                <Button onClick={ previousMonth } variant={ "outline" }>
+                <Button onClick={ () => handleMonthChange( "prev" ) } variant={ "outline" } disabled={ isLoading }>
                     <ChevronLeft size={ 20 } className="text-gray-500"/>
                 </Button>
-                <Button onClick={ today } variant={ "outline" }>
+                <Button onClick={ () => handleMonthChange() } variant={ "outline" } disabled={ isLoading }>
                     Today
                 </Button>
-                <Button onClick={ nextMonth } variant={ "outline" }>
+                <Button onClick={ () => handleMonthChange( "next" ) } variant={ "outline" } disabled={ isLoading }>
                     <ChevronRight size={ 20 } className="text-gray-500"/>
                 </Button>
             </ButtonGroup>
-
-            {/*<Select defaultValue={ settings.view } onValueChange={ ( val ) => setSettings( {*/ }
-            {/*    ...settings,*/ }
-            {/*    view: val as "month" | "week"*/ }
-            {/*} ) }>*/ }
-            {/*    <SelectTrigger className={ "shadow-none" }>*/ }
-            {/*        <SelectValue placeholder="Select View"/>*/ }
-            {/*    </SelectTrigger>*/ }
-            {/*    <SelectContent>*/ }
-            {/*        <SelectItem value="month">Month View</SelectItem>*/ }
-            {/*        <SelectItem value="week">Week View</SelectItem>*/ }
-            {/*    </SelectContent>*/ }
-            {/*</Select>*/ }
 
             <Button className={ "p-0" }>
                 <Link className={ "px-4 py-3 flex flex-row items-center gap-1" }

@@ -14,9 +14,12 @@ import {
     useGetOwnTimeEntriesSuspense
 } from "@/api/rest/generated/query/timeentries/timeentries";
 import CalendarProvider from "@/store/calendar-store";
+import { format } from "date-fns";
 
 function CalendarPage() {
-    const { data: events } = useGetOwnTimeEntriesSuspense();
+    const { data: events } = useGetOwnTimeEntriesSuspense( {
+        aroundDate: format( new Date(), "yyyy-MM-dd" ),
+    } );
     return <CalendarProvider>
         <Calendar events={ events }/>
     </CalendarProvider>

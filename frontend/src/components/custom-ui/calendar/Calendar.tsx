@@ -12,9 +12,10 @@ import MonthView from "@/components/custom-ui/calendar/MonthView";
 import { TimeEntryDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import useCalendar from "@/hooks/useCalendar";
 import { useEffect } from "react";
+import CalenderLoading from "@/components/custom-ui/calendar/CalendarLoading";
 
 export default function Calendar( { events }: { events: TimeEntryDTO[] } ) {
-    const { setEvents, setSettings, settings } = useCalendar();
+    const { setEvents, setSettings, settings, isLoading } = useCalendar();
 
     useEffect( () => {
         const eventData = Object
@@ -27,7 +28,9 @@ export default function Calendar( { events }: { events: TimeEntryDTO[] } ) {
         } );
     }, [ events, setEvents, setSettings ] );
 
-    if ( settings.view === "month" ) return <MonthView/>;
 
-    return <></>
+    return <>
+        { settings.view === "month" ? <MonthView/> : null }
+        { isLoading ? <CalenderLoading/> : null }
+    </>
 }
