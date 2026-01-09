@@ -15,7 +15,9 @@ import com.assemble.backend.models.dtos.project.ProjectDTO;
 import com.assemble.backend.models.dtos.project.ProjectRefDTO;
 import com.assemble.backend.models.entities.project.Project;
 import com.assemble.backend.models.mappers.core.BaseEntity;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,

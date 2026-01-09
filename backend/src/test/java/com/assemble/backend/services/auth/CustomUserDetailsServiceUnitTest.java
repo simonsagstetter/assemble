@@ -33,8 +33,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("CustomUserDetailsService Unit Test")
 @ExtendWith(MockitoExtension.class)

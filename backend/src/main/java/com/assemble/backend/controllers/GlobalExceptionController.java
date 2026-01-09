@@ -11,7 +11,9 @@
 package com.assemble.backend.controllers;
 
 import com.assemble.backend.exceptions.auth.PasswordMismatchException;
-import com.assemble.backend.models.dtos.global.*;
+import com.assemble.backend.models.dtos.global.ErrorResponse;
+import com.assemble.backend.models.dtos.global.FieldValidationError;
+import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
