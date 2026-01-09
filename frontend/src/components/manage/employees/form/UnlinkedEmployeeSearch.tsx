@@ -56,7 +56,6 @@ export default function UnlinkedEmployeeSearch( { field, disabled }: EmployeeSea
     const items: LookupItem[] | null = data != null ? data.map( employee => ( {
         id: employee.id,
         result: employee.fullname,
-        Icon: <IdCardIcon/>,
         searchTerm: state.searchTerm
     } ) ) : null;
 

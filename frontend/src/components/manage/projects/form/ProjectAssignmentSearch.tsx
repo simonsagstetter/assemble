@@ -85,7 +85,6 @@ function ProjectAssignmentSearch(
         .map( assignment => ( {
             id: assignment.project.id,
             result: assignment.project.name,
-            Icon: <LayersIcon/>,
             searchTerm: assignment.project.name
         } ) ) : null;
 

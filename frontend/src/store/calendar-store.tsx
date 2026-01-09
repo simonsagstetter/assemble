@@ -93,7 +93,7 @@ const reducer = ( state: CalendarState, action: Action ) => {
     } )
     if ( action.type === ActionKind.TODAY ) return ( {
         ...state,
-        currentDate: DEFAULT_STATE.currentDate
+        currentDate: new Date(),
     } )
     if ( action.type === ActionKind.SET_IS_LOADING ) return ( {
         ...state,

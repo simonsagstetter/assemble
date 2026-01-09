@@ -24,7 +24,7 @@ function ProjectLookupField<TFieldValues extends FieldValues, TTransformedValues
     :
     {
         fieldName: Path<TFieldValues>,
-        formControl: Control<TFieldValues, any, TTransformedValues>,
+        formControl: Control<TFieldValues, unknown, TTransformedValues>,
         disabled: boolean,
         excludeValues: string[]
     }
@@ -45,16 +45,16 @@ function ProjectLookupField<TFieldValues extends FieldValues, TTransformedValues
 }
 
 function ProjectAssignmentLookupField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
-    { fieldName, formControl, disabled, selectedId, employeeId, isRestrictedSerach = true, children }
+    { fieldName, formControl, disabled, selectedId, employeeId, isRestrictedSearch = true, children }
     :
     {
         fieldName: Path<TFieldValues>,
-        formControl: Control<TFieldValues, any, TTransformedValues>,
+        formControl: Control<TFieldValues, unknown, TTransformedValues>,
         disabled: boolean,
         selectedId?: string,
         employeeId: string,
         children?: ReactNode,
-        isRestrictedSerach?: boolean
+        isRestrictedSearch?: boolean
     }
 ) {
     return <CustomField
@@ -63,7 +63,7 @@ function ProjectAssignmentLookupField<TFieldValues extends FieldValues, TTransfo
         renderAction={ ( { field, fieldState } ) => (
             <Field data-invalid={ fieldState.invalid }>
                 <FieldLabel htmlFor={ `${ fieldName }-field` }>Project</FieldLabel>
-                { isRestrictedSerach ?
+                { isRestrictedSearch ?
                     <UserProjectAssignmentSearch field={ field }
                                                  disabled={ disabled }
                                                  selectedId={ selectedId } employeeId={ employeeId }/>

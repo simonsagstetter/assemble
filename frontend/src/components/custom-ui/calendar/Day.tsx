@@ -101,7 +101,7 @@ export default function Day(
                         </div>
                     </ContextMenuTrigger>
                 </TooltipTrigger>
-                { !isReadOnly && ( todayTotal !== 0 || weekTotal !== 0 ) ?
+                { !isReadOnly && ( todayTotal || weekTotal ) ?
                     <TooltipContent className={ "max-md:hidden" }>
                         { weekTotal ? <p>{ "Week: " + msToHHmm( weekTotal ) }</p> : null }
                         { todayTotal ? <p>{ "Today: " + msToHHmm( todayTotal ) }</p> : null }

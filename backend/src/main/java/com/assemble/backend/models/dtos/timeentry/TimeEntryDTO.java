@@ -63,6 +63,7 @@ public class TimeEntryDTO extends BaseEntityDTO {
             accessMode = Schema.AccessMode.READ_ONLY,
             requiredMode = Schema.RequiredMode.REQUIRED
     )
+    @NonNull
     private LocalDate date;
 
     @Schema(

@@ -80,7 +80,7 @@ export default function ProjectAssignmentDataTable(
                         className={ "hover:underline flex flex-row items-center gap-1.5" }
                     >
                         <span
-                            className={ `size-2 rounded-full ${ colorMobileClasses[ assignment.project.color.toLowerCase() as keyof typeof colorMobileClasses ] }` }></span>
+                            className={ `size-2 rounded-full ${ colorMobileClasses[ assignment.project.color.toLowerCase() as keyof typeof colorMobileClasses ] || "" }` }></span>
                         { assignment.project.name }
                     </Link>
                 }

@@ -82,17 +82,19 @@ export default function Event( { event, isReadOnly = false }: EventProps ) {
                     </PopoverContent>
                     : null }
             </Popover>
-            <ContextMenuContent>
-                <ContextMenuItem onClick={ handleUpdate }>
-                    <PencilIcon/>
-                    Edit
-                </ContextMenuItem>
-                <ContextMenuSeparator/>
-                <ContextMenuItem variant={ "destructive" } onClick={ handleDelete }>
-                    <TrashIcon/>
-                    Delete
-                </ContextMenuItem>
-            </ContextMenuContent>
+            { !isReadOnly ?
+                <ContextMenuContent>
+                    <ContextMenuItem onClick={ handleUpdate } disabled={ isReadOnly }>
+                        <PencilIcon/>
+                        Edit
+                    </ContextMenuItem>
+                    <ContextMenuSeparator/>
+                    <ContextMenuItem variant={ "destructive" } onClick={ handleDelete } disabled={ isReadOnly }>
+                        <TrashIcon/>
+                        Delete
+                    </ContextMenuItem>
+                </ContextMenuContent>
+                : null }
         </ContextMenu>
     )
 }

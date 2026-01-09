@@ -37,7 +37,7 @@ function TimeEntryFragment(
                                                   disabled={ disabled }
                                                   selectedId={ projectId }
                                                   employeeId={ employeeId }
-                                                  isRestrictedSerach={ isRestrictedSearch }
+                                                  isRestrictedSearch={ isRestrictedSearch }
                     >
                         You can only select projects that you are assigned to.
                     </ProjectAssignmentLookupField>

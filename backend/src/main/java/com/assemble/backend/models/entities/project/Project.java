@@ -57,6 +57,7 @@ public class Project extends BaseJPAEntity {
 
     @Column(name = "COLOR", nullable = false)
     @Enumerated(EnumType.STRING)
-    private ProjectColor color;
+    @Builder.Default
+    private ProjectColor color = ProjectColor.PURPLE;
 
 }
