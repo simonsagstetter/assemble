@@ -11,7 +11,7 @@
 "use client"
 
 import {
-    PlusIcon, IdCardIcon, LayersIcon,
+    PlusIcon, IdCardIcon, LayersIcon, CalendarIcon,
 } from "lucide-react";
 
 import {
@@ -20,6 +20,19 @@ import {
     SidebarMenu,
 } from "@/components/ui/sidebar"
 import MenuItem from "@/components/nav/menus/MenuItem";
+
+const timeEntryActions = [
+    {
+        label: "View All",
+        href: "/app/manage/timeentries",
+        Icon: IdCardIcon
+    },
+    {
+        label: "New",
+        href: "/app/manage/timeentries/create",
+        Icon: PlusIcon
+    }
+]
 
 const employeeActions = [
     {
@@ -53,6 +66,10 @@ export default function ManagementMenu() {
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Management</SidebarGroupLabel>
             <SidebarMenu>
+                <MenuItem href={ "/app/manage/timeentries" }
+                          label={ "Time Entries" }
+                          Icon={ CalendarIcon }
+                          actions={ timeEntryActions }/>
                 <MenuItem href={ "/app/manage/projects" }
                           label={ "Projects" }
                           Icon={ LayersIcon }

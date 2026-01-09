@@ -22,8 +22,7 @@ import {
     DetailRow,
     DetailSection,
     DetailValue, SensitiveDetailValue,
-} from "@/components/custom-ui/detail";
-import { format } from "date-fns";
+} from "@/components/custom-ui/record-detail/detail";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
     DropdownMenu,
@@ -42,6 +41,11 @@ import Loading from "@/components/custom-ui/Loading";
 import ProjectAssignmentDataTable from "@/components/manage/projects/ProjectAssignmentDataTable";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+    useGetAllTimeEntriesByEmployeeId,
+} from "@/api/rest/generated/query/timeentries/timeentries";
+import TimeEntryDataTable from "@/components/manage/timeentries/TimeEntryDataTable";
+import { AuditDetail } from "@/components/custom-ui/record-detail/audit";
 
 type EmployeeDetailProps = {
     employee: EmployeeDTO
@@ -54,6 +58,13 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
         isError,
         error
     } = useGetAllProjectAssignmentsByEmployeeId( employee.id );
+    const {
+        data: timeentries,
+        isPending: isTPending,
+        isError: isTError,
+        error: tError
+    } = useGetAllTimeEntriesByEmployeeId( employee.id );
+
     const params = useSearchParams();
     const [ activeTab, setActiveTab ] = useState( params.get( "tab" ) ?? "details" );
 
@@ -124,6 +135,7 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
                 <TabsList>
                     <TabsTrigger value="details">Details</TabsTrigger>
                     <TabsTrigger value="projects">Projects</TabsTrigger>
+                    <TabsTrigger value={ "timeentries" }>Time Entries</TabsTrigger>
                 </TabsList>
                 <TabsContent value="details" className={ "py-2" }>
                     <Accordion type={ "single" } defaultValue={ "identity" }>
@@ -286,73 +298,19 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
                                 </DetailSection>
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value={ "system" }>
-                            <AccordionTrigger>Audit</AccordionTrigger>
-                            <AccordionContent className={ "pb-10" }>
-                                <DetailSection>
-                                    <DetailRow>
-                                        <Detail>
-                                            <DetailLabel>Id</DetailLabel>
-                                            <DetailValue>{ employee.id }</DetailValue>
-                                        </Detail>
-                                    </DetailRow>
-                                    <DetailRow>
-                                        <Detail>
-                                            <DetailLabel>Created Date</DetailLabel>
-                                            <DetailValue>{ format( employee.createdDate, "dd.MM.yyyy - HH:mm:ss" ) }</DetailValue>
-                                        </Detail>
-                                        <Detail>
-                                            <DetailLabel>Created By</DetailLabel>
-                                            <DetailValue>
-                                                { employee.createdBy.id != null ?
-                                                    <Link
-                                                        href={ `/app/admin/users/${ employee.createdBy.id }` }
-                                                        className={ "hover:underline text-blue-800" }
-                                                    >
-                                                        { employee.createdBy.username }
-                                                    </Link>
-                                                    :
-                                                    <span className={ "text-blue-800" }>
-                                                        { employee.createdBy.username }
-                                                    </span>
-                                                }
-                                            </DetailValue>
-                                        </Detail>
-                                    </DetailRow>
-                                    <DetailRow>
-                                        <Detail>
-                                            <DetailLabel>Last Modified Date</DetailLabel>
-                                            <DetailValue>{ format( employee.lastModifiedDate, "dd.MM.yyyy - HH:mm:ss" ) }</DetailValue>
-                                        </Detail>
-                                        <Detail>
-                                            <DetailLabel>Last Modified By</DetailLabel>
-                                            <DetailValue>
-                                                { employee.lastModifiedBy.id != null ?
-                                                    <Link
-                                                        href={ `/app/admin/users/${ employee.lastModifiedBy.id }` }
-                                                        className={ "hover:underline text-blue-800" }
-                                                    >
-                                                        { employee.lastModifiedBy.username }
-                                                    </Link>
-                                                    :
-                                                    <span className={ "text-blue-800" }>
-                                                        { employee.lastModifiedBy.username }
-                                                    </span>
-                                                }
-                                            </DetailValue>
-                                        </Detail>
-                                    </DetailRow>
-                                </DetailSection>
-                            </AccordionContent>
-                        </AccordionItem>
+                        <AuditDetail id={ employee.id }
+                                     createdDate={ employee.createdDate }
+                                     createdBy={ employee.createdBy }
+                                     lastModifiedDate={ employee.lastModifiedDate }
+                                     lastModifiedBy={ employee.lastModifiedBy }/>
                     </Accordion>
                 </TabsContent>
                 <TabsContent value="projects">
-                    { isPending || !projectAssignments ? <Loading/> : null }
+                    { isPending || !projectAssignments ? <Loading title={ "Loading Data" }/> : null }
                     { isError ? error?.message ?? "Error loading assignments" : null }
                     { !isPending && projectAssignments ?
                         <div className={ "relative" }>
-                            <Button type={ "button" } className={ "absolute right-0 -top-11" }>
+                            <Button type={ "button" } className={ "absolute right-0 -top-11 p-0" }>
                                 <Link href={ `/app/manage/employees/${ employee.id }/assign` }
                                       className={ "px-4 py-3 flex flex-row items-center gap-1" }><PlusIcon
                                     className={ "size-4" }/>Assign</Link>
@@ -360,6 +318,13 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
                             <ProjectAssignmentDataTable projectAssignments={ projectAssignments }
                                                         origin={ "employee" }/>
                         </div> : null }
+                </TabsContent>
+                <TabsContent value="timeentries">
+                    { isTPending || !timeentries ? <Loading title={ "Loading data" }/> : null }
+                    { isTError ? tError?.message ?? "Error loading timeentries" : null }
+                    { !isTPending && timeentries ?
+                        <TimeEntryDataTable timeentries={ timeentries } isRelatedTable/>
+                        : null }
                 </TabsContent>
             </Tabs>
         </CardContent>

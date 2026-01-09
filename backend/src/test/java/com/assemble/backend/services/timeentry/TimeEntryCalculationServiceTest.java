@@ -19,7 +19,8 @@ import java.math.BigDecimal;
 import java.security.InvalidParameterException;
 import java.time.Duration;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("TimeEntryCalculationService Unit Test")
 @AllArgsConstructor(access = AccessLevel.PACKAGE)

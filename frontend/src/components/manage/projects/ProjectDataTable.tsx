@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import ProjectActions from "@/components/manage/projects/ProjectActions";
 import Status from "@/components/custom-ui/status";
 import { Badge } from "@/components/ui/badge";
+import { colorMobileClasses } from "@/config/calendar/calendar.config";
 
 type ProjectDataTableProps = {
     projects: ProjectDTO[];
@@ -47,8 +48,10 @@ export default function ProjectDataTable( { projects }: ProjectDataTableProps ) 
                     const project = row.original;
                     return <Link
                         href={ `/app/manage/projects/${ project.id }` }
-                        className={ "hover:underline" }
+                        className={ "hover:underline flex flex-row items-center gap-1.5" }
                     >
+                        <span
+                            className={ `size-2 rounded-full ${ colorMobileClasses[ project.color.toLowerCase() as keyof typeof colorMobileClasses ] }` }></span>
                         { project.name }
                     </Link>
                 }

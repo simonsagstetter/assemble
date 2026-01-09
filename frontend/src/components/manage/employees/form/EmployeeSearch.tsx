@@ -2,7 +2,7 @@
  * assemble
  * EmployeeSearch.tsx
  *
- * Copyright (c) 2025 Simon Sagstetter
+ * Copyright (c) 2026 Simon Sagstetter
  *
  * This software is the property of Simon Sagstetter.
  * All rights reserved.
@@ -31,10 +31,11 @@ const initialState = {
 type EmployeeSearchProps = {
     field: ControllerRenderProps<FieldValues, string>,
     disabled: boolean,
-    excludeValues: string[]
+    excludeValues: string[],
+    onSelectAction?: ( employeeId: string ) => void
 }
 
-export default function EmployeeSearch( { field, disabled, excludeValues }: EmployeeSearchProps ) {
+export default function EmployeeSearch( { field, disabled, excludeValues, onSelectAction }: EmployeeSearchProps ) {
     const [ state, setState ] = useState<SearchState>( initialState );
     const { data, isError, isLoading } = useSearchAllEmployees(
         state.searchTerm,
@@ -69,13 +70,15 @@ export default function EmployeeSearch( { field, disabled, excludeValues }: Empl
                 { ...prev, selectedValue: null, open: true }
             ) );
             field.onChange( "" );
+            onSelectAction?.( "" );
         } else {
             setState( ( prev ) => (
                 { ...prev, selectedValue, open: false }
             ) );
             field.onChange( selectedValue.id );
+            onSelectAction?.( selectedValue.id );
         }
-    }, [ field, state.selectedValue ] )
+    }, [ field, state.selectedValue, onSelectAction ] )
 
 
     return <Lookup

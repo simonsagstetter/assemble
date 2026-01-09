@@ -10,7 +10,7 @@
 
 import { z } from "zod";
 import { optionalString } from "@/utils/zod";
-import { ProjectDTOStage, ProjectDTOType } from "@/api/rest/generated/query/openAPIDefinition.schemas";
+import { ProjectDTOColor, ProjectDTOStage, ProjectDTOType } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 
 const ProjectCreateSchema = z.object( {
     name: z.string().trim().min( 1, "Name is required." ),
@@ -18,7 +18,8 @@ const ProjectCreateSchema = z.object( {
     type: optionalString( z.enum( ProjectDTOType ) ),
     category: z.string().trim().optional(),
     description: z.string().trim().optional(),
-    stage: optionalString( z.enum( ProjectDTOStage ) )
+    stage: optionalString( z.enum( ProjectDTOStage ) ),
+    color: z.enum( ProjectDTOColor )
 } );
 
 type ProjectCreateFormData = z.infer<typeof ProjectCreateSchema>;

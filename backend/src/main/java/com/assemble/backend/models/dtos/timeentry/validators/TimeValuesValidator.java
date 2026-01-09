@@ -10,48 +10,26 @@
 
 package com.assemble.backend.models.dtos.timeentry.validators;
 
-import com.assemble.backend.models.dtos.timeentry.TimeEntryCreateDTO;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.time.Duration;
 import java.time.Instant;
 
-public class TimeValuesValidator implements ConstraintValidator<ValidTimeValues, TimeEntryCreateDTO> {
+public class TimeValuesValidator implements ConstraintValidator<ValidTimeValues, TimeValidatable> {
+
     @Override
-    public boolean isValid( TimeEntryCreateDTO timeEntryCreateDTO, ConstraintValidatorContext constraintValidatorContext ) {
-        if ( timeEntryCreateDTO == null ) return true;
+    public boolean isValid( TimeValidatable dto, ConstraintValidatorContext constraintValidatorContext ) {
+        if ( dto == null ) return true;
 
         constraintValidatorContext.disableDefaultConstraintViolation();
 
-        Instant start = timeEntryCreateDTO.getStartTime();
-        Instant end = timeEntryCreateDTO.getEndTime();
-        Duration total = timeEntryCreateDTO.getTotalTime();
-        Duration pause = timeEntryCreateDTO.getPauseTime();
+        Instant start = dto.getStartTime();
+        Instant end = dto.getEndTime();
+        Duration total = dto.getTotalTime();
+        Duration pause = dto.getPauseTime();
 
         boolean hasRange = start != null && end != null;
-        boolean hasTotal = total != null;
-        boolean hasPause = pause != null;
-
-        if ( hasRange == hasTotal ) {
-            String tmpl = "Start time and end time or total time must be set";
-            constraintValidatorContext
-                    .buildConstraintViolationWithTemplate( tmpl )
-                    .addPropertyNode( "startTime" )
-                    .addConstraintViolation();
-
-            constraintValidatorContext
-                    .buildConstraintViolationWithTemplate( tmpl )
-                    .addPropertyNode( "endTime" )
-                    .addConstraintViolation();
-
-            constraintValidatorContext
-                    .buildConstraintViolationWithTemplate( tmpl )
-                    .addPropertyNode( "totalTime" )
-                    .addConstraintViolation();
-
-            return false;
-        }
 
         if ( hasRange && !start.isBefore( end ) ) {
             String tmpl = "Start time must be before end time";
@@ -68,7 +46,7 @@ public class TimeValuesValidator implements ConstraintValidator<ValidTimeValues,
             return false;
         }
 
-        if ( hasTotal && hasPause && total.minus( pause ).isNegative() ) {
+        if ( !hasRange && total != null && total.minus( pause ).isNegative() ) {
             String tmpl = "Total time must be greater than pause time";
 
             constraintValidatorContext

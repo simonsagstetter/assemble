@@ -16,7 +16,14 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SessionDetail from "@/components/admin/session/SessionDetail";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Detail, DetailLabel, DetailRow, DetailSection, DetailValue } from "@/components/custom-ui/detail";
+import {
+    BadgeDetailValue,
+    Detail,
+    DetailLabel,
+    DetailRow,
+    DetailSection,
+    DetailValue
+} from "@/components/custom-ui/record-detail/detail";
 import { format } from "date-fns";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -137,11 +144,20 @@ export default function UserDetail( { userDetails }: UserDetailProps ) {
                                     <DetailRow>
                                         <Detail>
                                             <DetailLabel>Enabled</DetailLabel>
-                                            <DetailValue>{ userDetails.enabled ? "Yes" : "No" }</DetailValue>
+                                            { userDetails.enabled ?
+                                                <BadgeDetailValue>Active</BadgeDetailValue>
+                                                :
+                                                <BadgeDetailValue variant={ "secondary" }>Inactive</BadgeDetailValue>
+                                            }
+
                                         </Detail>
                                         <Detail>
                                             <DetailLabel>Locked</DetailLabel>
-                                            <DetailValue>{ userDetails.locked ? "Yes" : "No" }</DetailValue>
+                                            { userDetails.locked ?
+                                                <BadgeDetailValue>Locked</BadgeDetailValue>
+                                                :
+                                                <BadgeDetailValue variant={ "secondary" }>Unlocked</BadgeDetailValue>
+                                            }
                                         </Detail>
                                     </DetailRow>
                                 </DetailSection>

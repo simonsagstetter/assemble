@@ -12,6 +12,7 @@ package com.assemble.backend.services.project;
 
 import com.assemble.backend.models.dtos.project.ProjectAssignmentCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDTO;
+import com.assemble.backend.models.entities.auth.SecurityUser;
 import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.entities.project.Project;
 import com.assemble.backend.models.entities.project.ProjectAssignment;
@@ -24,7 +25,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -43,6 +45,18 @@ public class ProjectAssignmentServiceImpl implements ProjectAssignmentService {
                 );
 
         return projectAssignmentMapper.toProjectAssignmentDTO( projectAssignment );
+    }
+
+    @Override
+    public List<ProjectAssignmentDTO> getOwnProjectAssignments( SecurityUser user ) {
+        Employee employee = employeeRepository.findByUser_Id( user.getUser().getId() ).orElse( null );
+        if ( employee != null ) {
+            return projectAssignmentRepository.findAllByEmployeeId( employee.getId() )
+                    .stream()
+                    .map( projectAssignmentMapper::toProjectAssignmentDTO )
+                    .toList();
+        }
+        return List.of();
     }
 
     @Override

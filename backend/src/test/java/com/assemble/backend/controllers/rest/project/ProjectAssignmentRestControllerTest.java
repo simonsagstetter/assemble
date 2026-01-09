@@ -14,10 +14,7 @@ import com.assemble.backend.models.dtos.project.ProjectAssignmentCreateDTO;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.models.entities.employee.Employee;
-import com.assemble.backend.models.entities.project.Project;
-import com.assemble.backend.models.entities.project.ProjectAssignment;
-import com.assemble.backend.models.entities.project.ProjectStage;
-import com.assemble.backend.models.entities.project.ProjectType;
+import com.assemble.backend.models.entities.project.*;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
 import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
@@ -87,6 +84,7 @@ class ProjectAssignmentRestControllerTest {
                                 .category( "Maintenance" )
                                 .stage( ProjectStage.PROPOSAL )
                                 .type( ProjectType.EXTERNAL )
+                                .color( ProjectColor.PURPLE )
                                 .build()
                 );
 
@@ -94,7 +92,7 @@ class ProjectAssignmentRestControllerTest {
                 User.builder()
                         .firstname( "Test" )
                         .lastname( "User" )
-                        .username( "testuser" )
+                        .username( "testuser2" )
                         .email( "testuser@example.com" )
                         .password( passwordEncoder.encode( "secret" ) )
                         .roles( List.of( UserRole.USER, UserRole.ADMIN, UserRole.SUPERUSER ) )
@@ -223,6 +221,44 @@ class ProjectAssignmentRestControllerTest {
                 );
     }
 
+    @Test
+    @WithMockCustomUser(saveToDatabase = true)
+    @DisplayName("/GET getOwnProjectAssignemtns should return empty list if related emmployee not found")
+    void getOwnProjectAssignments_ShouldReturnEmptyList_WhenEmployeeNotFound() throws Exception {
+        mockMvc.perform(
+                get( "/api/projectassignments/me" )
+        ).andExpect(
+                status().isOk()
+        ).andExpect(
+                content().contentType( MediaType.APPLICATION_JSON_VALUE )
+        ).andExpect(
+                content().json( """
+                        []
+                        """ )
+        );
+    }
+
+    @Test
+    @WithMockCustomUser(saveToDatabase = true)
+    @DisplayName("/GET getOwnProjectAssignemtns should return list of assignments")
+    void getOwnProjectAssignments_ShouldReturnListOfAssignments() throws Exception {
+        User mockedUserFromDB = userRepository.findByUsername( "testuser" ).orElseThrow();
+        testEmployee.setUser( mockedUserFromDB );
+        employeeRepository.save( testEmployee );
+        projectAssignmentRepository.save( testProjectAssignment );
+
+        assert testEmployee.getId() != null;
+
+        mockMvc.perform(
+                get( "/api/projectassignments/me" )
+        ).andExpect(
+                status().isOk()
+        ).andExpect(
+                content().contentType( MediaType.APPLICATION_JSON_VALUE )
+        ).andExpect(
+                jsonPath( "$[0].employee.id" ).value( testEmployee.getId().toString() )
+        );
+    }
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })

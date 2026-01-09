@@ -10,7 +10,7 @@
 
 "use client"
 
-import { CalendarIcon, ChevronRight } from "lucide-react"
+import { CalendarIcon, ChevronRight, PlaneTakeoff } from "lucide-react"
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger, } from "@/components/ui/collapsible"
 import {
@@ -28,7 +28,7 @@ import Link from "next/link";
 export function TimetrackingMenu() {
     const items = [
         {
-            title: "Working Times",
+            title: "Time Entries",
             url: "/timetracking",
             icon: CalendarIcon,
             isActive: true,
@@ -36,13 +36,30 @@ export function TimetrackingMenu() {
                 {
                     title: "Calendar",
                     url: "/app/timetracking/calendar",
+                }
+            ],
+        },
+        {
+            title: "Absence",
+            url: "/timetracking",
+            icon: PlaneTakeoff,
+            isActive: true,
+            items: [
+                {
+                    title: "Vacation",
+                    url: "/app",
                 },
                 {
-                    title: "List View",
-                    url: "/app/timetracking/list",
+                    title: "Sickness",
+                    url: "/app",
+                },
+                {
+                    title: "Other",
+                    url: "/app",
                 },
             ],
-        }
+        },
+
     ];
     return (
         <SidebarGroup>

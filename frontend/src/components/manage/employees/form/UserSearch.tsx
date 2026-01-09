@@ -56,7 +56,6 @@ export default function UserSearch( { field, disabled }: UserSearchProps ) {
     const items: LookupItem[] | null = data != null ? data.map( user => ( {
         id: user.id,
         result: user.username,
-        Icon: <UserIcon/>,
         searchTerm: state.searchTerm
     } ) ) : null;
 

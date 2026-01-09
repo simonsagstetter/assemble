@@ -110,7 +110,7 @@ const Lookup = memo( function Lookup(
                                         key={ id }
                                         value={ searchTerm }
                                         onSelect={ () => !disabled ? selectCallbackAction( item ) : null }
-                                        className={ "flex flex-row items-center justify-between" }
+                                        className={ "flex flex-row items-center justify-between bg-background! hover:bg-accent! hover:text-accent-foreground!" }
                                     >
                                         <div className={ "inline-flex gap-4 items-center" }>
                                             { Icon != null ? Icon : null }

@@ -11,6 +11,7 @@
 package com.assemble.backend.models.dtos.project;
 
 import com.assemble.backend.models.dtos.core.BaseEntityDTO;
+import com.assemble.backend.models.entities.project.ProjectColor;
 import com.assemble.backend.models.entities.project.ProjectStage;
 import com.assemble.backend.models.entities.project.ProjectType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -70,5 +71,12 @@ public class ProjectDTO extends BaseEntityDTO {
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     private String description;
+
+    @NonNull
+    @Schema(
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            accessMode = Schema.AccessMode.READ_ONLY
+    )
+    private ProjectColor color;
 
 }

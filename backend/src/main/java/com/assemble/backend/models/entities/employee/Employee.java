@@ -15,7 +15,10 @@ import com.assemble.backend.models.entities.core.BaseJPAEntity;
 import com.assemble.backend.models.entities.timeentry.TimeEntry;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

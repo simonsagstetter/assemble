@@ -23,7 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import { FormActions } from "@/components/custom-ui/form/actions";
 import {
     getGetAllProjectAssignmentsByEmployeeIdQueryKey,
-    getGetAllProjectAssignmentsByProjectIdQueryKey,
+    getGetAllProjectAssignmentsByProjectIdQueryKey, getGetOwnProjectAssignmentsQueryKey,
     useDeleteProjectAssignmentById
 } from "@/api/rest/generated/query/project-assignments/project-assignments";
 import { useSearchParams } from "next/navigation";
@@ -60,6 +60,10 @@ export default function ProjectAssignmentDeleteForm( { assignment }: ProjectAssi
                         queryKey: getGetAllProjectAssignmentsByEmployeeIdQueryKey( assignment.employee.id ),
                         refetchType: "all"
                     } )
+
+                    await queryClient.invalidateQueries( {
+                        queryKey: getGetOwnProjectAssignmentsQueryKey()
+                    } );
 
                     if ( modalContext ) {
                         modalContext.setOpen( false );

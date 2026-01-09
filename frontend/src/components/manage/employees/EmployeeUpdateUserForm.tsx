@@ -34,6 +34,7 @@ import { Separator } from "@/components/ui/separator";
 import { FormActions } from "@/components/custom-ui/form/actions";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { getMeQueryKey } from "@/api/rest/generated/query/users/users";
 
 type EmployeeUpdateUserFormProps = {
     employee: EmployeeDTO
@@ -69,6 +70,10 @@ export default function EmployeeUpdateUserForm( { employee }: EmployeeUpdateUser
                     await queryClient.invalidateQueries( {
                         queryKey: getGetEmployeeQueryKey( employee.id )
                     } );
+                    await queryClient.invalidateQueries( {
+                        queryKey: getMeQueryKey()
+                    } )
+
                     form.clearErrors();
                     toast.success( "Success", {
                         description: "Employee " + employee.fullname + " was updated",

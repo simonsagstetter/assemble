@@ -24,13 +24,14 @@ import { toast } from "sonner";
 import { FieldValidationError } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import { useRouter } from "@bprogress/next/app";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { EmployeeLookupField, RolesLookupField } from "@/components/admin/users/form/custom-fields";
+import { RolesLookupField } from "@/components/admin/users/form/custom-fields";
 import { InputField, SwitchField } from "@/components/custom-ui/form/fields";
 import { ErrorMessage, SuccessMessage } from "@/components/custom-ui/form/messages";
 import { FormActions } from "@/components/custom-ui/form/actions";
 import { FormActionContext } from "@/store/formActionStore";
 import { IdentityFragment } from "@/components/admin/users/form/fragments";
 import useModalContext from "@/hooks/useModalContext";
+import { UnlinkedEmployeeLookupField } from "@/components/manage/employees/form/custom-fields";
 
 export default function UserCreateForm() {
     const modalContext = useModalContext();
@@ -142,8 +143,8 @@ export default function UserCreateForm() {
                             <FieldLegend>Resources</FieldLegend>
                             <FieldDescription>Connect user to other resources</FieldDescription>
                             <FieldGroup>
-                                <EmployeeLookupField fieldName={ "employeeId" } formControl={ form.control }
-                                                     disabled={ isPending || isSubmitting || isSuccess }/>
+                                <UnlinkedEmployeeLookupField fieldName={ "employeeId" } formControl={ form.control }
+                                                             disabled={ isPending || isSubmitting || isSuccess }/>
                             </FieldGroup>
                         </FieldSet>
                         <Separator/>

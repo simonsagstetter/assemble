@@ -21,6 +21,7 @@ import org.hibernate.validator.constraints.time.DurationMax;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @SuperBuilder
 @Getter
@@ -45,17 +46,23 @@ public class TimeEntry extends BaseJPAEntity {
     @Column(name = "DESCRIPTION", nullable = false, length = 1000)
     private String description;
 
+    @NonNull
+    @Column(name = "DATE", nullable = false)
+    private LocalDate date;
+
     @Column(name = "START_TIME")
     private Instant startTime;
 
     @Column(name = "END_TIME")
     private Instant endTime;
 
-    @Column(name = "PAUSE_TIME")
+    @NonNull
+    @Column(name = "PAUSE_TIME", nullable = false)
     @DurationMax(hours = 23, minutes = 59, seconds = 59)
     private Duration pauseTime;
 
-    @Column(name = "TOTAL_TIME")
+    @Column(name = "TOTAL_TIME", nullable = false)
+    @NonNull
     @DurationMax(hours = 23, minutes = 59, seconds = 59)
     private Duration totalTime;
 

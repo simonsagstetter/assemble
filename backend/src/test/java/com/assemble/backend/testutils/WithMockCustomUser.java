@@ -22,6 +22,8 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @WithSecurityContext(factory = WithMockCustomUserSecurityContextFactory.class)
 public @interface WithMockCustomUser {
+    boolean saveToDatabase() default false;
+
     String username() default "testuser";
 
     String firstname() default "Test";

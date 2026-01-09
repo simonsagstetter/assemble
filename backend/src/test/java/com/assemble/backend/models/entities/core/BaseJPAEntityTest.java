@@ -27,9 +27,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("BaseJPAEntity Integration Test")
 @SpringBootTest

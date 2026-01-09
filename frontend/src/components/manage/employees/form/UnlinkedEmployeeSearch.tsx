@@ -1,6 +1,6 @@
 /*
  * assemble
- * EmployeeSearch.tsx
+ * UnlinkedEmployeeSearch.tsx
  *
  * Copyright (c) 2025 Simon Sagstetter
  *
@@ -33,7 +33,7 @@ type EmployeeSearchProps = {
     disabled: boolean
 }
 
-export default function EmployeeSearch( { field, disabled }: EmployeeSearchProps ) {
+export default function UnlinkedEmployeeSearch( { field, disabled }: EmployeeSearchProps ) {
     const [ state, setState ] = useState<SearchState>( initialState );
     const { data, isError, isLoading } = useSearchUnlinkedEmployees(
         state.searchTerm,
@@ -56,7 +56,6 @@ export default function EmployeeSearch( { field, disabled }: EmployeeSearchProps
     const items: LookupItem[] | null = data != null ? data.map( employee => ( {
         id: employee.id,
         result: employee.fullname,
-        Icon: <IdCardIcon/>,
         searchTerm: state.searchTerm
     } ) ) : null;
 

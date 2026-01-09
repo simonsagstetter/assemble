@@ -59,7 +59,6 @@ export default function ProjectSearch( { field, disabled, excludeValues }: Proje
         .map( project => ( {
             id: project.id,
             result: project.name,
-            Icon: <LayersIcon/>,
             searchTerm: state.searchTerm,
             disabled: excludeValues.includes( project.id )
         } ) ) : null;

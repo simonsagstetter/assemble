@@ -20,16 +20,15 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import {
+    BadgeDetailValue,
     Detail,
     DetailLabel,
     DetailRow,
     DetailSection,
     DetailValue,
-} from "@/components/custom-ui/detail";
-import { format } from "date-fns";
+} from "@/components/custom-ui/record-detail/detail";
 import { ProjectDTO, ProjectDTOStage } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import ProjectActions from "@/components/manage/projects/ProjectActions";
-import StageProgress from "@/components/custom-ui/StageProgress";
 import {
     useGetAllProjectAssignmentsByProjectId
 } from "@/api/rest/generated/query/project-assignments/project-assignments";
@@ -37,6 +36,12 @@ import Loading from "@/components/custom-ui/Loading";
 import ProjectAssignmentDataTable from "@/components/manage/projects/ProjectAssignmentDataTable";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { colorMobileClasses } from "@/config/calendar/calendar.config";
+import Status from "@/components/custom-ui/status";
+import { useGetAllTimeEntriesByProjectId } from "@/api/rest/generated/query/timeentries/timeentries";
+import TimeEntryDataTable from "@/components/manage/timeentries/TimeEntryDataTable";
+import { AuditDetail } from "@/components/custom-ui/record-detail/audit";
+import StageProgress from "@/components/custom-ui/progress";
 
 type ProjectStage =
     typeof ProjectDTOStage[keyof typeof ProjectDTOStage];
@@ -54,8 +59,22 @@ export default function ProjectDetail( { project }: ProjectDetailProps ) {
         isError,
         error
     } = useGetAllProjectAssignmentsByProjectId( project.id );
+
+    const {
+        data: timeentries,
+        isPending: isTPending,
+        isError: isTError,
+        error: tError
+    } = useGetAllTimeEntriesByProjectId( project.id );
+
+    const timeEntryTotal = timeentries && Array.isArray( timeentries ) ? timeentries
+            .reduce( ( total, timeentryy ) => total += timeentryy.total, 0.0 )
+        : 0.0;
+
     const params = useSearchParams();
     const [ activeTab, setActiveTab ] = useState( params.get( "tab" ) ?? "details" );
+    const colorKey = project.color.toLowerCase(),
+        colorClass = colorMobileClasses[ colorKey as keyof typeof colorMobileClasses ];
 
     useEffect( () => {
         const update = () => {
@@ -70,7 +89,10 @@ export default function ProjectDetail( { project }: ProjectDetailProps ) {
                 <LayersIcon className={ "size-10 bg-primary text-primary-foreground rounded-lg p-2 stroke-1" }/>
                 <div className={ "flex flex-col" }>
                     <small className="text-xs uppercase">project</small>
-                    <CardTitle className="text-2xl leading-6">{ project.name }</CardTitle>
+                    <CardTitle className="text-2xl leading-6 flex flex-row items-center gap-2">
+                        { project.name }
+                        <span className={ `size-3 rounded-full mr-1 ${ colorClass }` }></span>
+                    </CardTitle>
                 </div>
             </div>
             <CardDescription className={ "leading-6" }>
@@ -81,14 +103,29 @@ export default function ProjectDetail( { project }: ProjectDetailProps ) {
                         <p>{ project.no }</p>
                     </div>
                     <div>
-                        <span>Active</span>
-                        <p>{ project.active ? "Yes" : "No" }</p>
-                    </div>
-                    <div>
                         <span>Category</span>
                         <p>
                             { project.category }
                         </p>
+                    </div>
+                    <div>
+                        <span>Status</span>
+                        <div className={ "**:text-primary-foreground!" }>
+                            { project.active ?
+                                <Status label={ "Active" }/>
+                                :
+                                <Status label={ "Inactive" } variant={ "red" }/>
+                            }
+                        </div>
+                    </div>
+                    <div>
+                        <span>Time Entry Total</span>
+                        <div>
+                            { new Intl.NumberFormat( 'de-DE', {
+                                style: 'currency',
+                                currency: 'EUR'
+                            } ).format( timeEntryTotal ) }
+                        </div>
                     </div>
                 </div>
             </CardDescription>
@@ -122,6 +159,7 @@ export default function ProjectDetail( { project }: ProjectDetailProps ) {
                 <TabsList>
                     <TabsTrigger value="details">Details</TabsTrigger>
                     <TabsTrigger value="team">Team</TabsTrigger>
+                    <TabsTrigger value="timeentries">Time Entries</TabsTrigger>
                 </TabsList>
                 <TabsContent value="details" className={ "py-2" }>
                     <Accordion type={ "single" } defaultValue={ "details" }>
@@ -142,11 +180,18 @@ export default function ProjectDetail( { project }: ProjectDetailProps ) {
                                     <DetailRow>
                                         <Detail>
                                             <DetailLabel>Stage</DetailLabel>
-                                            <DetailValue>{ project.stage }</DetailValue>
+                                            <BadgeDetailValue
+                                                variant={ "secondary" }>{ project.stage }</BadgeDetailValue>
                                         </Detail>
                                         <Detail>
-                                            <DetailLabel>Active</DetailLabel>
-                                            <DetailValue>{ project.active ? "Yes" : "No" }</DetailValue>
+                                            <DetailLabel>Status</DetailLabel>
+                                            <DetailValue>
+                                                { project.active ?
+                                                    <Status label={ "Active" }/>
+                                                    :
+                                                    <Status label={ "Inactive" } variant={ "red" }/>
+                                                }
+                                            </DetailValue>
                                         </Detail>
                                     </DetailRow>
                                     <DetailRow>
@@ -156,7 +201,8 @@ export default function ProjectDetail( { project }: ProjectDetailProps ) {
                                         </Detail>
                                         <Detail>
                                             <DetailLabel>Type</DetailLabel>
-                                            <DetailValue>{ project.type }</DetailValue>
+                                            <BadgeDetailValue
+                                                variant={ "outline" }>{ project.type }</BadgeDetailValue>
                                         </Detail>
                                     </DetailRow>
                                     <DetailRow>
@@ -166,83 +212,44 @@ export default function ProjectDetail( { project }: ProjectDetailProps ) {
                                                 { project.description }
                                             </DetailValue>
                                         </Detail>
-                                    </DetailRow>
-                                </DetailSection>
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value={ "system" }>
-                            <AccordionTrigger>Audit</AccordionTrigger>
-                            <AccordionContent className={ "pb-10" }>
-                                <DetailSection>
-                                    <DetailRow>
                                         <Detail>
-                                            <DetailLabel>Id</DetailLabel>
-                                            <DetailValue>{ project.id }</DetailValue>
-                                        </Detail>
-                                    </DetailRow>
-                                    <DetailRow>
-                                        <Detail>
-                                            <DetailLabel>Created Date</DetailLabel>
-                                            <DetailValue>{ format( project.createdDate, "dd.MM.yyyy - HH:mm:ss" ) }</DetailValue>
-                                        </Detail>
-                                        <Detail>
-                                            <DetailLabel>Created By</DetailLabel>
-                                            <DetailValue>
-                                                { project.createdBy.id != null ?
-                                                    <Link
-                                                        href={ `/app/admin/users/${ project.createdBy.id }` }
-                                                        className={ "hover:underline text-blue-800" }
-                                                    >
-                                                        { project.createdBy.username }
-                                                    </Link>
-                                                    :
-                                                    <span className={ "text-blue-800" }>
-                                                        { project.createdBy.username }
-                                                    </span>
-                                                }
-                                            </DetailValue>
-                                        </Detail>
-                                    </DetailRow>
-                                    <DetailRow>
-                                        <Detail>
-                                            <DetailLabel>Last Modified Date</DetailLabel>
-                                            <DetailValue>{ format( project.lastModifiedDate, "dd.MM.yyyy - HH:mm:ss" ) }</DetailValue>
-                                        </Detail>
-                                        <Detail>
-                                            <DetailLabel>Last Modified By</DetailLabel>
-                                            <DetailValue>
-                                                { project.lastModifiedBy.id != null ?
-                                                    <Link
-                                                        href={ `/app/admin/users/${ project.lastModifiedBy.id }` }
-                                                        className={ "hover:underline text-blue-800" }
-                                                    >
-                                                        { project.lastModifiedBy.username }
-                                                    </Link>
-                                                    :
-                                                    <span className={ "text-blue-800" }>
-                                                        { project.lastModifiedBy.username }
-                                                    </span>
-                                                }
-                                            </DetailValue>
+                                            <DetailLabel>Color</DetailLabel>
+                                            <BadgeDetailValue variant={ "outline" }>
+                                                <span
+                                                    className={ `size-2 rounded-full inline-block mr-1 ${ colorClass }` }></span>
+                                                { project.color.toLowerCase() }
+                                            </BadgeDetailValue>
                                         </Detail>
                                     </DetailRow>
                                 </DetailSection>
                             </AccordionContent>
                         </AccordionItem>
+                        <AuditDetail id={ project.id }
+                                     createdDate={ project.createdDate }
+                                     createdBy={ project.createdBy }
+                                     lastModifiedDate={ project.lastModifiedDate }
+                                     lastModifiedBy={ project.lastModifiedBy }/>
                     </Accordion>
                 </TabsContent>
                 <TabsContent value="team">
-                    { isPending || !projectAssignments ? <Loading/> : null }
+                    { isPending || !projectAssignments ? <Loading title={ "Loading data" }/> : null }
                     { isError ? error?.message ?? "Error loading assignments" : null }
                     { !isPending && projectAssignments ?
                         <div className={ "relative" }>
-                            <Button type={ "button" } className={ "absolute right-0 -top-11" }>
+                            <Button type={ "button" } className={ "absolute right-0 -top-11 p-0" }>
                                 <Link href={ `/app/manage/projects/${ project.id }/assign` }
                                       className={ "px-4 py-3 flex flex-row items-center gap-1" }><PlusIcon
                                     className={ "size-4" }/>Assign</Link>
                             </Button>
                             <ProjectAssignmentDataTable projectAssignments={ projectAssignments }/>
                         </div>
+                        : null }
+                </TabsContent>
+                <TabsContent value="timeentries">
+                    { isTPending || !timeentries ? <Loading title={ "Loading data" }/> : null }
+                    { isTError ? tError?.message ?? "Error loading timeentries" : null }
+                    { !isTPending && timeentries ?
+                        <TimeEntryDataTable timeentries={ timeentries } isRelatedTable/>
                         : null }
                 </TabsContent>
             </Tabs>

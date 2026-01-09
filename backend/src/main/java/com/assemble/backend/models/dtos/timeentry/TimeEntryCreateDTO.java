@@ -10,9 +10,11 @@
 
 package com.assemble.backend.models.dtos.timeentry;
 
+import com.assemble.backend.models.dtos.timeentry.validators.TimeValidatable;
 import com.assemble.backend.models.dtos.timeentry.validators.ValidTimeValues;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
@@ -20,12 +22,13 @@ import lombok.NonNull;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Data
 @Builder
 @Schema
 @ValidTimeValues
-public class TimeEntryCreateDTO {
+public class TimeEntryCreateDTO implements TimeValidatable {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
@@ -52,6 +55,14 @@ public class TimeEntryCreateDTO {
     @Size(min = 10, max = 1000)
     private String description;
 
+    @NonNull
+    @NotNull
+    @Schema(
+            accessMode = Schema.AccessMode.READ_WRITE,
+            requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private LocalDate date;
+
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
@@ -68,11 +79,15 @@ public class TimeEntryCreateDTO {
             accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
+    @NotNull
+    @NonNull
     private Duration pauseTime;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
+    @NotNull
+    @NonNull
     private Duration totalTime;
 }

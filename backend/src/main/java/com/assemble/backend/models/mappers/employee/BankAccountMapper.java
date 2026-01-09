@@ -12,7 +12,10 @@ package com.assemble.backend.models.mappers.employee;
 
 import com.assemble.backend.models.dtos.employee.EmployeeCreateDTO;
 import com.assemble.backend.models.entities.employee.BankAccount;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.Named;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING
