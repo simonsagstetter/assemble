@@ -149,11 +149,13 @@ export default function TimeEntryDataTable( { timeentries, isRelatedTable = fals
         ]
         , [] );
 
-    const data = timeentries
-        .sort( ( a, b ) => a.no.localeCompare( b.no ) )
+    const data = useMemo( () => timeentries
+            .sort( ( a, b ) => a.no.localeCompare( b.no ) ),
+        [ timeentries ]
+    );
 
     if ( isRelatedTable ) {
-        return <DataTable columns={ columns.splice( 0, columns.length - 1 ) } data={ data }/>
+        return <DataTable columns={ columns.slice( 0, -1 ) } data={ data }/>
     }
 
     return <DataTableHeader
