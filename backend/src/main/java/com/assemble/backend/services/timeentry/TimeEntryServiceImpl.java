@@ -85,9 +85,6 @@ public class TimeEntryServiceImpl implements TimeEntryService {
         Employee employee = employeeRepository.findByUser_Id( user.getUser().getId() )
                 .orElse( null );
 
-        System.out.println( user.getUser().getId() );
-        System.out.println( employee != null ? employee.getId() : "null" );
-
         if ( employee != null && aroundDate != null ) {
             AtomicReference<LocalDate> date = new AtomicReference<>();
 
