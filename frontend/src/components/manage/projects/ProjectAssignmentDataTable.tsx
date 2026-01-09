@@ -77,7 +77,7 @@ export default function ProjectAssignmentDataTable(
                 } else {
                     return <Link
                         href={ `/app/manage/projects/${ assignment.project.id }` }
-                        className={ "hover:underline flex flexrow items-center gap-1.5" }
+                        className={ "hover:underline flex flex-row items-center gap-1.5" }
                     >
                         <span
                             className={ `size-2 rounded-full ${ colorMobileClasses[ assignment.project.color.toLowerCase() as keyof typeof colorMobileClasses ] }` }></span>

@@ -48,7 +48,7 @@ export default function ProjectDataTable( { projects }: ProjectDataTableProps ) 
                     const project = row.original;
                     return <Link
                         href={ `/app/manage/projects/${ project.id }` }
-                        className={ "hover:underline flex flexrow items-center gap-1.5" }
+                        className={ "hover:underline flex flex-row items-center gap-1.5" }
                     >
                         <span
                             className={ `size-2 rounded-full ${ colorMobileClasses[ project.color.toLowerCase() as keyof typeof colorMobileClasses ] }` }></span>
