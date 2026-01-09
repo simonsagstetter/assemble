@@ -16,10 +16,7 @@ import com.assemble.backend.models.dtos.employee.EmployeeUpdateUserDTO;
 import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.models.entities.employee.Employee;
-import com.assemble.backend.models.entities.project.Project;
-import com.assemble.backend.models.entities.project.ProjectAssignment;
-import com.assemble.backend.models.entities.project.ProjectStage;
-import com.assemble.backend.models.entities.project.ProjectType;
+import com.assemble.backend.models.entities.project.*;
 import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
 import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
@@ -646,6 +643,7 @@ class EmployeeRestControllerTest {
                         .category( "TestCategory" )
                         .stage( ProjectStage.PROPOSAL )
                         .type( ProjectType.EXTERNAL )
+                        .color( ProjectColor.PURPLE )
                         .build()
         );
         projectAssignmentRepository.save(

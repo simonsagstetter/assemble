@@ -10,7 +10,6 @@
 
 package com.assemble.backend.models.entities.auth;
 
-import com.assemble.backend.models.entities.employee.Employee;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +25,6 @@ public class SecurityUser implements UserDetails {
 
     @NonNull
     private User user;
-
-    public Employee getEmployee() {
-        return user.getEmployee();
-    }
 
     @Override
     public String getUsername() {

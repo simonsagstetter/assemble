@@ -134,8 +134,11 @@ public class TimeEntryRestController {
             path = "/me",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<TimeEntryDTO>> getOwnTimeEntries( @AuthenticationPrincipal SecurityUser user ) {
-        return ResponseEntity.ok( timeEntryService.getOwnTimeEntries( user ) );
+    public ResponseEntity<List<TimeEntryDTO>> getOwnTimeEntries(
+            @AuthenticationPrincipal SecurityUser user,
+            @RequestParam(required = true) String aroundDate
+    ) {
+        return ResponseEntity.ok( timeEntryService.getOwnTimeEntries( user, aroundDate ) );
     }
 
     @Operation(

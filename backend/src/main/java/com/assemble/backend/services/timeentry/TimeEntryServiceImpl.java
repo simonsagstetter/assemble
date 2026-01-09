@@ -13,6 +13,7 @@ package com.assemble.backend.services.timeentry;
 import com.assemble.backend.models.dtos.timeentry.TimeEntryCreateDTO;
 import com.assemble.backend.models.dtos.timeentry.TimeEntryDTO;
 import com.assemble.backend.models.dtos.timeentry.TimeEntryUpdateDTO;
+import com.assemble.backend.models.dtos.timeentry.validators.TimeValidatable;
 import com.assemble.backend.models.entities.auth.SecurityUser;
 import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.entities.project.Project;
@@ -29,9 +30,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.security.InvalidParameterException;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @AllArgsConstructor
@@ -75,14 +81,34 @@ public class TimeEntryServiceImpl implements TimeEntryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TimeEntryDTO> getOwnTimeEntries( SecurityUser user ) {
-        Employee employee = employeeRepository.findByUser_Id( user.getUser().getId() ).orElse( null );
-        if ( employee != null ) {
-            return timeEntryRepository.findAllByEmployeeId( employee.getId() )
+    public List<TimeEntryDTO> getOwnTimeEntries( SecurityUser user, String aroundDate ) {
+        Employee employee = employeeRepository.findByUser_Id( user.getUser().getId() )
+                .orElse( null );
+
+        System.out.println( user.getUser().getId() );
+        System.out.println( employee != null ? employee.getId() : "null" );
+
+        if ( employee != null && aroundDate != null ) {
+            AtomicReference<LocalDate> date = new AtomicReference<>();
+
+            try {
+                LocalDate parsedDate = LocalDate.parse( aroundDate );
+                date.set( parsedDate );
+            } catch ( DateTimeParseException e ) {
+                throw new InvalidParameterException( "Invalid date format" );
+            }
+
+            LocalDate afterDate = date.get().minusMonths( 2 );
+            LocalDate beforeDate = date.get().plusMonths( 2 );
+
+            return timeEntryRepository.findAllByEmployee_IdAndDateIsBetween(
+                            employee.getId(), afterDate, beforeDate
+                    )
                     .stream()
                     .map( timeEntryMapper::toTimeEntryDTO )
                     .toList();
         }
+
         return List.of();
     }
 
@@ -106,30 +132,58 @@ public class TimeEntryServiceImpl implements TimeEntryService {
                         () -> new EntityNotFoundException( "Could not find employee for user with id: " + user.getUser().getId() )
                 );
 
-        if ( !timeEntry.getEmployee().getId().toString().equals( employee.getId().toString() ) ) {
+        if ( timeEntry.getEmployee().getId() != null &&
+                !timeEntry.getEmployee().getId().equals( employee.getId() )
+        ) {
             throw new AccessDeniedException( "You are not allowed to access this time entry" );
         }
 
         return timeEntryMapper.toTimeEntryDTO( timeEntry );
     }
 
-    @Override
-    @Transactional
-    public TimeEntryDTO createOwnTimeEntry( TimeEntryCreateDTO timeEntryCreateDTO, SecurityUser user ) {
-        Employee relatedEmployee = employeeRepository.findByUser_Id( user.getUser().getId() ).orElseThrow(
-                () -> new EntityNotFoundException( "Could not find employee for user with id: " + user.getUser().getId() )
-        );
+    private TimeEntry setRateAndTotals( TimeEntry timeEntry, TimeValidatable timeValidatable, BigDecimal rate ) {
+        if ( timeValidatable.getStartTime() != null && timeValidatable.getEndTime() != null ) {
+            Duration d = Duration.between(
+                    timeValidatable.getStartTime().truncatedTo( ChronoUnit.SECONDS ),
+                    timeValidatable.getEndTime().truncatedTo( ChronoUnit.SECONDS )
+            );
 
-        if ( !timeEntryCreateDTO.getEmployeeId().equals( relatedEmployee.getId().toString() ) )
-            throw new AccessDeniedException( "You are not allowed to access this time entry" );
+            timeEntry.setTotal(
+                    calculationService.calculateTotal(
+                            d,
+                            timeValidatable.getPauseTime(),
+                            rate
+                    )
+            );
+            timeEntry.setRate( rate );
+            timeEntry.setTotalInternal(
+                    calculationService.calculateTotal(
+                            d,
+                            timeValidatable.getPauseTime(),
+                            FIXED_INTERNAL_RATE
+                    )
+            );
+            timeEntry.setTotalTime( d );
 
-        return processTimeEntryCreation( timeEntryCreateDTO );
-    }
+        } else {
+            timeEntry.setTotal(
+                    calculationService.calculateTotal(
+                            timeValidatable.getTotalTime(),
+                            timeValidatable.getPauseTime(),
+                            rate
+                    )
+            );
+            timeEntry.setRate( rate );
+            timeEntry.setTotalInternal(
+                    calculationService.calculateTotal(
+                            timeValidatable.getTotalTime(),
+                            timeValidatable.getPauseTime(),
+                            FIXED_INTERNAL_RATE
+                    )
+            );
+        }
 
-    @Override
-    @Transactional
-    public TimeEntryDTO createTimeEntry( TimeEntryCreateDTO timeEntryCreateDTO ) {
-        return processTimeEntryCreation( timeEntryCreateDTO );
+        return timeEntry;
     }
 
     private TimeEntryDTO processTimeEntryCreation( TimeEntryCreateDTO timeEntryCreateDTO ) {
@@ -141,11 +195,11 @@ public class TimeEntryServiceImpl implements TimeEntryService {
                         () -> new EntityNotFoundException( "Could not find assignment for project and employee" )
                 );
 
+        if ( !projectAssignment.isActive() )
+            throw new InvalidParameterException( "Project assignment is not active" );
+
         Employee employee = projectAssignment.getEmployee();
         Project project = projectAssignment.getProject();
-
-        if ( employee == null || project == null )
-            throw new EntityNotFoundException( "Could not find employee or project" );
 
         TimeEntry timeEntry = timeEntryMapper.toTimeEntry( timeEntryCreateDTO, employee, project );
 
@@ -153,50 +207,71 @@ public class TimeEntryServiceImpl implements TimeEntryService {
                 projectAssignment.getHourlyRate()
                 : FIXED_RATE;
 
-        if ( timeEntryCreateDTO.getStartTime() != null && timeEntryCreateDTO.getEndTime() != null ) {
-            Duration d = Duration.ofMillis(
-                    timeEntryCreateDTO.getEndTime().toEpochMilli()
-                            - timeEntryCreateDTO.getStartTime().toEpochMilli()
-            );
 
-            timeEntry.setTotal(
-                    calculationService.calculateTotal(
-                            d,
-                            timeEntryCreateDTO.getPauseTime(),
-                            rate
-                    )
-            );
-            timeEntry.setRate( rate );
-            timeEntry.setTotalInternal(
-                    calculationService.calculateTotal(
-                            d,
-                            timeEntryCreateDTO.getPauseTime(),
-                            rate
-                    )
-            );
-            timeEntry.setTotalTime( d );
-
-        } else {
-            timeEntry.setTotal(
-                    calculationService.calculateTotal(
-                            timeEntryCreateDTO.getTotalTime(),
-                            timeEntryCreateDTO.getPauseTime(),
-                            rate
-                    )
-            );
-            timeEntry.setRate( rate );
-            timeEntry.setTotalInternal(
-                    calculationService.calculateTotal(
-                            timeEntryCreateDTO.getTotalTime(),
-                            timeEntryCreateDTO.getPauseTime(),
-                            FIXED_INTERNAL_RATE
-                    )
-            );
-        }
-
-        TimeEntry newTimeEntry = timeEntryRepository.save( timeEntry );
+        TimeEntry newTimeEntry = timeEntryRepository.save(
+                setRateAndTotals( timeEntry, timeEntryCreateDTO, rate )
+        );
 
         return timeEntryMapper.toTimeEntryDTO( newTimeEntry );
+    }
+
+    @Override
+    @Transactional
+    public TimeEntryDTO createOwnTimeEntry( TimeEntryCreateDTO timeEntryCreateDTO, SecurityUser user ) {
+        Employee relatedEmployee = employeeRepository.findByUser_Id( user.getUser().getId() ).orElseThrow(
+                () -> new EntityNotFoundException( "Could not find employee for user with id: " + user.getUser().getId() )
+        );
+
+        if ( relatedEmployee.getId() != null &&
+                !timeEntryCreateDTO.getEmployeeId().equals( relatedEmployee.getId().toString() ) ) {
+            throw new AccessDeniedException( "You are not allowed to access this time entry" );
+        }
+
+
+        return processTimeEntryCreation( timeEntryCreateDTO );
+    }
+
+    @Override
+    @Transactional
+    public TimeEntryDTO createTimeEntry( TimeEntryCreateDTO timeEntryCreateDTO ) {
+        return processTimeEntryCreation( timeEntryCreateDTO );
+    }
+
+    private TimeEntryDTO processTimeEntryUpdate( TimeEntryUpdateDTO timeEntryUpdateDTO, TimeEntry timeEntry ) {
+        Employee employee = timeEntry.getEmployee();
+        Project project = timeEntry.getProject();
+
+        BigDecimal rate = timeEntry.getRate() != null && timeEntry.getRate().compareTo( BigDecimal.ZERO ) > 0
+                ? timeEntry.getRate()
+                : FIXED_RATE;
+
+        if ( timeEntryUpdateDTO.getEmployeeId() != null && timeEntryUpdateDTO.getProjectId() != null ) {
+            ProjectAssignment projectAssignment = projectAssignmentRepository
+                    .findByProject_IdAndEmployee_Id(
+                            UUID.fromString( timeEntryUpdateDTO.getProjectId() ),
+                            UUID.fromString( timeEntryUpdateDTO.getEmployeeId() )
+                    ).orElseThrow(
+                            () -> new EntityNotFoundException( "Could not find assignment for project and employee" )
+                    );
+
+            if ( !projectAssignment.isActive() )
+                throw new InvalidParameterException( "Project assignment is not active" );
+
+            rate = projectAssignment.getHourlyRate() != null && projectAssignment.getHourlyRate().compareTo( BigDecimal.ZERO ) > 0 ?
+                    projectAssignment.getHourlyRate() : rate;
+
+            employee = projectAssignment.getEmployee();
+            project = projectAssignment.getProject();
+        }
+
+        if ( timeEntryUpdateDTO.getTotalTime() == null ) timeEntryUpdateDTO.setTotalTime( timeEntry.getTotalTime() );
+        if ( timeEntryUpdateDTO.getPauseTime() == null ) timeEntryUpdateDTO.setPauseTime( timeEntry.getPauseTime() );
+
+        TimeEntry updatedTimeEntry = timeEntryMapper.toTimeEntry( timeEntryUpdateDTO, employee, project, timeEntry );
+        TimeEntry savedTimeEntry = timeEntryRepository.save( setRateAndTotals( updatedTimeEntry, timeEntryUpdateDTO, rate ) );
+
+
+        return timeEntryMapper.toTimeEntryDTO( savedTimeEntry );
     }
 
     @Override
@@ -211,7 +286,8 @@ public class TimeEntryServiceImpl implements TimeEntryService {
                         () -> new EntityNotFoundException( "Could not find time entry with id: " + id )
                 );
 
-        if ( !timeEntry.getEmployee().getId().toString().equals( relatedEmployee.getId().toString() ) )
+        if ( timeEntry.getEmployee().getId() != null && !
+                timeEntry.getEmployee().getId().equals( relatedEmployee.getId() ) )
             throw new AccessDeniedException( "You are not allowed to access this time entry" );
 
         return processTimeEntryUpdate( timeEntryUpdateDTO, timeEntry );
@@ -227,75 +303,6 @@ public class TimeEntryServiceImpl implements TimeEntryService {
         return processTimeEntryUpdate( timeEntryUpdateDTO, timeEntry );
     }
 
-    private TimeEntryDTO processTimeEntryUpdate( TimeEntryUpdateDTO timeEntryUpdateDTO, TimeEntry timeEntry ) {
-        Employee employee = timeEntry.getEmployee();
-        Project project = timeEntry.getProject();
-        BigDecimal rate = timeEntry.getRate() != null && timeEntry.getRate().compareTo( BigDecimal.ZERO ) > 0
-                ? timeEntry.getRate()
-                : FIXED_RATE;
-
-        if ( timeEntryUpdateDTO.getEmployeeId() != null && timeEntryUpdateDTO.getProjectId() != null ) {
-            ProjectAssignment projectAssignment = projectAssignmentRepository
-                    .findByProject_IdAndEmployee_Id(
-                            UUID.fromString( timeEntryUpdateDTO.getProjectId() ),
-                            UUID.fromString( timeEntryUpdateDTO.getEmployeeId() )
-                    ).orElseThrow(
-                            () -> new EntityNotFoundException( "Could not find assignment for project and employee" )
-                    );
-
-            employee = projectAssignment.getEmployee();
-            project = projectAssignment.getProject();
-        }
-
-        TimeEntry updatedTimeEntry = timeEntryMapper.toTimeEntry( timeEntryUpdateDTO, employee, project, timeEntry );
-
-        if ( timeEntryUpdateDTO.getStartTime() != null && timeEntryUpdateDTO.getEndTime() != null ) {
-            Duration d = Duration.ofMillis(
-                    timeEntryUpdateDTO.getEndTime().toEpochMilli()
-                            - timeEntryUpdateDTO.getStartTime().toEpochMilli()
-            );
-
-            updatedTimeEntry.setTotal(
-                    calculationService.calculateTotal(
-                            d,
-                            timeEntryUpdateDTO.getPauseTime(),
-                            rate
-                    )
-            );
-            updatedTimeEntry.setRate( rate );
-            updatedTimeEntry.setTotalInternal(
-                    calculationService.calculateTotal(
-                            d,
-                            timeEntryUpdateDTO.getPauseTime(),
-                            FIXED_INTERNAL_RATE
-                    )
-            );
-            updatedTimeEntry.setTotalTime( d );
-
-        } else {
-            updatedTimeEntry.setTotal(
-                    calculationService.calculateTotal(
-                            timeEntryUpdateDTO.getTotalTime(),
-                            timeEntryUpdateDTO.getPauseTime(),
-                            rate
-                    )
-            );
-            updatedTimeEntry.setRate( rate );
-            updatedTimeEntry.setTotalInternal(
-                    calculationService.calculateTotal(
-                            timeEntryUpdateDTO.getTotalTime(),
-                            timeEntryUpdateDTO.getPauseTime(),
-                            FIXED_INTERNAL_RATE
-                    )
-            );
-        }
-
-        TimeEntry savedTimeEntry = timeEntryRepository.save( updatedTimeEntry );
-
-
-        return timeEntryMapper.toTimeEntryDTO( savedTimeEntry );
-    }
-
     @Override
     @Transactional
     public void deleteOwnTimeEntryById( String id, SecurityUser user ) {
@@ -308,7 +315,8 @@ public class TimeEntryServiceImpl implements TimeEntryService {
                         () -> new EntityNotFoundException( "Could not find time entry with id: " + id )
                 );
 
-        if ( !timeEntry.getEmployee().getId().toString().equals( relatedEmployee.getId().toString() ) )
+        if ( timeEntry.getEmployee().getId() != null &&
+                !timeEntry.getEmployee().getId().equals( relatedEmployee.getId() ) )
             throw new AccessDeniedException( "You are not allowed to access this time entry" );
 
         timeEntryRepository.delete( timeEntry );

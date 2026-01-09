@@ -14,10 +14,7 @@ import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectDTO;
 import com.assemble.backend.models.entities.auth.UserAudit;
 import com.assemble.backend.models.entities.employee.Employee;
-import com.assemble.backend.models.entities.project.Project;
-import com.assemble.backend.models.entities.project.ProjectAssignment;
-import com.assemble.backend.models.entities.project.ProjectStage;
-import com.assemble.backend.models.entities.project.ProjectType;
+import com.assemble.backend.models.entities.project.*;
 import com.assemble.backend.models.mappers.project.ProjectMapper;
 import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
 import com.assemble.backend.repositories.project.ProjectRepository;
@@ -77,6 +74,7 @@ class ProjectServiceImplTest {
                 .category( "Maintanance" )
                 .stage( ProjectStage.PROPOSAL )
                 .type( ProjectType.EXTERNAL )
+                .color( ProjectColor.PURPLE )
                 .createdDate( now )
                 .lastModifiedDate( now )
                 .createdBy( userAudit )
@@ -89,6 +87,7 @@ class ProjectServiceImplTest {
                 .name( testProject.getName() )
                 .active( testProject.isActive() )
                 .stage( testProject.getStage() )
+                .color( ProjectColor.PURPLE )
                 .type( testProject.getType() )
                 .description( testProject.getDescription() )
                 .category( testProject.getCategory() )

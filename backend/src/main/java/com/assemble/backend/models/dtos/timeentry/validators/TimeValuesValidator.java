@@ -46,7 +46,7 @@ public class TimeValuesValidator implements ConstraintValidator<ValidTimeValues,
             return false;
         }
 
-        if ( !hasRange && total.minus( pause ).isNegative() ) {
+        if ( !hasRange && total != null && total.minus( pause ).isNegative() ) {
             String tmpl = "Total time must be greater than pause time";
 
             constraintValidatorContext

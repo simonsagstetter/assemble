@@ -29,7 +29,7 @@ public interface TimeEntryService {
 
     List<TimeEntryDTO> getTimeEntriesByProjectId( String projectId );
 
-    List<TimeEntryDTO> getOwnTimeEntries( SecurityUser user );
+    List<TimeEntryDTO> getOwnTimeEntries( SecurityUser user, String aroundDate );
 
     TimeEntryDTO createOwnTimeEntry( TimeEntryCreateDTO timeEntryCreateDTO, SecurityUser user );
 

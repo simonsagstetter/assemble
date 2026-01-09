@@ -13,10 +13,7 @@ package com.assemble.backend.controllers.rest.project;
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.models.entities.employee.Employee;
-import com.assemble.backend.models.entities.project.Project;
-import com.assemble.backend.models.entities.project.ProjectAssignment;
-import com.assemble.backend.models.entities.project.ProjectStage;
-import com.assemble.backend.models.entities.project.ProjectType;
+import com.assemble.backend.models.entities.project.*;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
 import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
 import com.assemble.backend.repositories.project.ProjectRepository;
@@ -71,6 +68,7 @@ class ProjectRestControllerTest {
                 .category( "Maintanance" )
                 .stage( ProjectStage.PROPOSAL )
                 .type( ProjectType.EXTERNAL )
+                .color( ProjectColor.PURPLE )
                 .build();
     }
 

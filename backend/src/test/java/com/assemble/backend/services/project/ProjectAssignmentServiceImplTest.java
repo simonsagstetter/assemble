@@ -14,12 +14,12 @@ import com.assemble.backend.models.dtos.employee.EmployeeRefDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectAssignmentDTO;
 import com.assemble.backend.models.dtos.project.ProjectRefDTO;
+import com.assemble.backend.models.entities.auth.SecurityUser;
+import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserAudit;
+import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.models.entities.employee.Employee;
-import com.assemble.backend.models.entities.project.Project;
-import com.assemble.backend.models.entities.project.ProjectAssignment;
-import com.assemble.backend.models.entities.project.ProjectStage;
-import com.assemble.backend.models.entities.project.ProjectType;
+import com.assemble.backend.models.entities.project.*;
 import com.assemble.backend.models.mappers.project.ProjectAssignmentMapper;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
 import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
@@ -33,6 +33,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -64,6 +65,7 @@ class ProjectAssignmentServiceImplTest {
 
     private static UUID randomId;
     private static UUID recordId;
+    private static User testUser;
     private static Project testProject;
     private static Employee testEmployee;
     private static ProjectAssignment testProjectAssignment;
@@ -77,6 +79,20 @@ class ProjectAssignmentServiceImplTest {
         randomId = UuidCreator.getTimeOrderedEpoch();
         recordId = UuidCreator.getTimeOrderedEpoch();
 
+        testUser = User.builder()
+                .id( recordId )
+                .username( "testuser" )
+                .firstname( "Test" )
+                .lastname( "User" )
+                .email( "test@example.com" )
+                .roles( List.of( UserRole.USER ) )
+                .password( new BCryptPasswordEncoder().encode( "secret" ) )
+                .createdDate( Instant.now() )
+                .lastModifiedDate( Instant.now() )
+                .createdBy( new UserAudit( null, "SYSTEM" ) )
+                .lastModifiedBy( new UserAudit( null, "SYSTEM" ) )
+                .build();
+
         testProject = Project.builder()
                 .id( recordId )
                 .no( "P000001" )
@@ -85,6 +101,7 @@ class ProjectAssignmentServiceImplTest {
                 .category( "Maintenance" )
                 .stage( ProjectStage.PROPOSAL )
                 .type( ProjectType.EXTERNAL )
+                .color( ProjectColor.PURPLE )
                 .createdDate( now )
                 .lastModifiedDate( now )
                 .createdBy( userAudit )
@@ -97,7 +114,7 @@ class ProjectAssignmentServiceImplTest {
                 .firstname( "Max" )
                 .lastname( "Mustermann" )
                 .email( "max.mustermann@example.com" )
-                .user( null )
+                .user( testUser )
                 .createdDate( now )
                 .lastModifiedDate( now )
                 .createdBy( userAudit )
@@ -123,6 +140,7 @@ class ProjectAssignmentServiceImplTest {
                                 .id( recordId.toString() )
                                 .no( testProject.getNo() )
                                 .name( testProject.getName() )
+                                .color( testProject.getColor() )
                                 .build()
                 )
                 .employee(
@@ -162,6 +180,42 @@ class ProjectAssignmentServiceImplTest {
         assertEquals( testProjectAssignmentDTO, actual );
 
         verify( projectAssignmentRepository, times( 1 ) ).findById( recordId );
+        verify( projectAssignmentMapper, times( 1 ) ).toProjectAssignmentDTO( testProjectAssignment );
+    }
+
+    @Test
+    @DisplayName("getOwnProjectAssignments should return empty list when user has no employee assigned")
+    void getOwnProjectAssignments_ShouldReturnEmptyList_WhenUserHasNoEmployeeAssigned() {
+        when( employeeRepository.findByUser_Id( randomId ) ).thenReturn( Optional.empty() );
+
+        testUser.setId( randomId );
+
+        List<ProjectAssignmentDTO> actual = assertDoesNotThrow( () -> service.getOwnProjectAssignments(
+                new SecurityUser( testUser )
+        ) );
+
+        assertEquals( 0, actual.size() );
+
+        verify( employeeRepository, times( 1 ) ).findByUser_Id( randomId );
+    }
+
+    @Test
+    @DisplayName("getOwnProjectAssignments should return empty list of assignments when user has assigned employee")
+    void getOwnProjectAssignments_ShouldReturnEmptyList_WhenUserHasAssignedEmployee() {
+        when( employeeRepository.findByUser_Id( recordId ) ).thenReturn( Optional.of( testEmployee ) );
+        when( projectAssignmentRepository.findAllByEmployeeId( recordId ) ).thenReturn( List.of( testProjectAssignment ) );
+        when( projectAssignmentMapper.toProjectAssignmentDTO( testProjectAssignment ) ).thenReturn( testProjectAssignmentDTO );
+
+        testUser.setId( recordId );
+
+        List<ProjectAssignmentDTO> actual = assertDoesNotThrow( () -> service.getOwnProjectAssignments(
+                new SecurityUser( testUser )
+        ) );
+
+        assertEquals( 1, actual.size() );
+        assertEquals( testProjectAssignmentDTO, actual.getFirst() );
+        verify( employeeRepository, times( 1 ) ).findByUser_Id( recordId );
+        verify( projectAssignmentRepository, times( 1 ) ).findAllByEmployeeId( recordId );
         verify( projectAssignmentMapper, times( 1 ) ).toProjectAssignmentDTO( testProjectAssignment );
     }
 
