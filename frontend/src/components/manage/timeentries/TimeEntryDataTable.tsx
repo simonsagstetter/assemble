@@ -46,7 +46,7 @@ export default function TimeEntryDataTable( { timeentries, isRelatedTable = fals
                     const project = row.original.project;
                     return <Link
                         href={ `/app/manage/projects/${ project.id }` }
-                        className={ "hover:underline flex flexrow items-center gap-1.5" }
+                        className={ "hover:underline flex flex-row items-center gap-1.5" }
                     >
                         <span
                             className={ `size-2 rounded-full ${ colorMobileClasses[ project.color.toLowerCase() as keyof typeof colorMobileClasses ] }` }></span>
@@ -60,7 +60,7 @@ export default function TimeEntryDataTable( { timeentries, isRelatedTable = fals
                     const employee = row.original.employee;
                     return <Link
                         href={ `/app/manage/employees/${ employee.id }` }
-                        className={ "hover:underline flex flexrow items-center gap-1.5" }
+                        className={ "hover:underline flex flex-row items-center gap-1.5" }
                     >
                         { employee.fullname }
                     </Link>
@@ -85,7 +85,7 @@ export default function TimeEntryDataTable( { timeentries, isRelatedTable = fals
                 }
             },
             {
-                id: "todaltDuration",
+                id: "todalDuration",
                 header: () => <div className={ "text-right" }>Total Duration</div>,
                 cell( { row } ) {
                     const timeentry = row.original;
@@ -132,7 +132,7 @@ export default function TimeEntryDataTable( { timeentries, isRelatedTable = fals
                 id: "actions",
                 header: "Actions",
                 cell: ( { row } ) => {
-                    const project = row.original;
+                    const timeEntry = row.original;
                     return (
                         <DropdownMenu dir="ltr">
                             <DropdownMenuTrigger asChild>
@@ -141,7 +141,7 @@ export default function TimeEntryDataTable( { timeentries, isRelatedTable = fals
                                     <MoreHorizontal className="h-4 w-4"/>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <TimeEntryActions id={ project.id } tableActions/>
+                            <TimeEntryActions id={ timeEntry.id } tableActions/>
                         </DropdownMenu>
                     )
                 }

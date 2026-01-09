@@ -75,9 +75,9 @@ export default function Day(
                         { day }
                     </span>
                             <div className="flex gap-1 max-md:pl-1 md:flex-col">
-                                { dayEvents.slice( 0, 3 ).map( ( event, idx ) => (
+                                { dayEvents.slice( 0, 3 ).map( ( event ) => (
                                     <Event
-                                        key={ idx }
+                                        key={ event.id }
                                         isReadOnly={ isReadOnly }
                                         event={ event }/>
                                 ) ) }
@@ -89,9 +89,9 @@ export default function Day(
                                     </div>
                                 </PopoverTrigger>
                                 <PopoverContent className={ "max-md:hidden" }>
-                                    { dayEvents.map( ( event, idx ) => (
+                                    { dayEvents.map( ( event ) => (
                                         <Event
-                                            key={ idx }
+                                            key={ event.id }
                                             isReadOnly={ isReadOnly }
                                             event={ event }
                                         />
