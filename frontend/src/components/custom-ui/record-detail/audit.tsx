@@ -16,7 +16,7 @@ import {
     DetailSection,
     DetailValue
 } from "@/components/custom-ui/record-detail/detail";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import Link from "next/link";
 import { UserAudit } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 
@@ -47,7 +47,7 @@ function AuditDetail(
                 <DetailRow>
                     <Detail>
                         <DetailLabel>Created Date</DetailLabel>
-                        <DetailValue>{ format( createdDate, "dd.MM.yyyy - HH:mm:ss" ) }</DetailValue>
+                        <DetailValue>{ format( parseISO( createdDate ), "dd.MM.yyyy - HH:mm:ss" ) }</DetailValue>
                     </Detail>
                     <Detail>
                         <DetailLabel>Created By</DetailLabel>
@@ -70,7 +70,7 @@ function AuditDetail(
                 <DetailRow>
                     <Detail>
                         <DetailLabel>Last Modified Date</DetailLabel>
-                        <DetailValue>{ format( lastModifiedDate, "dd.MM.yyyy - HH:mm:ss" ) }</DetailValue>
+                        <DetailValue>{ format( parseISO( lastModifiedDate ), "dd.MM.yyyy - HH:mm:ss" ) }</DetailValue>
                     </Detail>
                     <Detail>
                         <DetailLabel>Last Modified By</DetailLabel>
