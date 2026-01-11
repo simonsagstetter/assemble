@@ -131,7 +131,8 @@ function useTimeEntryFormHandlers(
 
     const onSuccess = async ( data: TimeEntryDTO ) => {
         await invalidateQueries( queryClient, [
-            getGetOwnTimeEntriesQueryKey(),
+            getGetOwnTimeEntriesQueryKey() as unknown as readonly string[],
+            getGetOwnTimeEntriesQueryKey( { aroundDate: data.date } ) as unknown as readonly string[],
             getGetOwnTimeEntryByIdQueryKey( data.id ),
             getGetTimeEntryByIdQueryKey( data.id ),
             getGetProjectByIdQueryKey( data.project.id ),
