@@ -14,11 +14,6 @@ function parseIsoDuration( iso: string ) {
     return { hours: duration.hours(), minutes: duration.minutes(), seconds: duration.seconds() };
 }
 
-function dateStringToMs( dateString: string ) {
-    const date = new Date( dateString );
-    return ( date.getHours() * 60 + date.getMinutes() ) * 60 * 1000;
-}
-
 function isoDurationToMs( iso: string ) {
     const { hours, minutes } = parseIsoDuration( iso );
     return ( hours * 60 + minutes ) * 60 * 1000;
@@ -46,7 +41,6 @@ function toDuration( time?: string ) {
 
 export {
     toDuration,
-    dateStringToMs,
     isoDurationToMs,
     msToHHmm,
     HHmmToMs
