@@ -15,6 +15,7 @@ import com.assemble.backend.models.entities.employee.Address;
 import com.assemble.backend.models.entities.holiday.SubdivisionCode;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @SuperBuilder
@@ -27,6 +28,7 @@ public class AppSettings extends BaseMongoEntity {
 
     @Builder.Default
     @NonNull
+    @Indexed(unique = true)
     private final String singletonId = "app_settings_singleton";
 
     private String companyName;
