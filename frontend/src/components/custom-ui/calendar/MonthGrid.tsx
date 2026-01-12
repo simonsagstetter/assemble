@@ -22,7 +22,7 @@ import {
 import { ReactElement } from "react";
 import { MonthDayRange } from "@/types/calendar/calendar.types";
 import { HolidaysByDate, TimeEntriesByDate } from "@/store/calendar-store";
-import { createHolidayEvents } from "@/utils/calendar/holidays.ts";
+import { createHolidayEvents } from "@/utils/calendar/holidays";
 
 const rowClasses = {
     4: "grid-rows-4",

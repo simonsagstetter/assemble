@@ -1,6 +1,6 @@
 /*
  * assemble
- * holidays.ts.tsx
+ * holidays.tsx
  *
  * Copyright (c) 2026 Simon Sagstetter
  *

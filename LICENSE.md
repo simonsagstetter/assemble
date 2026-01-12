@@ -1,4 +1,4 @@
-Copyright © 2026 Simon Sagsttetter
+Copyright © 2026 Simon Sagstetter
 
 All rights reserved.
 
