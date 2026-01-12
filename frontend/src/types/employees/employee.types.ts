@@ -87,4 +87,5 @@ export {
     EmployeeCreateSchema,
     EmployeeUpdateSchema,
     EmployeeUpdateUserSchema,
+    AddressSchema,
 }

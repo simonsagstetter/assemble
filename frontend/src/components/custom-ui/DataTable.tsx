@@ -17,6 +17,7 @@ import { LucideProps, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ForwardRefExoticComponent, ReactNode, RefAttributes } from "react";
+import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -82,7 +83,7 @@ export function DataTable<TData, TValue>( {
 }
 
 function DataTableHeader(
-    { entity, currentView, EntityIcon, createActionLink, createActionLabel, children }
+    { entity, currentView, EntityIcon, createActionLink, createActionLabel, additonalAction, dropdownAction, children }
     :
     {
         EntityIcon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>,
@@ -91,9 +92,17 @@ function DataTableHeader(
         createActionLink: string,
         createActionLabel: string,
         createActionIcon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>,
+        additonalAction?: ReactNode,
+        dropdownAction?: ReactNode,
         children: ReactNode
     }
 ) {
+
+    const newAction = <Button type={ "button" } className={ "self-end p-0" }>
+        <Link href={ createActionLink }
+              className={ "px-4 py-3 flex flex-row items-center gap-1" }><PlusIcon
+            className={ "size-4" }/>{ createActionLabel }</Link>
+    </Button>
 
     return <div className={ "p-8 flex flex-col gap-4 items-stretch justify-center pt-[2.49rem]" }>
         <div className={ "flex flex-row justify-between items-center" }>
@@ -104,11 +113,21 @@ function DataTableHeader(
                     <h3 className={ "text-2xl font-bold leading-6" }>{ currentView }</h3>
                 </div>
             </div>
-            <Button type={ "button" } className={ "self-end p-0" }>
-                <Link href={ createActionLink }
-                      className={ "px-4 py-3 flex flex-row items-center gap-1" }><PlusIcon
-                    className={ "size-4" }/>{ createActionLabel }</Link>
-            </Button>
+            { additonalAction || dropdownAction ?
+                <ButtonGroup>
+                    { additonalAction }
+                    <ButtonGroupSeparator/>
+                    { newAction }
+                    { dropdownAction ?
+                        <>
+                            <ButtonGroupSeparator/>
+                            { dropdownAction }
+                        </>
+                        : null }
+                </ButtonGroup>
+                :
+                newAction
+            }
         </div>
         { children }
     </div>

@@ -24,43 +24,46 @@ import {
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const items = [
+    {
+        title: "Time Entries",
+        url: "/app/timetracking/calendar",
+        icon: CalendarIcon,
+        isActive: true,
+        items: [
+            {
+                title: "Calendar",
+                url: "/app/timetracking/calendar",
+            }
+        ],
+    },
+    {
+        title: "Absence",
+        url: "/app/timetracking/absence",
+        icon: PlaneTakeoff,
+        isActive: false,
+        items: [
+            {
+                title: "Vacation",
+                url: "/app",
+            },
+            {
+                title: "Sickness",
+                url: "/app",
+            },
+            {
+                title: "Other",
+                url: "/app",
+            },
+        ],
+    },
+
+];
 
 export function TimetrackingMenu() {
-    const items = [
-        {
-            title: "Time Entries",
-            url: "/timetracking",
-            icon: CalendarIcon,
-            isActive: true,
-            items: [
-                {
-                    title: "Calendar",
-                    url: "/app/timetracking/calendar",
-                }
-            ],
-        },
-        {
-            title: "Absence",
-            url: "/timetracking",
-            icon: PlaneTakeoff,
-            isActive: true,
-            items: [
-                {
-                    title: "Vacation",
-                    url: "/app",
-                },
-                {
-                    title: "Sickness",
-                    url: "/app",
-                },
-                {
-                    title: "Other",
-                    url: "/app",
-                },
-            ],
-        },
-
-    ];
+    const pathname = usePathname();
     return (
         <SidebarGroup>
             <SidebarGroupLabel>Timetracking</SidebarGroupLabel>
@@ -74,7 +77,8 @@ export function TimetrackingMenu() {
                     >
                         <SidebarMenuItem>
                             <CollapsibleTrigger asChild>
-                                <SidebarMenuButton tooltip={ item.title }>
+                                <SidebarMenuButton tooltip={ item.title }
+                                                   isActive={ pathname.startsWith( item.url ) }>
                                     { item.icon && <item.icon/> }
                                     <span>{ item.title }</span>
                                     <ChevronRight
