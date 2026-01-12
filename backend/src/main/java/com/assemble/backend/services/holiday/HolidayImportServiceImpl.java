@@ -116,6 +116,7 @@ public class HolidayImportServiceImpl implements HolidayImportService {
                 } );
     }
 
+    @Override
     public List<SubdivisionResponse> importSubdivisions() {
         return this.restClient
                 .get()

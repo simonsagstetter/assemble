@@ -949,10 +949,58 @@ class TimeEntryServiceImplTest {
         assert employee.getId() != null;
         assert project.getId() != null;
         TimeEntryUpdateDTO dto = TimeEntryUpdateDTO.builder()
-                .date( timeEntry.getDate() )
+                .date( timeEntry.getDate().plusDays( 1 ) )
                 .description( timeEntry.getDescription() )
                 .totalTime( timeEntry.getTotalTime() )
                 .pauseTime( timeEntry.getPauseTime() )
+                .build();
+
+        when( employeeRepository.findByUser_Id( recordId ) ).thenReturn( Optional.of( employee ) );
+
+        when( timeEntryRepository.findById( recordId ) ).thenReturn( Optional.of( timeEntry ) );
+
+        when( timeEntryMapper.toTimeEntry( dto, employee, project, timeEntry ) ).thenReturn( timeEntry );
+
+        when( calculationService.calculateTotal( dto.getTotalTime(), dto.getPauseTime(), projectAssignment.getHourlyRate() ) )
+                .thenReturn( BigDecimal.valueOf( 8 * projectAssignment.getHourlyRate().longValue() ) );
+
+        when( calculationService.calculateTotal( dto.getTotalTime(), dto.getPauseTime(), internalRate ) )
+                .thenReturn( BigDecimal.valueOf( 8 * 30 ) );
+
+        when( timeEntryRepository.save( timeEntry ) ).thenReturn( timeEntry );
+
+        when( timeEntryMapper.toTimeEntryDTO( timeEntry ) ).thenReturn( timeEntryDTO );
+
+        TimeEntryDTO actual = assertDoesNotThrow( () -> service.updateOwnTimeEntry(
+                recordId.toString(),
+                dto,
+                new SecurityUser( user )
+        ) );
+
+        assertEquals( timeEntryDTO, actual );
+
+        verify( employeeRepository, times( 1 ) ).findByUser_Id( recordId );
+        verify( timeEntryRepository, times( 1 ) ).findById( recordId );
+        verify( timeEntryMapper, times( 1 ) ).toTimeEntry( dto, employee, project, timeEntry );
+        verify( calculationService, times( 1 ) ).calculateTotal( dto.getTotalTime(), dto.getPauseTime(), projectAssignment.getHourlyRate() );
+        verify( calculationService, times( 1 ) ).calculateTotal( dto.getTotalTime(), dto.getPauseTime(), internalRate );
+        verify( timeEntryRepository, times( 1 ) ).save( timeEntry );
+        verify( timeEntryMapper, times( 1 ) ).toTimeEntryDTO( timeEntry );
+    }
+
+    @Test
+    @DisplayName("updateOwnTimeEntry should return update time entry dto")
+    void updateOwnTimeEntry_ShouldReturnTimeEntryDTOInstance_WhenCalledWithTimeRange() {
+        assert employee.getId() != null;
+        assert project.getId() != null;
+        Instant now = Instant.now();
+        TimeEntryUpdateDTO dto = TimeEntryUpdateDTO.builder()
+                .date( timeEntry.getDate().plusDays( 1 ) )
+                .description( timeEntry.getDescription() )
+                .startTime( now )
+                .endTime( now.plus( 10, ChronoUnit.HOURS ) )
+                .totalTime( Duration.ofHours( 10 ) )
+                .pauseTime( Duration.ofHours( 2 ) )
                 .build();
 
         when( employeeRepository.findByUser_Id( recordId ) ).thenReturn( Optional.of( employee ) );

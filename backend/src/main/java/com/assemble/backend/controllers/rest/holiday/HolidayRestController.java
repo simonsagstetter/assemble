@@ -23,7 +23,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -85,41 +84,5 @@ public class HolidayRestController {
                 .getHolidaysByYearAndSubdivisionCode( Integer.parseInt( year ), subdivisionCode )
         );
     }
-
-    @Operation(
-            summary = "Get Holiday by Date"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "OK",
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(
-                            implementation = HolidayDTO.class
-                    )
-            )
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Not Found",
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(
-                            implementation = ErrorResponse.class
-                    )
-            )
-    )
-    @GetMapping(
-            path = "/{date}",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<HolidayDTO> getHolidayByDate(
-            @PathVariable String date
-    ) {
-        return ResponseEntity.ok( service
-                .getHolidayByDate( date )
-        );
-    }
-
 
 }

@@ -18,6 +18,4 @@ public interface HolidayService {
 
     List<HolidayDTO> getHolidaysByYearAndSubdivisionCode( int year, String subdivisionCode );
 
-    HolidayDTO getHolidayByDate( String date );
-
 }
