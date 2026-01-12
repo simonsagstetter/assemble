@@ -1,6 +1,7 @@
 package com.assemble.backend.models.entities.holiday;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.*;
 
 @Embeddable

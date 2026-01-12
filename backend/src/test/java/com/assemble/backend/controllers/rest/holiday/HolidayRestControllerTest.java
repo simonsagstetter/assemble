@@ -11,7 +11,6 @@
 package com.assemble.backend.controllers.rest.holiday;
 
 import com.assemble.backend.models.entities.holiday.Holiday;
-import com.assemble.backend.models.entities.holiday.Subdivision;
 import com.assemble.backend.models.entities.holiday.SubdivisionCode;
 import com.assemble.backend.models.entities.holiday.api.TemporalScope;
 import com.assemble.backend.repositories.holiday.HolidayRepository;
@@ -29,9 +28,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -51,14 +49,6 @@ class HolidayRestControllerTest {
 
     @BeforeEach
     void init() {
-        List<Subdivision> subdivisions = List.of(
-                Subdivision.builder()
-                        .code( "DE-BE" )
-                        .isoCode( "DE-BE" )
-                        .name( "Berlin" )
-                        .shortName( "DE-BE" )
-                        .build()
-        );
         holiday = Holiday.builder()
                 .externalId( UuidCreator.getTimeOrderedEpoch().toString() )
                 .name( "New Year" )

@@ -13,7 +13,9 @@ package com.assemble.backend.models.dtos.holiday;
 import com.assemble.backend.models.entities.holiday.Subdivision;
 import com.assemble.backend.models.entities.holiday.api.TemporalScope;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
 
 import java.time.LocalDate;
 import java.util.List;
