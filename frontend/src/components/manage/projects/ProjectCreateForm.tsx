@@ -183,19 +183,21 @@ export default function ProjectCreateForm() {
                                                  formControl={ form.control }
                                                  label={ "Project Color" }
                                                  placeholder={ "Choose a color" }
-                                                 options={ Object.keys( colorClasses ).map( key => {
-                                                     const value = ProjectDTOColor[ key.toUpperCase() as keyof typeof ProjectDTOColor ];
-                                                     return {
-                                                         label: key,
-                                                         value,
-                                                         elem: <>
+                                                 options={ Object.keys( colorClasses )
+                                                     .filter( key => key !== "gray" )
+                                                     .map( key => {
+                                                         const value = ProjectDTOColor[ key.toUpperCase() as keyof typeof ProjectDTOColor ];
+                                                         return {
+                                                             label: key,
+                                                             value,
+                                                             elem: <>
                                                              <span
                                                                  className={ "size-2 rounded-full " + colorMobileClasses[ key as keyof typeof colorClasses ] }>
                                                              </span>
-                                                             { value.toLowerCase() }
-                                                         </>
-                                                     }
-                                                 } ) }
+                                                                 { value.toLowerCase() }
+                                                             </>
+                                                         }
+                                                     } ) }
                                                  disabled={ disabled }>
                                         These colors are used to visualize the project in the calendar.
                                     </SelectField>

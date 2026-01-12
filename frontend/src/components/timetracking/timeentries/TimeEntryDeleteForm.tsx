@@ -55,7 +55,8 @@ export default function TimeEntryDeleteForm( { timeentry }: TimeEntryDeleteFormP
                     await invalidateQueries(
                         queryClient,
                         [
-                            getGetOwnTimeEntriesQueryKey(),
+                            getGetOwnTimeEntriesQueryKey() as unknown as readonly string[],
+                            getGetOwnTimeEntriesQueryKey( { aroundDate: timeentry.date } ) as unknown as readonly string[],
                             getGetProjectByIdQueryKey( timeentry.project.id ),
                             getGetEmployeeQueryKey( timeentry.employee.id ),
                             getGetAllTimeEntriesByProjectIdQueryKey( timeentry.project.id ),

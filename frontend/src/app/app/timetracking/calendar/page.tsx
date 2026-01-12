@@ -15,13 +15,24 @@ import {
 } from "@/api/rest/generated/query/timeentries/timeentries";
 import CalendarProvider from "@/store/calendar-store";
 import { format } from "date-fns";
+import {
+    useGetCompanySubdivisionCodeSuspense,
+    useGetHolidaysByYearAndSubdivisionCodeSuspense
+} from "@/api/rest/generated/query/holidays/holidays";
 
 function CalendarPage() {
+    const { data: subdivionCode } = useGetCompanySubdivisionCodeSuspense();
+    const { data: holidays } = useGetHolidaysByYearAndSubdivisionCodeSuspense( {
+        year: format( new Date(), "yyyy" ),
+        subdivisionCode: "DE-" + subdivionCode
+    } );
     const { data: events } = useGetOwnTimeEntriesSuspense( {
         aroundDate: format( new Date(), "yyyy-MM-dd" ),
     } );
+
+
     return <CalendarProvider>
-        <Calendar events={ events }/>
+        <Calendar events={ events } holidays={ holidays } subdivisionCode={ subdivionCode }/>
     </CalendarProvider>
 }
 

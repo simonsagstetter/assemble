@@ -9,24 +9,35 @@
  */
 
 import MonthView from "@/components/custom-ui/calendar/MonthView";
-import { TimeEntryDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
+import { HolidayDTO, TimeEntryDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import useCalendar from "@/hooks/useCalendar";
 import { useEffect } from "react";
 import CalenderLoading from "@/components/custom-ui/calendar/CalendarLoading";
 
-export default function Calendar( { events }: { events: TimeEntryDTO[] } ) {
-    const { setEvents, setSettings, settings, isLoading } = useCalendar();
+type CalendarProps = {
+    events: TimeEntryDTO[],
+    holidays: HolidayDTO[],
+    subdivisionCode: string;
+}
+
+export default function Calendar( { events, holidays, subdivisionCode }: CalendarProps ) {
+    const { setEvents, setHolidays, setSettings, settings, isLoading } = useCalendar();
 
     useEffect( () => {
         const eventData = Object
             .groupBy( events, event => event.date );
 
+        const holidayData = Object
+            .groupBy( holidays.filter( h => h.startDate ), holiday => holiday.startDate! );
+
         setEvents( eventData );
+        setHolidays( holidayData );
         setSettings( {
             newLink: "/app/timetracking/timeentries/create",
-            view: "month"
+            view: "month",
+            subdivisionCode
         } );
-    }, [ events, setEvents, setSettings ] );
+    }, [ events, setEvents, setSettings, holidays, setHolidays, subdivisionCode ] );
 
 
     return <>

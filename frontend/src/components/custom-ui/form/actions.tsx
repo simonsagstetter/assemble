@@ -18,27 +18,30 @@ import useFormActionContext from "@/hooks/useFormActionContext";
 type Variants = ComponentProps<typeof Button>["variant"];
 
 function FormActions(
-    { formId, variant, label, children }
+    { formId, variant, label, hideCancel = false, children }
     :
     {
         formId: string,
         variant?: Variants,
         label: string,
-        children?: ReactNode
+        hideCancel?: boolean,
+        children?: ReactNode,
     }
 ) {
     const { formState: { isSubmitting } } = useFormContext();
     const { isPending, isSuccess, handleCancel, disableOnSuccess } = useFormActionContext();
     return <Field orientation={ "horizontal" } className={ "p-8" }>
         { children ? children : null }
-        <Button type="button"
-                variant="secondary"
-                className={ `${ variant === "destructive" ? "flex-2/3" : "flex-1/3" } grow cursor-pointer` }
-                disabled={ isPending || isSubmitting }
-                onClick={ handleCancel }
-        >
-            { isSuccess ? "Go back" : "Cancel" }
-        </Button>
+        { !hideCancel ?
+            <Button type="button"
+                    variant="secondary"
+                    className={ `${ variant === "destructive" ? "flex-2/3" : "flex-1/3" } grow cursor-pointer` }
+                    disabled={ isPending || isSubmitting }
+                    onClick={ handleCancel }
+            >
+                { isSuccess ? "Go back" : "Cancel" }
+            </Button>
+            : null }
         <Button type="submit"
                 className={ `${ variant === "destructive" ? "flex-1/3" : "flex-2/3" } grow cursor-pointer` }
                 disabled={ disableOnSuccess ? isPending || isSubmitting || isSuccess : isPending || isSubmitting }

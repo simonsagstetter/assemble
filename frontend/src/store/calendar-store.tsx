@@ -11,19 +11,22 @@
 
 import { createContext, ReactNode, useCallback, useReducer } from "react";
 import { addMonths, subMonths } from "date-fns";
-import { TimeEntryDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
+import { HolidayDTO, TimeEntryDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 
 type TimeEntriesByDate = Partial<Record<string, TimeEntryDTO[]>>;
+type HolidaysByDate = Partial<Record<string, HolidayDTO[]>>;
 
 type CalendarSettings = {
     newLink: string;
     view: "week" | "month";
+    subdivisionCode: string;
 }
 
 type CalendarState = {
     currentDate: Date,
     selectedDate: Date,
     events: TimeEntriesByDate,
+    holidays: HolidaysByDate,
     settings: CalendarSettings,
     isLoading: boolean
 }
@@ -32,9 +35,12 @@ const DEFAULT_STATE: CalendarState = {
     currentDate: new Date(),
     selectedDate: new Date(),
     events: {},
+    holidays: {},
     settings: {
         newLink: "",
-        view: "month"
+        view: "month",
+        subdivisionCode: "",
+
     },
     isLoading: false
 }
@@ -46,6 +52,7 @@ interface CalendarContext extends CalendarState {
     setCurrentDate: ( date: Date ) => void,
     setSelectedDate: ( date: Date ) => void,
     setEvents: ( events: TimeEntriesByDate ) => void,
+    setHolidays: ( holidays: HolidaysByDate ) => void,
     setSettings: ( settings: CalendarSettings ) => void
     setIsLoading: ( isLoading: boolean ) => void
 }
@@ -59,6 +66,7 @@ enum ActionKind {
     SET_CURRENT_DATE,
     SET_SELECTED_DATE,
     SET_EVENTS,
+    SET_HOLIDAYS,
     SET_SETTINGS,
     SET_IS_LOADING
 }
@@ -79,6 +87,8 @@ type Action = | {
     type: ActionKind.SET_SETTINGS, payload: CalendarSettings
 } | {
     type: ActionKind.SET_IS_LOADING, payload: boolean
+} | {
+    type: ActionKind.SET_HOLIDAYS, payload: HolidaysByDate
 }
 
 const reducer = ( state: CalendarState, action: Action ) => {
@@ -108,6 +118,10 @@ const reducer = ( state: CalendarState, action: Action ) => {
     if ( action.type === ActionKind.SET_SELECTED_DATE ) return ( {
         ...state,
         selectedDate: action.payload
+    } )
+    if ( action.type === ActionKind.SET_HOLIDAYS ) return ( {
+        ...state,
+        holidays: action.payload
     } )
 
     // DATA ACTIONS
@@ -151,6 +165,10 @@ function CalendarProvider(
         type: ActionKind.SET_EVENTS,
         payload: events
     } ), [] );
+    const setHolidays = useCallback( ( holidays: HolidaysByDate ) => dispatch( {
+        type: ActionKind.SET_HOLIDAYS,
+        payload: holidays
+    } ), [] )
 
     const setSettings = useCallback( ( settings: CalendarSettings ) => dispatch( {
         type: ActionKind.SET_SETTINGS,
@@ -165,6 +183,7 @@ function CalendarProvider(
         setCurrentDate,
         setSelectedDate,
         setEvents,
+        setHolidays,
         setSettings,
         setIsLoading,
     } satisfies CalendarContext;
@@ -173,4 +192,4 @@ function CalendarProvider(
 }
 
 export default CalendarProvider;
-export { CalendarContext, type CalendarSettings, type TimeEntriesByDate };
+export { CalendarContext, type CalendarSettings, type TimeEntriesByDate, type HolidaysByDate };
