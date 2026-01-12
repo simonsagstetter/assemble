@@ -25,7 +25,7 @@ public class AppSettingsBootstrap implements CommandLineRunner {
     private AppSettingsRepository appSettingsRepository;
 
     @Override
-    public void run( String... args ) throws Exception {
+    public void run( String... args ) {
         long count = appSettingsRepository.count();
         if ( count == 0 ) {
 

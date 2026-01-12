@@ -18,7 +18,6 @@ import com.assemble.backend.models.mappers.holiday.HolidayMapper;
 import com.assemble.backend.models.mappers.holiday.SubdivisionMapper;
 import com.assemble.backend.repositories.holiday.HolidayRepository;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

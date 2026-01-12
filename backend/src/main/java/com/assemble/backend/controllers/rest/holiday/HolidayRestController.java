@@ -78,8 +78,8 @@ public class HolidayRestController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<HolidayDTO>> getHolidaysByYearAndSubdivisionCode(
-            @RequestParam(required = true) String year,
-            @RequestParam(required = true) String subdivisionCode
+            @RequestParam String year,
+            @RequestParam String subdivisionCode
     ) {
         return ResponseEntity.ok( service
                 .getHolidaysByYearAndSubdivisionCode( Integer.parseInt( year ), subdivisionCode )
