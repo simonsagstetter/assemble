@@ -8,7 +8,7 @@
  * All rights reserved.
  */
 "use client";
-import { addMonths, format, isSameDay, lastDayOfMonth, startOfMonth, subMonths } from "date-fns";
+import { addMonths, format, isSameDay, isSameYear, lastDayOfMonth, startOfMonth, subMonths } from "date-fns";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import Link from "next/link";
 import useCalendar from "@/hooks/useCalendar";
@@ -22,6 +22,10 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { startTransition, useCallback } from "react";
 import { toast } from "sonner";
+import {
+    getGetHolidaysByYearAndSubdivisionCodeQueryKey,
+    getHolidaysByYearAndSubdivisionCode
+} from "@/api/rest/generated/query/holidays/holidays";
 
 
 export default function CalendarHeader() {
@@ -33,9 +37,11 @@ export default function CalendarHeader() {
         settings,
         selectedDate,
         setEvents,
+        setHolidays,
         setCurrentDate,
         setIsLoading,
-        isLoading
+        isLoading,
+        holidays
     } = useCalendar();
     const queryClient = useQueryClient();
 
@@ -43,7 +49,8 @@ export default function CalendarHeader() {
         shortMonthName = format( new Date(), "MMM" ).toUpperCase(),
         year = format( currentDate, "yyyy" ),
         begin = startOfMonth( currentDate ),
-        end = lastDayOfMonth( currentDate );
+        end = lastDayOfMonth( currentDate ),
+        selectedDateString = format( selectedDate, "yyyy-MM-dd" );
 
     const getTimeEntries = useCallback( async ( date: Date ) => {
         const aroundDate = format( date, "yyyy-MM-dd" );
@@ -65,20 +72,52 @@ export default function CalendarHeader() {
         }
     }, [ queryClient, setEvents, currentDate, setCurrentDate ] );
 
+    const getHolidays = useCallback( async ( year: string ) => {
+        const subdivisionCode = "DE-" + settings.subdivisionCode;
+        const holidays = await queryClient.fetchQuery( {
+            queryKey: getGetHolidaysByYearAndSubdivisionCodeQueryKey( {
+                year,
+                subdivisionCode
+            } ),
+            queryFn: () => getHolidaysByYearAndSubdivisionCode( {
+                year,
+                subdivisionCode
+            } )
+        } );
+        if ( holidays ) {
+            const holidayData = Object.groupBy(
+                holidays.filter( holiday => holiday.startDate ),
+                holiday => holiday.startDate!
+            );
+            setHolidays( holidayData );
+        } else {
+            setCurrentDate( currentDate );
+            toast.error( "Error", {
+                description: "Could not fetch holidays",
+            } );
+        }
+    }, [ settings.subdivisionCode, queryClient, setHolidays, currentDate, setCurrentDate ] )
+
     const handlePreviousMonth = async () => {
+        const prevMonthDate = subMonths( currentDate, 1 );
         previousMonth();
-        await getTimeEntries( subMonths( currentDate, 1 ) );
+        await getTimeEntries( prevMonthDate );
+        if ( !isSameYear( currentDate, prevMonthDate ) ) await getHolidays( format( prevMonthDate, "yyyy" ) );
     }
 
     const handleToday = async () => {
+        const todayDate = new Date();
         today();
-        await getTimeEntries( new Date() );
+        await getTimeEntries( todayDate );
+        if ( !isSameYear( currentDate, todayDate ) ) await getHolidays( format( todayDate, "yyyy" ) );
     }
 
 
     const handleNextMonth = async () => {
+        const nextMonthDate = addMonths( currentDate, 1 );
         nextMonth();
-        await getTimeEntries( addMonths( currentDate, 1 ) );
+        await getTimeEntries( nextMonthDate );
+        if ( !isSameYear( currentDate, nextMonthDate ) ) await getHolidays( format( nextMonthDate, "yyyy" ) );
     }
 
     const handleMonthChange = async ( dir: "prev" | "today" | "next" = "today" ) => {
@@ -129,9 +168,9 @@ export default function CalendarHeader() {
                 </Button>
             </ButtonGroup>
 
-            <Button className={ "p-0" }>
+            <Button className={ "p-0" } disabled={ holidays[ selectedDateString ] !== undefined }>
                 <Link className={ "px-4 py-3 flex flex-row items-center gap-1" }
-                      href={ settings.newLink + "?date=" + format( selectedDate, "yyyy-MM-dd" ) }><Plus
+                      href={ settings.newLink + "?date=" + selectedDateString }><Plus
                     size={ 16 }/> New</Link>
             </Button>
         </div>

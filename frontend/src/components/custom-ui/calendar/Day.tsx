@@ -30,6 +30,7 @@ type DayProps = {
     isSunday?: boolean;
     isSelected?: boolean;
     isReadOnly?: boolean;
+    isHoliday?: boolean;
 }
 
 export default function Day(
@@ -42,7 +43,8 @@ export default function Day(
         todayTotal = 0,
         isSunday = false,
         isSelected = false,
-        isReadOnly = false
+        isReadOnly = false,
+        isHoliday = false,
     }: DayProps
 ) {
     const router = useRouter();
@@ -57,9 +59,9 @@ export default function Day(
                 <TooltipTrigger asChild>
                     <ContextMenuTrigger asChild>
                         <div
-                            className={ `group relative flex flex-col gap-1.5 p-1.5 hover:bg-gray-50 max-md:max-h-202 md:gap-1 md:p-2 before:pointer-events-none before:absolute before:inset-0 before:border-b before:border-gray-200 ${ isSunday ? "before:border-r-0" : "before:border-r" } ${ isReadOnly ? "bg-gray-50 cursor-not-allowed" : "bg-white cursor-pointer " }` }
-                            onClick={ () => !isReadOnly ? setSelectedDate( date ) : null }>
-                            { !isReadOnly ?
+                            className={ `group relative flex flex-col gap-1.5 p-1.5 hover:bg-gray-50 max-md:max-h-202 md:gap-1 md:p-2 before:pointer-events-none before:absolute before:inset-0 before:border-b before:border-gray-200 ${ isSunday ? "before:border-r-0" : "before:border-r" } ${ isReadOnly || isHoliday ? "bg-gray-50 cursor-not-allowed" : "bg-white cursor-pointer " }` }
+                            onClick={ () => !isReadOnly && !isHoliday ? setSelectedDate( date ) : null }>
+                            { !isReadOnly && !isHoliday ?
                                 <div className="absolute right-1.5 bottom-1.5 z-10 hidden group-hover:inline-flex">
                                     <Button variant={ "ghost" } onClick={ handleNew }
                                             className="group relative inline-flex cursor-pointer items-center justify-center whitespace-nowrap size-7 text-gray-500 rounded-lg bg-white shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
@@ -101,13 +103,13 @@ export default function Day(
                         </div>
                     </ContextMenuTrigger>
                 </TooltipTrigger>
-                { !isReadOnly && ( todayTotal || weekTotal ) ?
+                { !isReadOnly && !isHoliday && ( todayTotal || weekTotal ) ?
                     <TooltipContent className={ "max-md:hidden" }>
                         { weekTotal ? <p>{ "Week: " + msToHHmm( weekTotal ) }</p> : null }
                         { todayTotal ? <p>{ "Today: " + msToHHmm( todayTotal ) }</p> : null }
                     </TooltipContent> : null }
             </Tooltip>
-            { !isReadOnly ?
+            { !isReadOnly && !isHoliday ?
                 <ContextMenuContent className={ "max-md:hidden" }>
                     <ContextMenuItem onSelect={ handleNew }><PlusIcon/>New</ContextMenuItem>
                 </ContextMenuContent>

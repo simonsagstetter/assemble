@@ -14,10 +14,15 @@ import {
     subMonths
 } from "date-fns";
 import useCalendar from "@/hooks/useCalendar";
-import { calculateWeekTotals, createDayInfo, getMonthDayRange } from "@/utils/calendar/timeentries";
+import {
+    calculateWeekTotals,
+    createDayInfo,
+    getMonthDayRange
+} from "@/utils/calendar/timeentries";
 import { ReactElement } from "react";
 import { MonthDayRange } from "@/types/calendar/calendar.types";
-import { TimeEntriesByDate } from "@/store/calendar-store";
+import { HolidaysByDate, TimeEntriesByDate } from "@/store/calendar-store";
+import { createHolidayEvents } from "@/utils/calendar/holidays.ts";
 
 const rowClasses = {
     4: "grid-rows-4",
@@ -26,7 +31,7 @@ const rowClasses = {
 }
 
 export default function MonthGrid() {
-    const { currentDate, events, selectedDate } = useCalendar();
+    const { currentDate, events, selectedDate, holidays } = useCalendar();
 
     const range = getMonthDayRange( currentDate );
     const days: ReactElement[] = [];
@@ -36,7 +41,7 @@ export default function MonthGrid() {
     const weekTotals = calculateWeekTotals( events, rangeStart, rangeEnd );
 
     days.push( ...renderPreviousMonthDays( range, events, weekTotals ) );
-    days.push( ...renderCurrentMonthDays( range, events, weekTotals, selectedDate ) );
+    days.push( ...renderCurrentMonthDays( range, events, holidays, weekTotals, selectedDate ) );
     days.push( ...renderNextMonthDays( range, events, weekTotals ) );
 
     const rows = Math.ceil( days.length / 7 );
@@ -70,6 +75,7 @@ function renderPreviousMonthDays(
 function renderCurrentMonthDays(
     range: MonthDayRange,
     events: TimeEntriesByDate,
+    holidays: HolidaysByDate,
     weekTotals: Map<string, number>,
     selectedDate: Date
 ): ReactElement[] {
@@ -78,6 +84,9 @@ function renderCurrentMonthDays(
     for ( let day = 1; day <= range.daysInMonth; day++ ) {
         const date = addDays( range.firstDay, day - 1 );
         const dayInfo = createDayInfo( date, events, weekTotals, { selectedDate } );
+        const holidayEvents = createHolidayEvents( date, holidays );
+        if ( holidayEvents.length !== 0 ) dayInfo.isHoliday = true;
+        dayInfo.dayEvents.push( ...holidayEvents );
 
         days.push( <Day { ...dayInfo } key={ `current-${ dayInfo.key }` }/> );
     }

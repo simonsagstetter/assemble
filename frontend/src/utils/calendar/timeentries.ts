@@ -127,7 +127,6 @@ function createDayInfo(
     };
 }
 
-
 export {
     calculateDayTotal,
     mapTimeEntriesToDayEvents,

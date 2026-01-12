@@ -33,6 +33,7 @@ type DayInfo = {
     isSunday: boolean;
     isSelected?: boolean;
     isReadOnly?: boolean;
+    isHoliday?: boolean;
 }
 
 type MonthDayRange = {
