@@ -31,7 +31,6 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {
-    CheckIcon,
     ChevronDownIcon,
     PencilIcon, UserIcon,
 } from "lucide-react";

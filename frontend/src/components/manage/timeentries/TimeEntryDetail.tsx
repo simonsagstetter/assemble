@@ -30,7 +30,6 @@ import {
 import { format } from "date-fns";
 import { isoDurationToMs, msToHHmm } from "@/utils/duration";
 import TimeEntryActions from "@/components/manage/timeentries/TimeEntryActions";
-import { Fragment } from "react";
 import { AuditDetail } from "@/components/custom-ui/record-detail/audit";
 import ProjectCompact from "@/components/manage/projects/ProjectCompact";
 import EmployeeCompact from "@/components/manage/employees/EmployeeCompact";
