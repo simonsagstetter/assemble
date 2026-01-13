@@ -11,12 +11,23 @@
 
 import { LucideProps } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { ForwardRefExoticComponent, Fragment, RefAttributes } from "react";
+import React, {
+    ForwardRefExoticComponent,
+    Fragment,
+    ReactNode,
+    RefAttributes,
+    useCallback,
+    useState,
+    MouseEvent, useRef, useEffect
+} from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useDebounceCallback } from "usehooks-ts";
+import { Timeout } from "@radix-ui/primitive";
 
 type CompactProps = {
     Icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
     title: string;
-    details: { label: string, value: string }[];
+    details: { label: string, value?: string, node?: ReactNode }[];
 }
 
 function Compact( { Icon, title, details }: CompactProps ) {
@@ -30,17 +41,69 @@ function Compact( { Icon, title, details }: CompactProps ) {
         </div>
         <Separator/>
         <div className={ "bg-background p-2 text-left" }>
-            { details.map( ( { label, value } ) => (
+            { details.map( ( { label, value, node } ) => (
                 <Fragment key={ label }>
                     <small className={ "text-xs text-accent-foreground" }>{ label }</small>
-                    <p className={ "text-sm" }>{ value }</p>
+                    { !node ? <p className={ "text-sm" }>{ value }</p> : node }
                 </Fragment>
             ) ) }
         </div>
     </div>
 }
 
+type EntityCompactProps = CompactProps & {
+    delay?: number;
+    children: ReactNode;
+}
+
+function EntityCompact( { delay = 200, children, ...props }: EntityCompactProps ) {
+    const [ open, setOpen ] = useState( false );
+    const timeout = useRef<Timeout | null>( null )
+
+    const handleMouseEnter = useCallback( ( e: MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement> ) => {
+        e.preventDefault();
+        if ( timeout.current ) clearTimeout( timeout.current );
+        timeout.current = setTimeout( () => {
+            setOpen( true )
+        }, delay );
+    }, [ delay ] );
+
+    const debouncedMouseEnterHandler = useDebounceCallback( handleMouseEnter, delay );
+
+    const handleMouseLeave = useCallback( ( e: MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement> ) => {
+        e.preventDefault();
+        if ( timeout.current ) clearTimeout( timeout.current );
+        setOpen( false );
+    }, [] );
+    const debouncedMouseLeaveHandler = useDebounceCallback( handleMouseLeave, delay );
+
+    useEffect( () => {
+        return () => {
+            if ( timeout.current ) clearTimeout( timeout.current )
+        }
+    }, [] )
+
+    return <Popover open={ open } onOpenChange={ setOpen }>
+        <PopoverTrigger
+            asChild
+            onMouseEnter={ debouncedMouseEnterHandler }
+            onMouseLeave={ debouncedMouseLeaveHandler }
+            onClick={ ( e ) => e.preventDefault() }
+        >
+            { children }
+        </PopoverTrigger>
+        <PopoverContent
+            className={ "p-0" }
+            onMouseEnter={ debouncedMouseEnterHandler }
+            onMouseLeave={ debouncedMouseLeaveHandler }
+        >
+            <Compact { ...props }/>
+        </PopoverContent>
+    </Popover>
+}
+
 export {
     type CompactProps,
-    Compact
+    Compact,
+    EntityCompact
 }

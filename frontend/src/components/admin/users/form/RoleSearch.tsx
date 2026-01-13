@@ -17,8 +17,7 @@ const options: UserRolesItem[] = [
     UserRolesItem.EXTERNAL,
     UserRolesItem.USER,
     UserRolesItem.MANAGER,
-    UserRolesItem.ADMIN,
-    UserRolesItem.SUPERUSER
+    UserRolesItem.ADMIN
 ]
 
 type UserRoleFieldProps = {

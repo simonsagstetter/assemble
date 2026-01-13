@@ -24,9 +24,9 @@ import { ComponentProps, ForwardRefExoticComponent, RefAttributes } from "react"
 import { DropdownMenuContentProps } from "@radix-ui/react-dropdown-menu";
 
 export default function UserActions(
-    { id, hasEmployee, tableActions = false, ...props }
+    { id, hasEmployee, isSuperuser = false, tableActions = false, ...props }
     :
-        { id: string, tableActions?: boolean, hasEmployee: boolean }
+        { id: string, tableActions?: boolean, hasEmployee: boolean, isSuperuser?: boolean }
         & ComponentProps<ForwardRefExoticComponent<DropdownMenuContentProps & RefAttributes<HTMLDivElement>>>
 ) {
     const router = useRouter();
@@ -72,13 +72,17 @@ export default function UserActions(
                 <HatGlassesIcon className={ "text-shadow-yellow-500" }></HatGlassesIcon> Impersonate
             </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator/>
-        <DropdownMenuGroup>
-            <DropdownMenuItem variant="destructive"
-                              onSelect={ () => router.push( `/app/admin/users/${ id }/delete` ) }>
-                <TrashIcon/>
-                Delete
-            </DropdownMenuItem>
-        </DropdownMenuGroup>
+        { !isSuperuser ?
+            <>
+                <DropdownMenuSeparator/>
+                <DropdownMenuGroup>
+                    <DropdownMenuItem variant="destructive"
+                                      onSelect={ () => router.push( `/app/admin/users/${ id }/delete` ) }>
+                        <TrashIcon/>
+                        Delete
+                    </DropdownMenuItem>
+                </DropdownMenuGroup>
+            </>
+            : null }
     </DropdownMenuContent>
 }

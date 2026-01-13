@@ -11,7 +11,6 @@
 "use client";
 
 import { TimeEntryDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import { colorMobileClasses } from "@/config/calendar/calendar.config";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarIcon, ChevronDownIcon, PencilIcon } from "lucide-react";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -31,37 +30,25 @@ import {
 import { format } from "date-fns";
 import { isoDurationToMs, msToHHmm } from "@/utils/duration";
 import TimeEntryActions from "@/components/manage/timeentries/TimeEntryActions";
-import { Fragment } from "react";
 import { AuditDetail } from "@/components/custom-ui/record-detail/audit";
+import ProjectCompact from "@/components/manage/projects/ProjectCompact";
+import EmployeeCompact from "@/components/manage/employees/EmployeeCompact";
 
 type TimeEntryDetailProps = {
     timeEntry: TimeEntryDTO
 }
 
 export default function TimeEntryDetail( { timeEntry }: TimeEntryDetailProps ) {
-    const colorKey = timeEntry.project.color.toLowerCase(),
-        colorClass = colorMobileClasses[ colorKey as keyof typeof colorMobileClasses ],
-        date = format( timeEntry.date, "dd.MM.yyyy" ),
+    const date = format( timeEntry.date, "dd.MM.yyyy" ),
         duration = isoDurationToMs( timeEntry.totalTime ),
         pause = isoDurationToMs( timeEntry.pauseTime ),
         totalDuration = msToHHmm( duration - pause ),
         total = new Intl.NumberFormat( 'de-DE', { style: "currency", currency: "EUR" } )
             .format( timeEntry.total );
 
-    const projectLink = <Fragment>
-        <Link href={ "/app/manage/projects/" + timeEntry.project.id }
-              className={ "hover:underline" }>
-            { timeEntry.project.name }
-        </Link>
-        <span className={ `size-2.5 rounded-full inline-flex justify-items-center ml-1 ${ colorClass }` }></span>
-    </Fragment>
+    const projectLink = <ProjectCompact project={ timeEntry.project }/>
 
-    const employeeLink = <Fragment>
-        <Link href={ "/app/manage/employees/" + timeEntry.employee.id }
-              className={ "hover:underline" }>
-            { timeEntry.employee.fullname }
-        </Link>
-    </Fragment>
+    const employeeLink = <EmployeeCompact employee={ timeEntry.employee }/>
 
     return <Card className="w-full border-0 shadow-none rounded-none">
         <CardHeader className={ "px-8 py-4" }>

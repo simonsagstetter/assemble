@@ -17,6 +17,7 @@ import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu
 import { Button } from "@/components/ui/button";
 import { IdCardIcon, MoreHorizontal, PlusIcon } from "lucide-react";
 import EmployeeActions from "@/components/manage/employees/EmployeeActions";
+import UserCompact from "@/components/admin/users/UserCompact";
 
 type EmployeeDataTableProps = {
     employees: EmployeeDTO[]
@@ -58,11 +59,7 @@ export default function EmployeeDataTable( { employees }: EmployeeDataTableProps
                 const employee = row.original;
 
                 if ( employee.user ) {
-                    return <Link href={ `/app/admin/users/${ employee.user.id }` }
-                                 className={ "hover:underline" }
-                    >
-                        { employee.user.username }
-                    </Link>
+                    return <UserCompact user={ employee.user }/>
                 } else {
                     return <span>-</span>
                 }

@@ -101,6 +101,7 @@ export default function UserDataTable( { users }: UserDataTableProps ) {
                                      hasEmployee={ user.employee != null }
                                      align={ "center" }
                                      tableActions
+                                     isSuperuser={ user.roles.includes( "SUPERUSER" ) }
                         />
                     </DropdownMenu>
                 )
