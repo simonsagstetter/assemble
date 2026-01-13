@@ -46,6 +46,7 @@ import {
 } from "@/api/rest/generated/query/timeentries/timeentries";
 import TimeEntryDataTable from "@/components/manage/timeentries/TimeEntryDataTable";
 import { AuditDetail } from "@/components/custom-ui/record-detail/audit";
+import UserCompact from "@/components/admin/users/UserCompact";
 
 type EmployeeDetailProps = {
     employee: EmployeeDTO
@@ -94,10 +95,7 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
                     <div>
                         <span>User</span>
                         <p>
-                            { employee.user != null ? <Link
-                                    href={ `/app/admin/users/${ employee.user.id }` }
-                                    className={ "hover:underline" }
-                                >{ employee.user.username }</Link>
+                            { employee.user != null ? <UserCompact user={ employee.user }/>
                                 : "-" }
                         </p>
                     </div>
@@ -177,12 +175,7 @@ export default function EmployeeDetail( { employee }: EmployeeDetailProps ) {
                                         <Detail>
                                             <DetailLabel>User</DetailLabel>
                                             <DetailValue>{ employee.user != null ?
-                                                <Link
-                                                    href={ `/app/admin/users/${ employee.user.id }` }
-                                                    className={ "hover:underline text-blue-800" }
-                                                >
-                                                    { employee.user.username }
-                                                </Link>
+                                                <UserCompact user={ employee.user }/>
                                                 : "-" }
                                             </DetailValue>
                                         </Detail>

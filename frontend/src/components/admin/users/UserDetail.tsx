@@ -31,17 +31,26 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {
+    CheckIcon,
     ChevronDownIcon,
     PencilIcon, UserIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import UserActions from "@/components/admin/users/UserActions";
+import Status from "@/components/custom-ui/status";
 
 type UserDetailProps = {
     userDetails: UserAdmin
 }
 
 export default function UserDetail( { userDetails }: UserDetailProps ) {
+
+    const renderUserRole = ( role: UserRolesItem ) => {
+        const hasRole = userDetails.roles.includes( role );
+        if ( hasRole ) return <BadgeDetailValue variant={ "default" }>Yes</BadgeDetailValue>
+        else return <BadgeDetailValue variant={ "secondary" }>No</BadgeDetailValue>
+    }
+
     return <Card className="w-full border-0 shadow-none rounded-none">
         <CardHeader className={ "px-8 py-4" }>
             <div className={ "flex flex-row gap-2 items-center" }>
@@ -69,12 +78,13 @@ export default function UserDetail( { userDetails }: UserDetailProps ) {
                         <p>{ userDetails.email }</p>
                     </div>
                     <div>
-                        <span>Enabled</span>
-                        <p>{ userDetails.enabled ? "Yes" : "No" }</p>
-                    </div>
-                    <div>
-                        <span>Locked</span>
-                        <p>{ userDetails.locked ? "Yes" : "No" }</p>
+                        <span>Status</span>
+                        <p className={ "**:text-primary-foreground!" }>
+                            { userDetails.enabled ? <Status key={ "Enabled" } label={ "Enabled" }/> :
+                                <Status key={ "Disabled" } label={ "Disabled" } variant={ "red" }/> }
+                            { userDetails.locked ? <Status key={ "Locked" } label={ "Locked" } variant={ "red" }
+                                                           className={ "mx-[0.1rem]" }/> : null }
+                        </p>
                     </div>
                 </div>
             </CardDescription>
@@ -95,7 +105,9 @@ export default function UserDetail( { userDetails }: UserDetailProps ) {
                         <UserActions id={ userDetails.id }
                                      hasEmployee={ userDetails.employee != null }
                                      align="end"
-                                     className="[--radius:1rem]"/>
+                                     className="[--radius:1rem]"
+                                     isSuperuser={ userDetails.roles.includes( "SUPERUSER" ) }
+                        />
                     </DropdownMenu>
                 </ButtonGroup>
             </CardAction>
@@ -170,27 +182,27 @@ export default function UserDetail( { userDetails }: UserDetailProps ) {
                                     <DetailRow>
                                         <Detail>
                                             <DetailLabel>External</DetailLabel>
-                                            <DetailValue>{ userDetails.roles.includes( UserRolesItem.EXTERNAL ) ? "Yes" : "No" }</DetailValue>
+                                            { renderUserRole( UserRolesItem.EXTERNAL ) }
                                         </Detail>
                                         <Detail>
                                             <DetailLabel>User</DetailLabel>
-                                            <DetailValue>{ userDetails.roles.includes( UserRolesItem.USER ) ? "Yes" : "No" }</DetailValue>
+                                            { renderUserRole( UserRolesItem.USER ) }
                                         </Detail>
                                     </DetailRow>
                                     <DetailRow>
                                         <Detail>
                                             <DetailLabel>Manager</DetailLabel>
-                                            <DetailValue>{ userDetails.roles.includes( UserRolesItem.MANAGER ) ? "Yes" : "No" }</DetailValue>
+                                            { renderUserRole( UserRolesItem.MANAGER ) }
                                         </Detail>
                                         <Detail>
                                             <DetailLabel>Admin</DetailLabel>
-                                            <DetailValue>{ userDetails.roles.includes( UserRolesItem.ADMIN ) ? "Yes" : "No" }</DetailValue>
+                                            { renderUserRole( UserRolesItem.ADMIN ) }
                                         </Detail>
                                     </DetailRow>
                                     <DetailRow>
                                         <Detail>
                                             <DetailLabel>Superuser</DetailLabel>
-                                            <DetailValue>{ userDetails.roles.includes( UserRolesItem.SUPERUSER ) ? "Yes" : "No" }</DetailValue>
+                                            { renderUserRole( UserRolesItem.SUPERUSER ) }
                                         </Detail>
                                     </DetailRow>
                                 </DetailSection>

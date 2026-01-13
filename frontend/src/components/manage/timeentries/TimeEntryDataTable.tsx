@@ -13,13 +13,14 @@ import { TimeEntryDTO } from "@/api/rest/generated/query/openAPIDefinition.schem
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import Link from "next/link";
-import { colorMobileClasses } from "@/config/calendar/calendar.config";
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, MoreHorizontal, PlusIcon } from "lucide-react";
 import { DataTable, DataTableHeader } from "@/components/custom-ui/DataTable";
 import { isoDurationToMs, msToHHmm } from "@/utils/duration";
 import TimeEntryActions from "@/components/manage/timeentries/TimeEntryActions";
+import ProjectCompact from "@/components/manage/projects/ProjectCompact";
+import EmployeeCompact from "@/components/manage/employees/EmployeeCompact";
 
 type TimeEntryDataTableProps = {
     timeentries: TimeEntryDTO[],
@@ -44,26 +45,14 @@ export default function TimeEntryDataTable( { timeentries, isRelatedTable = fals
                 header: "Project",
                 cell( { row } ) {
                     const project = row.original.project;
-                    return <Link
-                        href={ `/app/manage/projects/${ project.id }` }
-                        className={ "hover:underline flex flex-row items-center gap-1.5" }
-                    >
-                        <span
-                            className={ `size-2 rounded-full ${ colorMobileClasses[ project.color.toLowerCase() as keyof typeof colorMobileClasses ] }` }></span>
-                        { project.name }
-                    </Link>
+                    return <ProjectCompact project={ project }/>
                 }
             },
             {
                 header: "Employee",
                 cell( { row } ) {
                     const employee = row.original.employee;
-                    return <Link
-                        href={ `/app/manage/employees/${ employee.id }` }
-                        className={ "hover:underline flex flex-row items-center gap-1.5" }
-                    >
-                        { employee.fullname }
-                    </Link>
+                    return <EmployeeCompact employee={ employee }/>
                 }
             },
             {
