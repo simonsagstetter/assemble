@@ -18,7 +18,7 @@ import React, {
     RefAttributes,
     useCallback,
     useState,
-    MouseEvent, useRef
+    MouseEvent, useRef, useEffect
 } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useDebounceCallback } from "usehooks-ts";
@@ -77,6 +77,11 @@ function EntityCompact( { delay = 200, children, ...props }: EntityCompactProps 
     }, [] );
     const debouncedMouseLeaveHandler = useDebounceCallback( handleMouseLeave, delay );
 
+    useEffect( () => {
+        return () => {
+            if ( timeout.current ) clearTimeout( timeout.current )
+        }
+    }, [] )
 
     return <Popover open={ open } onOpenChange={ setOpen }>
         <PopoverTrigger

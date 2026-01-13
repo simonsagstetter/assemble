@@ -20,10 +20,6 @@ type EmployeeCompactProps = {
 export default function EmployeeCompact( { employee }: EmployeeCompactProps ) {
     const details = [
         {
-            label: "User",
-            value: employee.user.username,
-        },
-        {
             label: "Email",
             value: employee.email,
         }
