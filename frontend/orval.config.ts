@@ -1,9 +1,15 @@
 import { defineConfig } from 'orval';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const isDev = process.env.NODE_ENV === 'development';
+
 
 export default defineConfig( {
     clientApi: {
         input: {
-            target: "http://localhost:8080/v3/api-docs",
+            target: "./openapi.json",
             filters: {
                 mode: "exclude",
                 tags: [ "Authentication" ]
@@ -32,13 +38,13 @@ export default defineConfig( {
     },
     authApi: {
         input: {
-            target: "http://localhost:8080/v3/api-docs",
+            target: "openapi.json",
         },
         output: {
             mode: "tags-split",
             target: "./src/api/rest/generated/fetch",
             client: "fetch",
-            baseUrl: "http://localhost:8080",
+            baseUrl: isDev ? "http://localhost:8080" : "http://backend:8080"
         }
     }
 } )

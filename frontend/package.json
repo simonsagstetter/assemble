@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -H 0.0.0.0 -p 3000",
     "lint": "eslint",
+    "orval:fetch": "curl http://localhost:8080/v3/api-docs -o openapi.json",
     "orval:generate": "npx orval --config orval.config.ts"
   },
   "dependencies": {
@@ -39,6 +40,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
     "lucide-react": "^0.555.0",
     "moment": "^2.30.1",
     "next": "^16.1.1",
