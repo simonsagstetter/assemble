@@ -5,6 +5,7 @@
 ![Version](https://img.shields.io/badge/Assemble-0.0.1-purple?logo=next-js)
 ![Status](https://img.shields.io/badge/Status-Development-pink?)
 ![CI](https://github.com/simonsagstetter/assemble/actions/workflows/ci.yml/badge.svg)
+![Deploy](https://github.com/simonsagstetter/assemble/actions/workflows/deploy.yml/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=simonsagstetter_assemble&metric=alert_status&token=f5abda4472a6f7333a177aed2e9c5a11268cf5a2)](https://sonarcloud.io/summary/new_code?id=simonsagstetter_assemble)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=simonsagstetter_assemble&metric=coverage&token=f5abda4472a6f7333a177aed2e9c5a11268cf5a2)](https://sonarcloud.io/summary/new_code?id=simonsagstetter_assemble)
 
