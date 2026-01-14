@@ -20,28 +20,6 @@ jobs:
         run: |
           mvn -B -DskipTests -f backend/pom.xml clean package
 
-      - name: Generate OpenAPI spec
-        run: |
-          java -jar backend/target/backend.jar &
-          SPRING_PID=$!
-          # Wait for app to start
-          for i in {1..30}; do
-            if curl -f http://localhost:8080/v3/api-docs > /dev/null 2>&1; then
-              echo "App is ready!"
-              break
-            fi
-            echo "Waiting for app to start... ($i/30)"
-            sleep 2
-          done
-          curl -f http://localhost:8080/v3/api-docs -o frontend/openapi.json || exit 1
-          kill $SPRING_PID || true
-
-      - name: Upload OpenAPI spec
-        uses: actions/upload-artifact@v5
-        with:
-          name: openapi.json
-          path: frontend/openapi.json
-
       - name: Upload Backend Artifact
         uses: actions/upload-artifact@v5
         with:
@@ -52,12 +30,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-
-      - name: Download OpenAPI spec
-        uses: actions/download-artifact@v5
-        with:
-          name: openapi.json
-          path: frontend
 
       - name: Setup node
         uses: actions/setup-node@v5
