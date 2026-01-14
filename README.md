@@ -25,7 +25,7 @@ for daily operations.
 - `backend/` – Spring Boot API connected to dockerized MongoDB & Postgresql.
 - `frontend/` – Nextjs frontend.
 
-### Tackstack
+### Tech Stack
 
 `Backend`
 

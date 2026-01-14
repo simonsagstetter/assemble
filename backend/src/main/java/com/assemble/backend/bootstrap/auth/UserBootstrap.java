@@ -14,18 +14,19 @@ import com.assemble.backend.models.entities.auth.User;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.repositories.auth.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Slf4j
 @Component
-@Profile("prod")
+@ConditionalOnProperty(
+        name = "assemble.env",
+        havingValue = "prod"
+)
 @AllArgsConstructor
 public class UserBootstrap implements CommandLineRunner {
 
@@ -39,8 +40,8 @@ public class UserBootstrap implements CommandLineRunner {
             String username = environment.getProperty( "assemble.superuser.username" );
             String rawPassword = environment.getProperty( "assemble.superuser.password" );
 
-            assert username != null;
-            assert rawPassword != null;
+            if ( username == null ) username = "admin";
+            if ( rawPassword == null ) rawPassword = "password";
 
             User superUser = User.builder()
                     .firstname( "Super" )
@@ -52,8 +53,6 @@ public class UserBootstrap implements CommandLineRunner {
                     .build();
 
             userRepository.save( superUser );
-
-            log.info( "Superuser created with username: {} and password: {}", superUser.getUsername(), rawPassword );
         }
     }
 }
