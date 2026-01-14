@@ -1,10 +1,13 @@
 name: Test Application Deployment
+
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches: [ "main" ]
 
 jobs:
-
   build-backend-image:
     runs-on: ubuntu-latest
     steps:

@@ -1,10 +1,13 @@
 name: Deploy Application
+
+permissions:
+  contents: read
+
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-
   build-backend-image:
     runs-on: ubuntu-latest
     steps:
@@ -60,4 +63,4 @@ jobs:
     steps:
       - name: Trigger Render Deployment
         run: |
-          curl -X POST ${{ secrets.RENDER_DEPLOY_BACKEND_HOOK }}
+          curl -X POST ${{ secrets.RENDER_DEPLOY_FRONTEND_HOOK }}
