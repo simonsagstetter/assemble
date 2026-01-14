@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -31,19 +32,21 @@ public class UserBootstrap implements CommandLineRunner {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private Environment environment;
 
     @Override
     public void run( String... args ) throws Exception {
         if ( userRepository.count() == 0 ) {
-            String rawPassword = UuidCreator
-                    .getTimeOrderedEpoch()
-                    .toString()
-                    .replace( "-", "" );
+            String username = environment.getProperty( "assemble.superuser.username" );
+            String rawPassword = environment.getProperty( "assemble.superuser.password" );
+
+            assert username != null;
+            assert rawPassword != null;
 
             User superUser = User.builder()
                     .firstname( "Super" )
-                    .lastname( "Assemble" )
-                    .username( "assemble" )
+                    .lastname( "Assembler" )
+                    .username( username )
                     .email( "admin@assemble.com" )
                     .password( passwordEncoder.encode( rawPassword ) )
                     .roles( List.of( UserRole.SUPERUSER ) )

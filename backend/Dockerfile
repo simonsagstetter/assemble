@@ -9,7 +9,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # ---- 2. Step: Run Backend ----
-FROM amazoncorretto:21-alpine
+FROM amazoncorretto:21
 WORKDIR /app
 
 COPY --from=backendbuilder /app/target/backend.jar app.jar

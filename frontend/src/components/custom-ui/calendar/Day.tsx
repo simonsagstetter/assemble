@@ -48,10 +48,10 @@ export default function Day(
     }: DayProps
 ) {
     const router = useRouter();
-    const { setSelectedDate } = useCalendar();
+    const { setSelectedDate, settings } = useCalendar();
 
     const handleNew = () => {
-        router.push( newLink + "?date=" + format( date, "yyyy-MM-dd" ) );
+        if ( !settings.disabled ) router.push( newLink + "?date=" + format( date, "yyyy-MM-dd" ) );
     }
     return (
         <ContextMenu>
@@ -61,7 +61,7 @@ export default function Day(
                         <div
                             className={ `group relative flex flex-col gap-1.5 p-1.5 hover:bg-gray-50 max-md:max-h-202 md:gap-1 md:p-2 before:pointer-events-none before:absolute before:inset-0 before:border-b before:border-gray-200 ${ isSunday ? "before:border-r-0" : "before:border-r" } ${ isReadOnly || isHoliday ? "bg-gray-50 cursor-not-allowed" : "bg-white cursor-pointer " }` }
                             onClick={ () => !isReadOnly && !isHoliday ? setSelectedDate( date ) : null }>
-                            { !isReadOnly && !isHoliday ?
+                            { !settings.disabled && !isReadOnly && !isHoliday ?
                                 <div className="absolute right-1.5 bottom-1.5 z-10 hidden group-hover:inline-flex">
                                     <Button variant={ "ghost" } onClick={ handleNew }
                                             className="group relative inline-flex cursor-pointer items-center justify-center whitespace-nowrap size-7 text-gray-500 rounded-lg bg-white shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
@@ -109,7 +109,7 @@ export default function Day(
                         { todayTotal ? <p>{ "Today: " + msToHHmm( todayTotal ) }</p> : null }
                     </TooltipContent> : null }
             </Tooltip>
-            { !isReadOnly && !isHoliday ?
+            { !settings.disabled && !isReadOnly && !isHoliday ?
                 <ContextMenuContent className={ "max-md:hidden" }>
                     <ContextMenuItem onSelect={ handleNew }><PlusIcon/>New</ContextMenuItem>
                 </ContextMenuContent>

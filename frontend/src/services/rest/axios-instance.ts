@@ -7,11 +7,9 @@
  * This software is the property of Simon Sagstetter.
  * All rights reserved.
  */
-
-
 import Axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
-export const AXIOS_INSTANCE = Axios.create( { baseURL: process.env.BACKEND_API_CLIENT_URL } );
+export const AXIOS_INSTANCE = Axios.create();
 
 export const instance = async <T>(
     config: AxiosRequestConfig,

@@ -19,8 +19,10 @@ import {
     useGetCompanySubdivisionCodeSuspense,
     useGetHolidaysByYearAndSubdivisionCodeSuspense
 } from "@/api/rest/generated/query/holidays/holidays";
+import { useMeSuspense } from "@/api/rest/generated/query/users/users";
 
 function CalendarPage() {
+    const { data: user } = useMeSuspense();
     const { data: subdivionCode } = useGetCompanySubdivisionCodeSuspense();
     const { data: holidays } = useGetHolidaysByYearAndSubdivisionCodeSuspense( {
         year: format( new Date(), "yyyy" ),
@@ -32,7 +34,8 @@ function CalendarPage() {
 
 
     return <CalendarProvider>
-        <Calendar events={ events } holidays={ holidays } subdivisionCode={ subdivionCode }/>
+        <Calendar events={ events } holidays={ holidays } subdivisionCode={ subdivionCode }
+                  disabled={ !user.employeeId }/>
     </CalendarProvider>
 }
 

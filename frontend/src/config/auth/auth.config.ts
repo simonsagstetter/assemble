@@ -15,7 +15,7 @@ const LOGIN_REDIRECT_PATH = "/app/timetracking/calendar";
 const LOGOUT_PATH = "/auth/logout";
 
 const ALLOWED_PATHS = [
-    "/auth/login",
+    "/auth/login"
 ]
 
 export {

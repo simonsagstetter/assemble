@@ -31,6 +31,7 @@ import { ErrorMessage, SuccessMessage } from "@/components/custom-ui/form/messag
 import { FormActions } from "@/components/custom-ui/form/actions";
 import { getMeQueryKey } from "@/api/rest/generated/query/users/users";
 import { UnlinkedEmployeeLookupField } from "@/components/manage/employees/form/custom-fields";
+import { invalidateQueries } from "@/utils/query";
 
 type UpdateEmployeeFormProps = {
     user: UserAdmin
@@ -60,17 +61,11 @@ export default function UserUpdateEmployeeForm( { user }: UpdateEmployeeFormProp
             {
                 onSuccess: async ( user ) => {
                     form.clearErrors();
-                    await queryClient.invalidateQueries( {
-                        queryKey: getGetAllUsersQueryKey(),
-                        refetchType: "all"
-                    } )
-                    await queryClient.invalidateQueries( {
-                        queryKey: getGetUserByIdQueryKey( user.id ),
-                        refetchType: "all"
-                    } )
-                    await queryClient.invalidateQueries( {
-                        queryKey: getMeQueryKey()
-                    } )
+                    await invalidateQueries( queryClient, [
+                        getGetAllUsersQueryKey(),
+                        getGetUserByIdQueryKey( user.id ),
+                        getMeQueryKey()
+                    ] );
                     toast.success( "Success", {
                         description: "User " + user.username + " was updated",
                         action: {

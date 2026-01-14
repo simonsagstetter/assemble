@@ -55,7 +55,8 @@ export default function Login() {
                 form.setError( "root", { message: "An unknown error occurred.", type: "manual" } );
                 toast.error( "An unknown error occurred" );
             }
-        } catch {
+        } catch ( error ) {
+            console.error( error );
             form.setError( "root", { message: "Unable to reach the server. Please try again later.", type: "manual" } );
             toast.error( "Unable to reach the server. Please try again later." );
         }

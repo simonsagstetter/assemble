@@ -2,6 +2,8 @@
 FROM node:24.12.0-alpine AS frontendbuilder
 WORKDIR /app
 
+ENV BACKEND_API_URL=https://assemble-backend-latest.onrender.com
+
 COPY package*.json ./
 RUN npm ci
 

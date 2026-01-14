@@ -18,9 +18,10 @@ type CalendarProps = {
     events: TimeEntryDTO[],
     holidays: HolidayDTO[],
     subdivisionCode: string;
+    disabled?: boolean;
 }
 
-export default function Calendar( { events, holidays, subdivisionCode }: CalendarProps ) {
+export default function Calendar( { events, holidays, subdivisionCode, disabled = false }: CalendarProps ) {
     const { setEvents, setHolidays, setSettings, settings, isLoading } = useCalendar();
 
     useEffect( () => {
@@ -35,9 +36,10 @@ export default function Calendar( { events, holidays, subdivisionCode }: Calenda
         setSettings( {
             newLink: "/app/timetracking/timeentries/create",
             view: "month",
-            subdivisionCode
+            subdivisionCode,
+            disabled
         } );
-    }, [ events, setEvents, setSettings, holidays, setHolidays, subdivisionCode ] );
+    }, [ events, setEvents, setSettings, holidays, setHolidays, subdivisionCode, disabled ] );
 
 
     return <>

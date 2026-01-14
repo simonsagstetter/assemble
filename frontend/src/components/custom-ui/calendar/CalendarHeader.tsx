@@ -168,7 +168,7 @@ export default function CalendarHeader() {
                 </Button>
             </ButtonGroup>
 
-            <Button className={ "p-0" } disabled={ holidays[ selectedDateString ] !== undefined }>
+            <Button className={ "p-0" } disabled={ settings.disabled || holidays[ selectedDateString ] !== undefined }>
                 <Link className={ "px-4 py-3 flex flex-row items-center gap-1" }
                       href={ settings.newLink + "?date=" + selectedDateString }><Plus
                     size={ 16 }/> New</Link>

@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start -H 0.0.0.0 -p 3000",
+    "dev": "NODE_ENV=development next dev",
+    "build": "NODE_ENV=production next build",
+    "start": "NODE_ENV=production next start -H 0.0.0.0 -p 3000",
     "lint": "eslint",
     "orval:fetch": "curl http://localhost:8080/v3/api-docs -o openapi.json",
-    "orval:generate": "npx orval --config orval.config.ts"
+    "orval:generate": "NODE_ENV=production npx orval --config orval.config.ts",
+    "orval:generate:dev": "NODE_ENV=development npx orval --config orval.config.ts"
   },
   "dependencies": {
     "@bprogress/next": "^3.2.12",

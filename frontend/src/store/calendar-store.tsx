@@ -20,6 +20,7 @@ type CalendarSettings = {
     newLink: string;
     view: "week" | "month";
     subdivisionCode: string;
+    disabled: boolean
 }
 
 type CalendarState = {
@@ -40,7 +41,7 @@ const DEFAULT_STATE: CalendarState = {
         newLink: "",
         view: "month",
         subdivisionCode: "",
-
+        disabled: false
     },
     isLoading: false
 }

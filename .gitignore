@@ -3,6 +3,7 @@
 *.env
 *.log
 .run/
+*.env.prod
 
 backend/HELP.md
 backend/target/

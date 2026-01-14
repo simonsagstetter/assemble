@@ -17,6 +17,7 @@ const getCookieHeader = async (): Promise<HeadersInit> => {
 }
 
 const setCookiesFromResponse = async ( setCookie: string[] ) => {
+    console.log( "Setting cookies:", setCookie );
     const cookieStore = await cookies();
     setCookie.forEach( cookie => {
         const parsedCookie = parseSetCookie( cookie );
