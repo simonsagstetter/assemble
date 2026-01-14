@@ -18,19 +18,20 @@ import useFormActionContext from "@/hooks/useFormActionContext";
 type Variants = ComponentProps<typeof Button>["variant"];
 
 function FormActions(
-    { formId, variant, label, hideCancel = false, children }
+    { formId, variant, label, hideCancel = false, className = "p-8", children }
     :
     {
         formId: string,
         variant?: Variants,
         label: string,
         hideCancel?: boolean,
+        className?: string,
         children?: ReactNode,
     }
 ) {
     const { formState: { isSubmitting } } = useFormContext();
     const { isPending, isSuccess, handleCancel, disableOnSuccess } = useFormActionContext();
-    return <Field orientation={ "horizontal" } className={ "p-8" }>
+    return <Field orientation={ "horizontal" } className={ className }>
         { children ? children : null }
         { !hideCancel ?
             <Button type="button"

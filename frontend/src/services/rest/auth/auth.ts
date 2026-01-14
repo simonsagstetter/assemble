@@ -17,12 +17,10 @@ import { getCookieHeader, getCsrfTokenHeader, setCookiesFromResponse, } from "@/
 
 const submitLogin = async ( data: LoginRequest ) => {
     const response = await login( data );
-
     if ( response.status === 200 ) {
         await setCookiesFromResponse( response.headers.getSetCookie() );
     }
-
-    return response;
+    return response
 }
 
 const submitLogout = async () => {

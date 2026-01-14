@@ -17,6 +17,7 @@ import TimeEntryUserForm from "@/components/timetracking/timeentries/TimeEntryUs
 
 function CreateTimeentryPage() {
     const { data: user } = useMeSuspense();
+
     return <FormPageHeader title={ "New" } description={ "Create new time entry" } entity={ "Time Entry" }>
         <TimeEntryUserForm employeeId={ user.employeeId }/>
     </FormPageHeader>

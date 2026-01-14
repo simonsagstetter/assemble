@@ -18,6 +18,7 @@ export default async function proxy( request: NextRequest ) {
     const params = request.nextUrl.searchParams;
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get( "SESSION" );
+
     // AUTO LOGOUT
     if ( pathName === LOGOUT_PATH ) {
         try {
@@ -56,6 +57,6 @@ export default async function proxy( request: NextRequest ) {
 export const config = {
     matcher: [
         // Exclude API routes, static files, image optimizations, and .png files
-        '/((?!api|_next/static|_next/image|.*\\.png$).*)',
+        '/((?!rest|_next/static|_next/image|.*\\.png$).*)',
     ],
 }

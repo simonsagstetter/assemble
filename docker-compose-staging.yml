@@ -1,0 +1,82 @@
+version: '3.8'
+name: assemble-staging
+
+services:
+  frontend:
+    env_file:
+      - path: "./.env"
+    build: ./frontend
+    container_name: assemble-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - assemble-network
+
+  backend:
+    env_file:
+      - path: "./.env"
+    build: ./backend
+    container_name: assemble-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      MONGO_URI: ${MONGO_URI}
+      POSTGRES_URI: ${POSTGRES_URI}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+    networks:
+      - assemble-network
+
+  mongodb:
+    env_file:
+      - path: "./.env"
+    image: mongo:7
+    container_name: assemble-mongodb-prod
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - assemble-network
+
+  postgresql:
+    env_file:
+      - path: "./.env"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $POSTGRES_USER -d assemble" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    image: postgres:17.7
+    container_name: assemble-postgres-prod
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: "assemble"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - assemble-network
+
+volumes:
+  mongodb_data:
+  pgdata:
+
+networks:
+  assemble-network:
