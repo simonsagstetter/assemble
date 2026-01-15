@@ -21,7 +21,6 @@ import { UserAdmin } from "@/api/rest/generated/query/openAPIDefinition.schemas"
 import { useRouter } from "@bprogress/next/app";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import useModalContext from "@/hooks/useModalContext";
 import { ErrorMessage } from "@/components/custom-ui/form/messages";
 import { FormActionContext } from "@/store/formActionStore";
 import { FormActions } from "@/components/custom-ui/form/actions";
@@ -31,7 +30,6 @@ type UserDeleteFormProps = {
 }
 
 export default function UserDeleteForm( { user }: UserDeleteFormProps ) {
-    const modalContext = useModalContext()
     const queryClient = useQueryClient();
     const router = useRouter();
     const form = useForm();
@@ -45,9 +43,6 @@ export default function UserDeleteForm( { user }: UserDeleteFormProps ) {
             },
             {
                 onSuccess: async () => {
-                    toast.success( "Success", {
-                        description: "User was deleted",
-                    } )
                     await queryClient.invalidateQueries( {
                         queryKey: getGetAllUsersQueryKey(),
                         refetchType: "all"
@@ -56,11 +51,10 @@ export default function UserDeleteForm( { user }: UserDeleteFormProps ) {
                         queryKey: getGetUserByIdQueryKey( user.id ),
                         refetchType: "none"
                     } );
-                    if ( modalContext ) {
-                        modalContext.setOpen( false );
-                    }
-                    setTimeout( () => router.push( "/app/admin/users" ), 200 );
-                    router.back();
+                    toast.success( "Success", {
+                        description: "User was deleted",
+                    } )
+                    router.push( "/app/admin/users" );
                 },
                 onError: ( error ) => {
                     if ( error.response?.data ) {
@@ -77,10 +71,7 @@ export default function UserDeleteForm( { user }: UserDeleteFormProps ) {
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-            router.back();
-        }
+        router.back();
     }
 
     return <FormActionContext.Provider

@@ -21,6 +21,7 @@ import { isoDurationToMs, msToHHmm } from "@/utils/duration";
 import TimeEntryActions from "@/components/manage/timeentries/TimeEntryActions";
 import ProjectCompact from "@/components/manage/projects/ProjectCompact";
 import EmployeeCompact from "@/components/manage/employees/EmployeeCompact";
+import { format } from "date-fns";
 
 type TimeEntryDataTableProps = {
     timeentries: TimeEntryDTO[],
@@ -53,6 +54,15 @@ export default function TimeEntryDataTable( { timeentries, isRelatedTable = fals
                 cell( { row } ) {
                     const employee = row.original.employee;
                     return <EmployeeCompact employee={ employee }/>
+                }
+            },
+            {
+                id: "date",
+                header: () => <div className={ "text-left" }>Date</div>,
+                cell( { row } ) {
+                    return <div className={ "text-left" }>
+                        { format( new Date( row.original.date ), "dd.MM.yyyy" ) }
+                    </div>
                 }
             },
             {
@@ -107,17 +117,6 @@ export default function TimeEntryDataTable( { timeentries, isRelatedTable = fals
                 }
             },
             {
-                id: "totalInternal",
-                header: () => <div className={ "text-right" }>Total (Internal)</div>,
-                cell( { row } ) {
-                    return <div className={ "text-right" }>
-                        { new Intl.NumberFormat( "de-DE", { style: "currency", currency: "EUR" } ).format(
-                            row.original.totalInternal ?? 0.0
-                        ) }
-                    </div>
-                }
-            },
-            {
                 id: "actions",
                 header: "Actions",
                 cell: ( { row } ) => {
@@ -139,7 +138,7 @@ export default function TimeEntryDataTable( { timeentries, isRelatedTable = fals
         , [] );
 
     const data = useMemo( () => timeentries
-            .sort( ( a, b ) => a.no.localeCompare( b.no ) ),
+            .sort( ( a, b ) => b.no.localeCompare( a.no ) ),
         [ timeentries ]
     );
 

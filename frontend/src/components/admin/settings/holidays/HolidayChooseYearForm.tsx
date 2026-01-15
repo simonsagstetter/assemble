@@ -41,14 +41,10 @@ export default function HolidayChooseYearForm( { years }: HolidayChooseYearFormP
     } )
 
     const handleChooseYear = ( data: HolidayChooseYearFormData ) => {
-        setTimeout( () => router.push( `/app/admin/settings/holidays?year=${ data.year }` ), 100 );
-        router.back();
+        router.push( `/app/admin/settings/holidays?year=${ data.year }` );
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-        }
         router.back();
     }
 

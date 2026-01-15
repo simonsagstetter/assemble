@@ -79,9 +79,8 @@ export default function UserUpdateStatusForm( { user }: UserStatusFormProps ) {
                             onClick: () => router.push( "/app/admin/users/" + user.id )
                         }
                     } );
-                    if ( modalContext ) {
-                        handleCancel();
-                    }
+                    router.refresh();
+                    handleCancel();
                 },
                 onError: ( error ) => {
                     if ( error.status === 404 && error.response?.data ) {
@@ -96,13 +95,7 @@ export default function UserUpdateStatusForm( { user }: UserStatusFormProps ) {
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-            router.back();
-        } else {
-            if ( !isSuccess ) router.back();
-            else router.replace( "/app/admin/users" );
-        }
+        router.back();
     }
 
     return <FormProvider { ...form }>

@@ -9,7 +9,6 @@
  */
 
 import { TimeEntryDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import useModalContext from "@/hooks/useModalContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@bprogress/next/app";
 import { FormProvider, useForm } from "react-hook-form";
@@ -34,7 +33,6 @@ type TimeEntryAdminDeleteFormProps = {
 }
 
 export default function TimeEntryAdminDeleteForm( { timeentry }: TimeEntryAdminDeleteFormProps ) {
-    const modalContext = useModalContext();
     const queryClient = useQueryClient();
     const router = useRouter();
     const formId = "time-entry-delete-form";
@@ -63,12 +61,7 @@ export default function TimeEntryAdminDeleteForm( { timeentry }: TimeEntryAdminD
                             getGetAllTimeEntriesQueryKey()
                         ]
                     );
-
-                    if ( modalContext ) {
-                        modalContext.setOpen( false );
-                    }
-                    setTimeout( () => router.push( "/app/manage/timeentries" ), 200 );
-                    router.back();
+                    handleCancel();
                 },
                 onError: ( error ) => {
                     if ( error.response?.data ) {
@@ -85,9 +78,6 @@ export default function TimeEntryAdminDeleteForm( { timeentry }: TimeEntryAdminD
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-        }
         router.back();
     }
 

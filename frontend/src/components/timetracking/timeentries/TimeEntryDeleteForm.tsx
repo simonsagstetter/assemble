@@ -10,7 +10,6 @@
 "use client";
 
 import { TimeEntryDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import useModalContext from "@/hooks/useModalContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@bprogress/next/app";
 import { FormProvider, useForm } from "react-hook-form";
@@ -35,7 +34,6 @@ type TimeEntryDeleteFormProps = {
 }
 
 export default function TimeEntryDeleteForm( { timeentry }: TimeEntryDeleteFormProps ) {
-    const modalContext = useModalContext();
     const queryClient = useQueryClient();
     const router = useRouter();
     const formId = "time-entry-delete-form";
@@ -65,11 +63,7 @@ export default function TimeEntryDeleteForm( { timeentry }: TimeEntryDeleteFormP
                         ]
                     );
 
-                    if ( modalContext ) {
-                        modalContext.setOpen( false );
-                    }
-                    setTimeout( () => router.push( "/app/timetracking/calendar" ), 200 );
-                    router.back();
+                    router.push( "/app/timetracking/calendar" );
                 },
                 onError: ( error ) => {
                     if ( error.response?.data ) {
@@ -86,9 +80,6 @@ export default function TimeEntryDeleteForm( { timeentry }: TimeEntryDeleteFormP
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-        }
         router.back();
     }
 

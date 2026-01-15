@@ -67,9 +67,8 @@ export default function UserResetPasswordForm( { user }: UserResetPasswordFormPr
                     toast.success( "Success", {
                         description: "Password was reset"
                     } );
-                    if ( modalContext ) {
-                        handleCancel();
-                    }
+                    if ( form.getValues( "invalidateAllSessions" ) ) router.refresh();
+                    handleCancel();
                 },
                 onError: ( error ) => {
                     if ( error.response?.data ) {
@@ -95,13 +94,7 @@ export default function UserResetPasswordForm( { user }: UserResetPasswordFormPr
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-            router.back();
-        } else {
-            if ( !isSuccess ) router.back();
-            else router.replace( "/app/admin/users" );
-        }
+        router.back();
     }
     return <FormActionContext.Provider
         value={ { isPending, isError, isSuccess, handleCancel, disableOnSuccess: false } }>

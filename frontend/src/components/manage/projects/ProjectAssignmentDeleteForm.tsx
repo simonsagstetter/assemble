@@ -65,15 +65,9 @@ export default function ProjectAssignmentDeleteForm( { assignment }: ProjectAssi
                         queryKey: getGetOwnProjectAssignmentsQueryKey()
                     } );
 
-                    if ( modalContext ) {
-                        modalContext.setOpen( false );
-                    }
-                    setTimeout( () => origin === "project" ?
-                            router.push( `/app/manage/projects/${ assignment.project.id }?tab=team` )
-                            :
-                            router.push( `/app/manage/employees/${ assignment.employee.id }?tab=projects` )
-                        , 200 );
-                    router.back();
+                    if ( origin === "project" ) router.push( `/app/manage/projects/${ assignment.project.id }?tab=team` )
+                    else router.push( `/app/manage/employees/${ assignment.employee.id }?tab=projects` )
+
                 },
                 onError: ( error ) => {
                     if ( error.response?.data ) {
@@ -90,9 +84,6 @@ export default function ProjectAssignmentDeleteForm( { assignment }: ProjectAssi
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-        }
         router.back();
     }
 

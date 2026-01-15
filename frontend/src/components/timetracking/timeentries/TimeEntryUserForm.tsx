@@ -47,6 +47,7 @@ export default function TimeEntryUserForm(
         relatedTimeEntries = []
     }: TimeEntryMultiFormProps
 ) {
+    const modalContext = useModalContext();
     const { isManager, isAdmin, isSuperUser } = useUserContext();
     const hasPriviledge = isManager || isAdmin || isSuperUser;
     const isNew = timeentry === undefined && employeeId != null;
@@ -55,7 +56,6 @@ export default function TimeEntryUserForm(
         ?.filter( entry => entry.id !== timeentry?.id );
 
     const router = useRouter();
-    const modalContext = useModalContext();
     const queryClient = useQueryClient();
     const searchParams = useSearchParams()
     const dateParam = searchParams.get( "date" ) ?? "";
@@ -74,7 +74,6 @@ export default function TimeEntryUserForm(
         timeentry,
         queryClient,
         router,
-        modalContext,
         isOwnTimeEntry: true
     } );
 
