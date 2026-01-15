@@ -24,8 +24,10 @@ export default async function proxy( request: NextRequest ) {
         try {
             await submitLogout();
             if ( cookieStore.has( "SESSION" ) ) cookieStore.delete( "SESSION" );
+            if ( cookieStore.has( "XSRF-TOKEN" ) ) cookieStore.delete( "XSRF-TOKEN" );
 
         } catch {
+            cookieStore.delete( "XSRF-TOKEN" );
             cookieStore.delete( "SESSION" );
         }
         let nextUrl = LOGIN_REDIRECT_PATH;

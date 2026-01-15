@@ -25,6 +25,7 @@ public class LogoutCustomizer implements Customizer<LogoutConfigurer<HttpSecurit
     public void customize( LogoutConfigurer<HttpSecurity> httpSecurityLogoutConfigurer ) {
         httpSecurityLogoutConfigurer
                 .logoutUrl( "/api/auth/logout" )
+                .deleteCookies( "SESSION", "XSRF-TOKEN" )
                 .logoutSuccessHandler( ( ( request, response, authentication ) ->
                         response.setStatus( HttpServletResponse.SC_NO_CONTENT )
                 ) );
