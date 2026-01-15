@@ -8,22 +8,87 @@
  * All rights reserved.
  */
 
-import { FieldDescription, FieldGroup, FieldLegend, FieldSet } from "@/components/ui/field";
+import { Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/components/ui/field";
 import { ProjectAssignmentLookupField } from "@/components/manage/projects/form/custom-fields";
 import { CalendarField, TextareaField, TimeField } from "@/components/custom-ui/form/fields";
 import { Badge } from "@/components/ui/badge";
 import { Fragment } from "react";
 import { useFormContext } from "react-hook-form";
 import useFormActionContext from "@/hooks/useFormActionContext";
+import { TimeEntryDTO } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
+import {
+    Item,
+    ItemContent,
+    ItemDescription,
+    ItemGroup,
+    ItemMedia,
+    ItemTitle
+} from "@/components/ui/item";
+import Link from "next/link";
+import { CalendarIcon } from "lucide-react";
+import { isoDurationToMs, msToHHmm } from "@/utils/duration";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+
+function DescriptionFragment( { disabled }: { disabled: boolean } ) {
+    const form = useFormContext();
+    return <TextareaField fieldName={ "description" } formControl={ form.control }
+                          label={ "Description" } disabled={ disabled }
+                          className={ "min-h-[200px]" }>
+        You must enter at least 10 characters.
+    </TextareaField>
+}
+
+function RelatedTimeEntriesFragment( { relatedTimeEntries }: { relatedTimeEntries: TimeEntryDTO[] } ) {
+    return <Field>
+        <FieldLabel>Today related time entries</FieldLabel>
+        <ItemGroup className={ "gap-2" }>
+            { relatedTimeEntries.map( item => (
+                <Tooltip key={ item.id }>
+                    <TooltipTrigger asChild>
+                        <Item variant={ "outline" } asChild
+                              role={ "listitem" }
+                              className={ "px-4 py-3 shadow-xs" }>
+                            <Link href={ `/app/timetracking/timeentries/${ item.id }/update` }>
+                                <ItemMedia variant={ "image" }
+                                           className={ "bg-primary" }>
+                                    <CalendarIcon
+                                        className={ "text-primary-foreground stroke-1 size-5" }/>
+                                </ItemMedia>
+                                <ItemContent>
+                                    <ItemTitle
+                                        className={ "line-clamp-1" }>{ item.project.name }</ItemTitle>
+                                    <ItemDescription>{ item.description }</ItemDescription>
+                                </ItemContent>
+                                <ItemContent className={ "self-start! text-center" }>
+                                    <ItemDescription>{ msToHHmm( isoDurationToMs( item.totalTime ) - isoDurationToMs( item.pauseTime ) ) }</ItemDescription>
+                                </ItemContent>
+                            </Link>
+                        </Item>
+                    </TooltipTrigger>
+                    <TooltipContent className={ "max-w-[400px]" }>
+                        { item.description }
+                    </TooltipContent>
+                </Tooltip>
+            ) ) }
+        </ItemGroup>
+    </Field>
+}
 
 function TimeEntryFragment(
-    { projectId, employeeId, total, isRestrictedSearch = true }:
-    { projectId?: string, employeeId: string, total: string, isRestrictedSearch?: boolean }
+    { projectId, employeeId, total, isRestrictedSearch = true, relatedTimeEntries = [] }:
+    {
+        projectId?: string,
+        employeeId: string,
+        total: string,
+        isRestrictedSearch?: boolean,
+        relatedTimeEntries?: TimeEntryDTO[]
+    }
 ) {
     const form = useFormContext();
     const { isPending, isSuccess, disableOnSuccess } = useFormActionContext();
     const { isSubmitting } = form.formState;
     const disabled = disableOnSuccess ? isPending || isSubmitting || isSuccess : isPending || isSubmitting;
+    const hasRelatedTimeEntries = relatedTimeEntries?.length > 0
     return <Fragment>
         <FieldSet>
             <FieldLegend>Project & date</FieldLegend>
@@ -83,11 +148,13 @@ function TimeEntryFragment(
                 This information may be used for reporting, billing, or project
                 tracking.</FieldDescription>
             <FieldGroup>
-                <TextareaField fieldName={ "description" } formControl={ form.control }
-                               label={ "Description" } disabled={ disabled }
-                               className={ "min-h-[200px]" }>
-                    You must enter at least 10 characters.
-                </TextareaField>
+                { hasRelatedTimeEntries ?
+                    <div className={ "grid grid-cols-2 gap-16" }>
+                        <DescriptionFragment disabled={ disabled }/>
+                        <RelatedTimeEntriesFragment relatedTimeEntries={ relatedTimeEntries }/>
+                    </div>
+                    : <DescriptionFragment disabled={ disabled }/>
+                }
             </FieldGroup>
         </FieldSet>
     </Fragment>

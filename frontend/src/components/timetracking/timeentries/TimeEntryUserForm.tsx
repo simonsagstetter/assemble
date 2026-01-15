@@ -80,8 +80,6 @@ export default function TimeEntryUserForm(
 
     const formId = "time-entry-user-form";
 
-    console.log( filteredTimeEntries );
-
     return <FormActionContext.Provider
         value={ { ...ctxValue, handleCancel } }>
         <FormProvider { ...form }>
@@ -92,7 +90,7 @@ export default function TimeEntryUserForm(
                     <FieldGroup className={ "py-4 px-8" }>
                         <TimeEntryFragment projectId={ timeentry?.project.id ?? undefined }
                                            employeeId={ isNew ? employeeId : timeentry!.employee.id }
-                                           total={ total }
+                                           total={ total } relatedTimeEntries={ filteredTimeEntries }
                         />
                         <ErrorMessage/>
                         <SuccessMessage message={ `Time entry was ${ isNew ? "created" : "updated" } successfully` }/>
