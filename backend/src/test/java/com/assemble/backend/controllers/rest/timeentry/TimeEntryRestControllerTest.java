@@ -285,7 +285,7 @@ class TimeEntryRestControllerTest {
     @Test
     @WithMockCustomUser(saveToDatabase = true)
     @DisplayName("/GET getOwnTimeEntries should return status code 400 when exactDate param is invalid")
-    void getOwnTimeEntries_ShouldReturnStatusCode400_WhenExactateParamIsInvalid() throws Exception {
+    void getOwnTimeEntries_ShouldReturnStatusCode400_WhenExactDateParamIsInvalid() throws Exception {
         User mockedUserFromDB = userRepository.findByUsername( "testuser" ).orElseThrow();
         testEmployee.setUser( mockedUserFromDB );
         employeeRepository.save( testEmployee );
@@ -305,7 +305,7 @@ class TimeEntryRestControllerTest {
     @Test
     @WithMockCustomUser(saveToDatabase = true)
     @DisplayName("/GET getOwnTimeEntries should return status code 200 and a list of TimeEntryDTO when called with exactDate")
-    void getOwnTimeEntries_ShouldReturnStatusCode200AndAListOfTimeEntryDTO_WhenCalledWithExcatDate() throws Exception {
+    void getOwnTimeEntries_ShouldReturnStatusCode200AndAListOfTimeEntryDTO_WhenCalledWithExactDate() throws Exception {
         User mockedUserFromDB = userRepository.findByUsername( "testuser" ).orElseThrow();
         testEmployee.setUser( mockedUserFromDB );
         employeeRepository.save( testEmployee );

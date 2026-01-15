@@ -75,7 +75,6 @@ export default function UserUpdateRolesForm( { user }: UserUpdateRolesFormProps 
                             onClick: () => router.push( "/app/admin/users/" + user.id )
                         }
                     } );
-                    router.refresh();
                     handleCancel();
                 },
                 onError: ( error ) => {

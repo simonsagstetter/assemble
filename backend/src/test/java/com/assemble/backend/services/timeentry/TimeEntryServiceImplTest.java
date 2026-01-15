@@ -393,7 +393,7 @@ class TimeEntryServiceImplTest {
     void getOwnTimeEntriesByDate_ShouldThrow_WhenAroundDateParamIsInvalidDateFormat() {
         when( employeeRepository.findByUser_Id( recordId ) ).thenReturn( Optional.of( employee ) );
 
-        assertThrows( InvalidParameterException.class, () -> service.getOwnTimeEntries(
+        assertThrows( InvalidParameterException.class, () -> service.getOwnTimeEntriesByDate(
                 new SecurityUser( user ), "invalidDateString"
         ) );
 

@@ -79,7 +79,6 @@ export default function UserUpdateStatusForm( { user }: UserStatusFormProps ) {
                             onClick: () => router.push( "/app/admin/users/" + user.id )
                         }
                     } );
-                    router.refresh();
                     handleCancel();
                 },
                 onError: ( error ) => {
