@@ -25,4 +25,6 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, UUID> {
 
     List<TimeEntry> findAllByEmployee_IdAndDateIsBetween( UUID employeeId, LocalDate dateAfter, LocalDate dateBefore );
 
+    List<TimeEntry> findAllByEmployee_IdAndDateIs( UUID employeeId, LocalDate date );
+
 }
