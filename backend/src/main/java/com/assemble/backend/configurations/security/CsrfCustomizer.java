@@ -12,7 +12,6 @@ package com.assemble.backend.configurations.security;
 
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
-
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;

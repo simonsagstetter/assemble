@@ -88,11 +88,7 @@ export default function HolidayImportFrom() {
 
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-        }
-        setTimeout( () => router.push( `/app/admin/settings/holidays?year=${ form.getValues( "year" ) }` ), 100 );
-        router.back();
+        router.push( `/app/admin/settings/holidays?year=${ form.getValues( "year" ) }` );
     }
 
     return <FormActionContext.Provider

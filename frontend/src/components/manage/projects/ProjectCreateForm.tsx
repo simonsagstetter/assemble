@@ -79,9 +79,7 @@ export default function ProjectCreateForm() {
                             onClick: () => router.push( "/app/manage/projects/" + project.id )
                         }
                     } );
-                    if ( modalContext ) {
-                        handleCancel();
-                    }
+                    handleCancel();
                 },
                 onError: ( error ) => {
                     if ( ( error.status === 400 || error.status === 409 ) && error.response?.data ) {
@@ -105,13 +103,7 @@ export default function ProjectCreateForm() {
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-            router.back();
-        } else {
-            if ( !isSuccess ) router.back();
-            else router.push( "/app/manage/projects" );
-        }
+        router.back();
     }
 
     return <FormActionContext.Provider

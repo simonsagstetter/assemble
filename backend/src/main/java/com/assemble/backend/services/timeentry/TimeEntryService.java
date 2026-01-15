@@ -31,6 +31,8 @@ public interface TimeEntryService {
 
     List<TimeEntryDTO> getOwnTimeEntries( SecurityUser user, String aroundDate );
 
+    List<TimeEntryDTO> getOwnTimeEntriesByDate( SecurityUser user, String date );
+
     TimeEntryDTO createOwnTimeEntry( TimeEntryCreateDTO timeEntryCreateDTO, SecurityUser user );
 
     TimeEntryDTO createTimeEntry( TimeEntryCreateDTO timeEntryCreateDTO );

@@ -60,7 +60,6 @@ export default function TimeEntryAdminForm( { timeentry }: TimeEntryAdminFormPro
         timeentry,
         queryClient,
         router,
-        modalContext,
         isOwnTimeEntry: false
     } );
 

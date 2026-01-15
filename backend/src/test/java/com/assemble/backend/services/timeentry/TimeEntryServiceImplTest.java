@@ -389,6 +389,55 @@ class TimeEntryServiceImplTest {
     }
 
     @Test
+    @DisplayName("getOwnTimeEntriesByDate should throw if aroundDate param is invalid date format")
+    void getOwnTimeEntriesByDate_ShouldThrow_WhenAroundDateParamIsInvalidDateFormat() {
+        when( employeeRepository.findByUser_Id( recordId ) ).thenReturn( Optional.of( employee ) );
+
+        assertThrows( InvalidParameterException.class, () -> service.getOwnTimeEntriesByDate(
+                new SecurityUser( user ), "invalidDateString"
+        ) );
+
+        verify( employeeRepository, times( 1 ) ).findByUser_Id( recordId );
+    }
+
+    @Test
+    @DisplayName("getOwnTimeEntriesByDate should throw when user has no employee assigned")
+    void getOwnTimeEntriesByDate_ShouldThrow_WhenUserHasNoEmployeeAssigned() {
+        when( employeeRepository.findByUser_Id( notExistingRecordId ) ).thenReturn( Optional.empty() );
+        user.setId( notExistingRecordId );
+
+        assertThrows( EntityNotFoundException.class, () -> service.getOwnTimeEntriesByDate(
+                new SecurityUser( user ), "invalidDateString"
+        ) );
+
+
+        verify( employeeRepository, times( 1 ) ).findByUser_Id( notExistingRecordId );
+    }
+
+    @Test
+    @DisplayName("getOwnTimeEntriesByDate should return list of time entries when user has employee assigned")
+    void getOwnTimeEntriesByDate_ShouldReturnListOfTimeEntries_WhenUserHasEmployeeAssigned() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern( "yyyy-MM-dd" );
+        when( employeeRepository.findByUser_Id( recordId ) ).thenReturn( Optional.of( employee ) );
+
+        when( timeEntryRepository.findAllByEmployee_IdAndDateIs( eq( recordId ), any( LocalDate.class ) ) )
+                .thenReturn( List.of( timeEntry ) );
+        when( timeEntryMapper.toTimeEntryDTO( timeEntry ) ).thenReturn( timeEntryDTO );
+
+        List<TimeEntryDTO> actual = assertDoesNotThrow( () -> service.getOwnTimeEntriesByDate(
+                new SecurityUser( user ), LocalDate.now().format( formatter )
+        ) );
+
+        assertEquals( 1, actual.size() );
+        assertEquals( timeEntryDTO, actual.getFirst() );
+
+        verify( employeeRepository, times( 1 ) ).findByUser_Id( recordId );
+        verify( timeEntryRepository, times( 1 ) )
+                .findAllByEmployee_IdAndDateIs( eq( recordId ), any( LocalDate.class ) );
+        verify( timeEntryMapper, times( 1 ) ).toTimeEntryDTO( timeEntry );
+    }
+
+    @Test
     @DisplayName("getTimeEntryById should throw if no time entry exists in db")
     void getTimeEntryById_ShouldThrow_WhenNoTimeEntryExistsInDB() {
         when( timeEntryRepository.findById( notExistingRecordId ) ).thenReturn( Optional.empty() );

@@ -130,15 +130,40 @@ public class TimeEntryRestController {
                     )
             )
     )
+    @ApiResponse(
+            description = "Not found",
+            responseCode = "404",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(
+                            implementation = ErrorResponse.class
+                    )
+            )
+    )
+    @ApiResponse(
+            description = "Bad Request",
+            responseCode = "400",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(
+                            implementation = ErrorResponse.class
+                    )
+            )
+    )
     @GetMapping(
             path = "/me",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<TimeEntryDTO>> getOwnTimeEntries(
             @AuthenticationPrincipal SecurityUser user,
-            @RequestParam(required = true) String aroundDate
+            @RequestParam(required = false) String aroundDate,
+            @RequestParam(required = false) String exactDate
     ) {
-        return ResponseEntity.ok( timeEntryService.getOwnTimeEntries( user, aroundDate ) );
+        if ( aroundDate != null ) return ResponseEntity
+                .ok( timeEntryService.getOwnTimeEntries( user, aroundDate ) );
+        else if ( exactDate != null ) return ResponseEntity
+                .ok( timeEntryService.getOwnTimeEntriesByDate( user, exactDate ) );
+        else return ResponseEntity.ok( List.of() );
     }
 
     @Operation(

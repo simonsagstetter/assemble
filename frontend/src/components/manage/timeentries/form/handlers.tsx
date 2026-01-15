@@ -17,7 +17,6 @@ import {
 } from "@/api/rest/generated/query/openAPIDefinition.schemas";
 import { QueryClient, UseMutationResult } from "@tanstack/react-query";
 import { useRouter } from "@bprogress/next/app";
-import { ModalContextType } from "@/components/custom-ui/Modal";
 import {
     getGetAllTimeEntriesByEmployeeIdQueryKey,
     getGetAllTimeEntriesByProjectIdQueryKey, getGetAllTimeEntriesQueryKey,
@@ -38,9 +37,9 @@ interface UseTimeEntryFormHandlersProps {
     timeentry?: TimeEntryDTO;
     queryClient: QueryClient;
     router: ReturnType<typeof useRouter>;
-    modalContext: ModalContextType | null;
     isOwnTimeEntry?: boolean;
     hasPriviledge?: boolean;
+    successUrl?: string;
 }
 
 type CreateMutation = UseMutationResult<TimeEntryDTO, ErrorType<ValidationErrorResponse | ErrorResponse>, {
@@ -64,7 +63,6 @@ function useTimeEntryAdminFormHandlers(
         timeentry,
         queryClient,
         router,
-        modalContext,
         isOwnTimeEntry = false,
         hasPriviledge = true
     }: UseTimeEntryFormHandlersProps
@@ -79,7 +77,6 @@ function useTimeEntryAdminFormHandlers(
         timeentry,
         queryClient,
         router,
-        modalContext,
         isOwnTimeEntry,
         hasPriviledge,
         create,
@@ -93,8 +90,8 @@ function useTimeEntryUserFormHandlers(
         form,
         timeentry,
         queryClient,
+        successUrl = "/app/timetracking/calendar",
         router,
-        modalContext,
         hasPriviledge = false
     }: UseTimeEntryFormHandlersProps
 ) {
@@ -106,8 +103,8 @@ function useTimeEntryUserFormHandlers(
         form,
         timeentry,
         queryClient,
+        successUrl,
         router,
-        modalContext,
         hasPriviledge,
         create,
         update
@@ -120,14 +117,13 @@ function useTimeEntryFormHandlers(
         form,
         timeentry,
         queryClient,
+        successUrl,
         router,
-        modalContext,
         isOwnTimeEntry = false,
         hasPriviledge,
         create, update
     }: UseTimeEntryFormHandlersProps & MutationHandlers
 ) {
-
 
     const onSuccess = async ( data: TimeEntryDTO ) => {
         await invalidateQueries( queryClient, [
@@ -150,10 +146,8 @@ function useTimeEntryFormHandlers(
                 onClick: () => router.push( `/app/manage/timeentries/${ data.id }` )
             } : null
         } );
-
-        if ( modalContext ) {
-            handleCancel();
-        }
+        if ( successUrl ) router.push( successUrl );
+        else router.back();
     };
 
     const onError = ( error: ErrorType<ValidationErrorResponse | ErrorResponse> ) => {
@@ -183,9 +177,6 @@ function useTimeEntryFormHandlers(
     };
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-        }
         router.back();
     };
 

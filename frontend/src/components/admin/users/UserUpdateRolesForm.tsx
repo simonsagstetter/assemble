@@ -75,9 +75,7 @@ export default function UserUpdateRolesForm( { user }: UserUpdateRolesFormProps 
                             onClick: () => router.push( "/app/admin/users/" + user.id )
                         }
                     } );
-                    if ( modalContext ) {
-                        handleCancel();
-                    }
+                    handleCancel();
                 },
                 onError: ( error ) => {
                     if ( error.response?.data ) {
@@ -103,13 +101,7 @@ export default function UserUpdateRolesForm( { user }: UserUpdateRolesFormProps 
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-            router.back();
-        } else {
-            if ( !isSuccess ) router.back();
-            else router.replace( "/app/admin/users" );
-        }
+        router.back();
     }
 
     return <FormActionContext.Provider

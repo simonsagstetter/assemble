@@ -107,9 +107,7 @@ export default function EmployeeEditForm( { employee }: EmployeeEditFormProps ) 
                             onClick: () => router.push( "/app/manage/employees/" + employee.id )
                         }
                     } );
-                    if ( modalContext ) {
-                        handleCancel();
-                    }
+                    handleCancel();
                 },
                 onError: ( error ) => {
                     if ( ( error.status === 400 || error.status === 404 ) && error.response?.data ) {
@@ -133,13 +131,7 @@ export default function EmployeeEditForm( { employee }: EmployeeEditFormProps ) 
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-            router.back();
-        } else {
-            if ( !isSuccess ) router.back();
-            else router.push( "/app/manage/employees" );
-        }
+        router.back();
     }
 
     return <FormActionContext.Provider

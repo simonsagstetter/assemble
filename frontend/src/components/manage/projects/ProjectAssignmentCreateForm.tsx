@@ -102,9 +102,7 @@ export default function ProjectAssignmentCreateForm(
                             ) : router.push( `/app/manage/employees/${ assignment.employee.id }?tab=projects` )
                         }
                     } );
-                    if ( modalContext ) {
-                        handleCancel();
-                    }
+                    handleCancel();
                 },
                 onError: ( error ) => {
                     if ( error.response?.data ) {
@@ -133,13 +131,7 @@ export default function ProjectAssignmentCreateForm(
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-            router.back();
-        } else {
-            if ( !isSuccess ) router.back();
-            else router.push( isProject ? "/app/manage/projects" : "/app/manage/employees" );
-        }
+        router.back();
     }
 
     return <FormActionContext.Provider

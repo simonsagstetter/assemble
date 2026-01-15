@@ -284,8 +284,50 @@ class TimeEntryRestControllerTest {
 
     @Test
     @WithMockCustomUser(saveToDatabase = true)
-    @DisplayName("/GET getOwnTimeEntries should return status code 200 and a list of TimeEntryDTO")
-    void getOwnTimeEntries_ShouldReturnStatusCode200AndAListOfTimeEntryDTO() throws Exception {
+    @DisplayName("/GET getOwnTimeEntries should return status code 400 when exactDate param is invalid")
+    void getOwnTimeEntries_ShouldReturnStatusCode400_WhenExactDateParamIsInvalid() throws Exception {
+        User mockedUserFromDB = userRepository.findByUsername( "testuser" ).orElseThrow();
+        testEmployee.setUser( mockedUserFromDB );
+        employeeRepository.save( testEmployee );
+
+        mockMvc.perform(
+                get( "/api/timeentries/me" )
+                        .param( "exactDate", " " )
+        ).andExpect(
+                status().isBadRequest()
+        ).andExpect(
+                content().contentType( MediaType.APPLICATION_JSON )
+        ).andExpect(
+                jsonPath( "$.message" ).isNotEmpty()
+        );
+    }
+
+    @Test
+    @WithMockCustomUser(saveToDatabase = true)
+    @DisplayName("/GET getOwnTimeEntries should return status code 200 and a list of TimeEntryDTO when called with exactDate")
+    void getOwnTimeEntries_ShouldReturnStatusCode200AndAListOfTimeEntryDTO_WhenCalledWithExactDate() throws Exception {
+        User mockedUserFromDB = userRepository.findByUsername( "testuser" ).orElseThrow();
+        testEmployee.setUser( mockedUserFromDB );
+        employeeRepository.save( testEmployee );
+
+        TimeEntry timeEntry = timeEntryRepository.save( testTimeEntry );
+        assert timeEntry.getId() != null;
+        mockMvc.perform(
+                get( "/api/timeentries/me" )
+                        .param( "exactDate", LocalDate.now().format( DateTimeFormatter.ofPattern( "yyyy-MM-dd" ) ) )
+        ).andExpect(
+                status().isOk()
+        ).andExpect(
+                content().contentType( MediaType.APPLICATION_JSON )
+        ).andExpect(
+                jsonPath( "$[0].id" ).value( timeEntry.getId().toString() )
+        );
+    }
+
+    @Test
+    @WithMockCustomUser(saveToDatabase = true)
+    @DisplayName("/GET getOwnTimeEntries should return status code 200 and a list of TimeEntryDTO when called with aroundDate")
+    void getOwnTimeEntries_ShouldReturnStatusCode200AndAListOfTimeEntryDTO_WhenCalledWithAroundDate() throws Exception {
         User mockedUserFromDB = userRepository.findByUsername( "testuser" ).orElseThrow();
         testEmployee.setUser( mockedUserFromDB );
         employeeRepository.save( testEmployee );
@@ -323,6 +365,22 @@ class TimeEntryRestControllerTest {
                 content().json( """
                         []
                         """ )
+        );
+    }
+
+    @Test
+    @WithMockCustomUser(saveToDatabase = true)
+    @DisplayName("/GET getOwnTimeEntries should return status code 404 when called with exactDate and no employee found")
+    void getOwnTimeEntries_ShouldReturnStatusCode404_WhenCalledWithExactDateAndNoEmployeeFound() throws Exception {
+        mockMvc.perform(
+                get( "/api/timeentries/me" )
+                        .param( "exactDate", LocalDate.now().format( DateTimeFormatter.ofPattern( "yyyy-MM-dd" ) ) )
+        ).andExpect(
+                status().isNotFound()
+        ).andExpect(
+                content().contentType( MediaType.APPLICATION_JSON )
+        ).andExpect(
+                jsonPath( "$.message" ).isNotEmpty()
         );
     }
 

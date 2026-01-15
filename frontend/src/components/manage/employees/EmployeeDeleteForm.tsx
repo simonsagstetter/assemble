@@ -10,7 +10,6 @@
 "use client";
 
 import { EmployeeDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import useModalContext from "@/hooks/useModalContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@bprogress/next/app";
 import { FormProvider, useForm } from "react-hook-form";
@@ -34,7 +33,6 @@ type EmployeeDeleteFormProps = {
 }
 
 export default function EmployeeDeleteForm( { employee }: EmployeeDeleteFormProps ) {
-    const modalContext = useModalContext();
     const queryClient = useQueryClient();
     const router = useRouter();
     const form = useForm();
@@ -55,7 +53,7 @@ export default function EmployeeDeleteForm( { employee }: EmployeeDeleteFormProp
                         queryKey: getGetAllEmployeesQueryKey(),
                         refetchType: "all"
                     } );
-                    
+
                     await queryClient.invalidateQueries( {
                         queryKey: getGetEmployeeQueryKey( employee.id ),
                         refetchType: "none"
@@ -66,11 +64,7 @@ export default function EmployeeDeleteForm( { employee }: EmployeeDeleteFormProp
                         refetchType: "all"
                     } );
 
-                    if ( modalContext ) {
-                        modalContext.setOpen( false );
-                    }
-                    setTimeout( () => router.push( "/app/manage/employees" ), 200 );
-                    router.back();
+                    router.push( "/app/manage/employees" );
                 },
                 onError: ( error ) => {
                     if ( error.response?.data ) {
@@ -87,9 +81,6 @@ export default function EmployeeDeleteForm( { employee }: EmployeeDeleteFormProp
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-        }
         router.back();
     }
 

@@ -9,7 +9,6 @@
  */
 "use client";
 import { ProjectDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import useModalContext from "@/hooks/useModalContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@bprogress/next/app";
 import { FormProvider, useForm } from "react-hook-form";
@@ -33,7 +32,6 @@ type ProjectDeleteFormProps = {
 }
 
 export default function ProjectDeleteForm( { project }: ProjectDeleteFormProps ) {
-    const modalContext = useModalContext();
     const queryClient = useQueryClient();
     const router = useRouter();
     const form = useForm();
@@ -62,11 +60,7 @@ export default function ProjectDeleteForm( { project }: ProjectDeleteFormProps )
                         refetchType: "all"
                     } );
 
-                    if ( modalContext ) {
-                        modalContext.setOpen( false );
-                    }
-                    setTimeout( () => router.push( "/app/manage/projects" ), 200 );
-                    router.back();
+                    router.push( "/app/manage/projects" );
                 },
                 onError: ( error ) => {
                     if ( error.response?.data ) {
@@ -83,9 +77,6 @@ export default function ProjectDeleteForm( { project }: ProjectDeleteFormProps )
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-        }
         router.back();
     }
 

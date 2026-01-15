@@ -11,7 +11,6 @@
 "use client";
 
 import { ProjectAssignmentDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import useModalContext from "@/hooks/useModalContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@bprogress/next/app";
 import { FormProvider, useForm } from "react-hook-form";
@@ -33,7 +32,6 @@ type ProjectAssignmentDeleteFormProps = {
 }
 
 export default function ProjectAssignmentDeleteForm( { assignment }: ProjectAssignmentDeleteFormProps ) {
-    const modalContext = useModalContext();
     const queryClient = useQueryClient();
     const router = useRouter();
     const form = useForm();
@@ -65,15 +63,9 @@ export default function ProjectAssignmentDeleteForm( { assignment }: ProjectAssi
                         queryKey: getGetOwnProjectAssignmentsQueryKey()
                     } );
 
-                    if ( modalContext ) {
-                        modalContext.setOpen( false );
-                    }
-                    setTimeout( () => origin === "project" ?
-                            router.push( `/app/manage/projects/${ assignment.project.id }?tab=team` )
-                            :
-                            router.push( `/app/manage/employees/${ assignment.employee.id }?tab=projects` )
-                        , 200 );
-                    router.back();
+                    if ( origin === "project" ) router.push( `/app/manage/projects/${ assignment.project.id }?tab=team` )
+                    else router.push( `/app/manage/employees/${ assignment.employee.id }?tab=projects` )
+
                 },
                 onError: ( error ) => {
                     if ( error.response?.data ) {
@@ -90,9 +82,6 @@ export default function ProjectAssignmentDeleteForm( { assignment }: ProjectAssi
     }
 
     const handleCancel = () => {
-        if ( modalContext ) {
-            modalContext.setOpen( false );
-        }
         router.back();
     }
 
