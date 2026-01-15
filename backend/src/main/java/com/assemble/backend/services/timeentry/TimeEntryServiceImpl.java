@@ -119,6 +119,7 @@ public class TimeEntryServiceImpl implements TimeEntryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TimeEntryDTO getOwnTimeEntryById( String id, SecurityUser user ) {
         TimeEntry timeEntry = timeEntryRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
@@ -137,6 +138,30 @@ public class TimeEntryServiceImpl implements TimeEntryService {
 
         return timeEntryMapper.toTimeEntryDTO( timeEntry );
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TimeEntryDTO> getOwnTimeEntriesByDate( SecurityUser user, String date ) {
+        Employee relatedEmployee = this.employeeRepository.findByUser_Id( user.getUser().getId() )
+                .orElseThrow(
+                        () -> new EntityNotFoundException( "Could not find employee for user with id: " + user.getUser().getId() )
+                );
+
+        AtomicReference<LocalDate> parsedDate = new AtomicReference<>();
+
+        try {
+            parsedDate.set( LocalDate.parse( date ) );
+        } catch ( DateTimeParseException ex ) {
+            throw new InvalidParameterException( "Invalid date format" );
+        }
+
+        return this.timeEntryRepository
+                .findAllByEmployee_IdAndDateIs( relatedEmployee.getId(), parsedDate.get() )
+                .stream()
+                .map( timeEntryMapper::toTimeEntryDTO )
+                .toList();
+    }
+
 
     private TimeEntry setRateAndTotals( TimeEntry timeEntry, TimeValidatable timeValidatable, BigDecimal rate ) {
         if ( timeValidatable.getStartTime() != null && timeValidatable.getEndTime() != null ) {
