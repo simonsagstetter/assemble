@@ -11,7 +11,6 @@
 "use client";
 
 import { ProjectAssignmentDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import useModalContext from "@/hooks/useModalContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@bprogress/next/app";
 import { FormProvider, useForm } from "react-hook-form";
@@ -33,7 +32,6 @@ type ProjectAssignmentDeleteFormProps = {
 }
 
 export default function ProjectAssignmentDeleteForm( { assignment }: ProjectAssignmentDeleteFormProps ) {
-    const modalContext = useModalContext();
     const queryClient = useQueryClient();
     const router = useRouter();
     const form = useForm();
