@@ -11,7 +11,10 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useGetOwnTimeEntryByIdSuspense } from "@/api/rest/generated/query/timeentries/timeentries";
+import {
+    useGetOwnTimeEntriesSuspense,
+    useGetOwnTimeEntryByIdSuspense
+} from "@/api/rest/generated/query/timeentries/timeentries";
 import TimeEntryUserForm from "@/components/timetracking/timeentries/TimeEntryUserForm";
 import dynamic from "next/dynamic";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
@@ -19,10 +22,13 @@ import ModalHeader from "@/components/custom-ui/ModalHeader";
 function UpdateTimeEntryModal() {
     const { id } = useParams<{ id: string }>();
     const { data: timeEntry } = useGetOwnTimeEntryByIdSuspense( id );
+    const { data: relatedTimeEntries } = useGetOwnTimeEntriesSuspense( {
+        exactDate: timeEntry.date
+    } );
     return <ModalHeader title={ "Update" }
                         description={ "Update the fields and click save to update the time entry." }
                         entity={ "Time Entry" }>
-        <TimeEntryUserForm timeentry={ timeEntry }/>
+        <TimeEntryUserForm timeentry={ timeEntry } relatedTimeEntries={ relatedTimeEntries }/>
     </ModalHeader>
 }
 

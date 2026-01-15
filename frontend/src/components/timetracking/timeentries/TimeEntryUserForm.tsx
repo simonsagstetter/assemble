@@ -37,12 +37,22 @@ import { useTimeEntryUserFormHandlers } from "@/components/manage/timeentries/fo
 type TimeEntryMultiFormProps = {
     employeeId?: string;
     timeentry?: TimeEntryDTO;
+    relatedTimeEntries?: TimeEntryDTO[];
 }
 
-export default function TimeEntryUserForm( { employeeId, timeentry }: TimeEntryMultiFormProps ) {
+export default function TimeEntryUserForm(
+    {
+        employeeId,
+        timeentry,
+        relatedTimeEntries = []
+    }: TimeEntryMultiFormProps
+) {
     const { isManager, isAdmin, isSuperUser } = useUserContext();
     const hasPriviledge = isManager || isAdmin || isSuperUser;
     const isNew = timeentry === undefined && employeeId != null;
+
+    const filteredTimeEntries = isNew ? relatedTimeEntries : relatedTimeEntries
+        ?.filter( entry => entry.id !== timeentry?.id );
 
     const router = useRouter();
     const modalContext = useModalContext();
@@ -70,6 +80,8 @@ export default function TimeEntryUserForm( { employeeId, timeentry }: TimeEntryM
 
     const formId = "time-entry-user-form";
 
+    console.log( filteredTimeEntries );
+
     return <FormActionContext.Provider
         value={ { ...ctxValue, handleCancel } }>
         <FormProvider { ...form }>
@@ -79,7 +91,9 @@ export default function TimeEntryUserForm( { employeeId, timeentry }: TimeEntryM
                 <ScrollArea className={ `${ modalContext ? "h-[65vh] my-0" : "" }` }>
                     <FieldGroup className={ "py-4 px-8" }>
                         <TimeEntryFragment projectId={ timeentry?.project.id ?? undefined }
-                                           employeeId={ isNew ? employeeId : timeentry!.employee.id } total={ total }/>
+                                           employeeId={ isNew ? employeeId : timeentry!.employee.id }
+                                           total={ total }
+                        />
                         <ErrorMessage/>
                         <SuccessMessage message={ `Time entry was ${ isNew ? "created" : "updated" } successfully` }/>
                     </FieldGroup>
