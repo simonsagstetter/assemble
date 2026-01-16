@@ -25,14 +25,18 @@ export default async function proxy( request: NextRequest ) {
             await submitLogout();
         } catch {
             const domain = new URL( request.url ).hostname;
-            cookieStore.delete( {
+            cookieStore.set( {
                 name: "SESSION",
+                value: "",
+                expires: 0,
                 maxAge: 0,
                 path: "/",
                 domain
             } )
-            cookieStore.delete( {
+            cookieStore.set( {
                 name: "XSRF-TOKEN",
+                value: "",
+                expires: 0,
                 maxAge: 0,
                 path: "/",
                 domain
