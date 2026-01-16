@@ -32,6 +32,7 @@ const submitLogout = async () => {
             ...csrf
         }
     } );
+
     if ( response.status === 204 ) {
         await setCookiesFromResponse( response.headers.getSetCookie() );
     }
@@ -48,6 +49,7 @@ const getUserDetails = async () => {
             ...csrf
         }
     } )
+
 
     if ( response.status === 401 || response.status === 404 ) redirect( LOGOUT_PATH );
 
