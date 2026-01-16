@@ -23,14 +23,24 @@ export default async function proxy( request: NextRequest ) {
     if ( pathName === LOGOUT_PATH ) {
         try {
             await submitLogout();
-            if ( cookieStore.has( "SESSION" ) ) cookieStore.delete( "SESSION" );
-            if ( cookieStore.has( "XSRF-TOKEN" ) ) cookieStore.delete( "XSRF-TOKEN" );
-
         } catch {
-            cookieStore.delete( "XSRF-TOKEN" );
-            cookieStore.delete( "SESSION" );
+            const domain = new URL( request.url ).hostname;
+            cookieStore.delete( {
+                name: "SESSION",
+                maxAge: 0,
+                path: "/",
+                domain
+            } )
+            cookieStore.delete( {
+                name: "XSRF-TOKEN",
+                maxAge: 0,
+                path: "/",
+                domain
+            } )
         }
+
         let nextUrl = LOGIN_REDIRECT_PATH;
+
         if ( params.has( "next" ) && isValidRoutePath( params.get( "next" )! ) ) {
             nextUrl = params.get( "next" )!;
         }
