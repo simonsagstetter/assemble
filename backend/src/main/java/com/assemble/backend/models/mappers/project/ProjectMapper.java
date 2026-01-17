@@ -13,11 +13,10 @@ package com.assemble.backend.models.mappers.project;
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectDTO;
 import com.assemble.backend.models.dtos.project.ProjectRefDTO;
+import com.assemble.backend.models.dtos.project.ProjectUpdateDTO;
 import com.assemble.backend.models.entities.project.Project;
 import com.assemble.backend.models.mappers.core.BaseEntity;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
@@ -31,4 +30,14 @@ public interface ProjectMapper {
     ProjectRefDTO toProjectRefDTO( Project project );
 
     Project toProject( ProjectCreateDTO projectCreateDTO );
+
+    @BeanMapping(ignoreByDefault = true, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "name", source = "projectUpdateDTO.name")
+    @Mapping(target = "description", source = "projectUpdateDTO.description")
+    @Mapping(target = "active", source = "projectUpdateDTO.active")
+    @Mapping(target = "type", source = "projectUpdateDTO.type")
+    @Mapping(target = "stage", source = "projectUpdateDTO.stage")
+    @Mapping(target = "category", source = "projectUpdateDTO.category")
+    @Mapping(target = "color", source = "projectUpdateDTO.color")
+    Project toProject( ProjectUpdateDTO projectUpdateDTO, @MappingTarget Project project );
 }
