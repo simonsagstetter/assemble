@@ -12,6 +12,7 @@ package com.assemble.backend.services.project;
 
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectDTO;
+import com.assemble.backend.models.dtos.project.ProjectUpdateDTO;
 import com.assemble.backend.models.entities.auth.UserAudit;
 import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.entities.project.*;
@@ -132,7 +133,8 @@ class ProjectServiceImplTest {
     void getProjectById_ShouldThrow_WhenProjectNotFound() {
         when( projectRepository.findById( randomId ) ).thenReturn( Optional.empty() );
 
-        assertThrows( EntityNotFoundException.class, () -> service.getProjectById( randomId.toString() ) );
+        String randomIdString = randomId.toString();
+        assertThrows( EntityNotFoundException.class, () -> service.getProjectById( randomIdString ) );
 
         verify( projectRepository, times( 1 ) ).findById( randomId );
     }
@@ -204,11 +206,107 @@ class ProjectServiceImplTest {
     }
 
     @Test
+    @DisplayName("updateProject should throw when project not found")
+    void updateProject_ShouldThrow_WhenProjectNotFound() {
+        ProjectUpdateDTO projectUpdateDTO = ProjectUpdateDTO.builder()
+                .name( "Test Project" )
+                .build();
+
+        when( projectRepository.findById( randomId ) ).thenReturn( Optional.empty() );
+
+        String randomIdString = randomId.toString();
+        assertThrows( EntityNotFoundException.class, () -> service.updateProject( randomIdString, projectUpdateDTO ) );
+
+        verify( projectRepository, times( 1 ) ).findById( randomId );
+    }
+
+    @Test
+    @DisplayName("updateProject should return project dto when all fields have updates")
+    void updateProject_ShouldReturnProjectDTO_WhenAllFieldsHaveUpdates() {
+        ProjectUpdateDTO projectUpdateDTO = ProjectUpdateDTO.builder()
+                .name( "Updated project name" )
+                .description( "Updated project description" )
+                .active( false )
+                .color( ProjectColor.YELLOW )
+                .category( "Updated category" )
+                .type( ProjectType.INTERNAL )
+                .stage( ProjectStage.NEGOTIATION )
+                .build();
+
+        when( projectRepository.findById( testProjectId ) ).thenReturn( Optional.of( testProject ) );
+
+        Project updatedProject = Project.builder()
+                .id( testProjectId )
+                .no( testProject.getNo() )
+                .name( projectUpdateDTO.getName() )
+                .description( projectUpdateDTO.getDescription() )
+                .active( projectUpdateDTO.isActive() )
+                .color( projectUpdateDTO.getColor() )
+                .category( projectUpdateDTO.getCategory() )
+                .type( projectUpdateDTO.getType() )
+                .stage( projectUpdateDTO.getStage() )
+                .createdDate( testProject.getCreatedDate() )
+                .lastModifiedDate( testProject.getLastModifiedDate() )
+                .createdBy( testProject.getCreatedBy() )
+                .lastModifiedBy( testProject.getLastModifiedBy() )
+                .build();
+
+        when( projectMapper.toProject( projectUpdateDTO, testProject ) ).thenReturn( updatedProject );
+
+        when( projectRepository.save( updatedProject ) ).thenReturn( updatedProject );
+
+        assertNotNull( projectUpdateDTO.getName() );
+
+        testProjectDTO.setName( projectUpdateDTO.getName() );
+        testProjectDTO.setDescription( projectUpdateDTO.getDescription() );
+        testProjectDTO.setActive( projectUpdateDTO.isActive() );
+        testProjectDTO.setColor( projectUpdateDTO.getColor() );
+        testProjectDTO.setCategory( projectUpdateDTO.getCategory() );
+        testProjectDTO.setType( projectUpdateDTO.getType() );
+        testProjectDTO.setStage( projectUpdateDTO.getStage() );
+
+        when( projectMapper.toProjectDTO( updatedProject ) ).thenReturn( testProjectDTO );
+
+        String testProjectIdString = testProjectId.toString();
+        ProjectDTO actual = assertDoesNotThrow( () -> service.updateProject( testProjectIdString, projectUpdateDTO ) );
+
+        assertEquals( testProjectDTO, actual );
+
+        verify( projectRepository, times( 1 ) ).findById( testProjectId );
+        verify( projectMapper, times( 1 ) ).toProject( projectUpdateDTO, testProject );
+        verify( projectRepository, times( 1 ) ).save( updatedProject );
+        verify( projectMapper, times( 1 ) ).toProjectDTO( updatedProject );
+    }
+
+    @Test
+    @DisplayName("updateProject should return project dto when no fields have updates")
+    void updateProject_ShouldReturnProjectDTO_WhenNoFieldsHaveUpdates() {
+        ProjectUpdateDTO projectUpdateDTO = ProjectUpdateDTO.builder()
+                .build();
+
+        when( projectRepository.findById( testProjectId ) ).thenReturn( Optional.of( testProject ) );
+        when( projectMapper.toProject( projectUpdateDTO, testProject ) ).thenReturn( testProject );
+        when( projectRepository.save( testProject ) ).thenReturn( testProject );
+        when( projectMapper.toProjectDTO( testProject ) ).thenReturn( testProjectDTO );
+
+        String testProjectIdString = testProjectId.toString();
+        ProjectDTO actual = assertDoesNotThrow( () -> service.updateProject( testProjectIdString, projectUpdateDTO ) );
+
+        assertEquals( testProjectDTO, actual );
+
+        verify( projectRepository, times( 1 ) ).findById( testProjectId );
+        verify( projectMapper, times( 1 ) ).toProject( projectUpdateDTO, testProject );
+        verify( projectRepository, times( 1 ) ).save( testProject );
+        verify( projectMapper, times( 1 ) ).toProjectDTO( testProject );
+    }
+
+    @Test
     @DisplayName("deleteProjectById should throw when project does not exist in db")
     void deleteProjectById_ShouldThrow_WhenProjectDoesNotExistInDB() {
         when( projectRepository.findById( randomId ) ).thenReturn( Optional.empty() );
 
-        assertThrows( EntityNotFoundException.class, () -> service.deleteProjectById( randomId.toString() ) );
+        String randomIdString = randomId.toString();
+        assertThrows( EntityNotFoundException.class, () -> service.deleteProjectById( randomIdString ) );
 
         verify( projectRepository, times( 1 ) ).findById( randomId );
     }
