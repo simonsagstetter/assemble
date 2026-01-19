@@ -240,7 +240,7 @@ class ProjectServiceImplTest {
                 .no( testProject.getNo() )
                 .name( projectUpdateDTO.getName() )
                 .description( projectUpdateDTO.getDescription() )
-                .active( projectUpdateDTO.isActive() )
+                .active( projectUpdateDTO.getActive() )
                 .color( projectUpdateDTO.getColor() )
                 .category( projectUpdateDTO.getCategory() )
                 .type( projectUpdateDTO.getType() )
@@ -259,7 +259,7 @@ class ProjectServiceImplTest {
 
         testProjectDTO.setName( projectUpdateDTO.getName() );
         testProjectDTO.setDescription( projectUpdateDTO.getDescription() );
-        testProjectDTO.setActive( projectUpdateDTO.isActive() );
+        testProjectDTO.setActive( projectUpdateDTO.getActive() );
         testProjectDTO.setColor( projectUpdateDTO.getColor() );
         testProjectDTO.setCategory( projectUpdateDTO.getCategory() );
         testProjectDTO.setType( projectUpdateDTO.getType() );

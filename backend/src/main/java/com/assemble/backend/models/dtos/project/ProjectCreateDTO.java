@@ -39,7 +39,7 @@ public class ProjectCreateDTO {
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
     @Builder.Default
-    private boolean active = true;
+    private Boolean active = true;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,

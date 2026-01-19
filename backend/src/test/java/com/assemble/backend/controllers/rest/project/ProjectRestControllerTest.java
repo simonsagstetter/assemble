@@ -276,7 +276,7 @@ class ProjectRestControllerTest {
                 ).andExpect(
                         jsonPath( "$.type" ).value( validCreateDTO.getType().toString() )
                 ).andExpect(
-                        jsonPath( "$.active" ).value( validCreateDTO.isActive() )
+                        jsonPath( "$.active" ).value( validCreateDTO.getActive() )
                 );
     }
 
@@ -330,7 +330,7 @@ class ProjectRestControllerTest {
         ).andExpect(
                 jsonPath( "$.stage" ).value( dto.getStage().toString() )
         ).andExpect(
-                jsonPath( "$.active" ).value( dto.isActive() )
+                jsonPath( "$.active" ).value( dto.getActive() )
         );
     }
 
