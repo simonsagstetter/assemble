@@ -33,9 +33,23 @@ const ProjectAssignmentCreateSchema = z.object( {
 
 type ProjectAssignmentCreateFormData = z.infer<typeof ProjectAssignmentCreateSchema>;
 
+const ProjectUpdateSchema = z.object( {
+    name: z.string().trim().optional(),
+    active: z.boolean().optional(),
+    type: optionalString( z.enum( ProjectDTOType ) ),
+    category: z.string().trim().optional(),
+    description: z.string().trim().optional(),
+    stage: optionalString( z.enum( ProjectDTOStage ) ),
+    color: optionalString( z.enum( ProjectDTOColor ) )
+} )
+
+type ProjectUpdateFormData = z.infer<typeof ProjectUpdateSchema>;
+
 export {
     type ProjectCreateFormData,
     type ProjectAssignmentCreateFormData,
+    type ProjectUpdateFormData,
     ProjectCreateSchema,
+    ProjectUpdateSchema,
     ProjectAssignmentCreateSchema
 }
