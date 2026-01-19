@@ -16,7 +16,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.stereotype.Component;
 
 @Component
