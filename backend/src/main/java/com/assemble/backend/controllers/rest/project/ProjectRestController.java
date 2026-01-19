@@ -13,6 +13,7 @@ package com.assemble.backend.controllers.rest.project;
 import com.assemble.backend.models.dtos.global.ValidationErrorResponse;
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectDTO;
+import com.assemble.backend.models.dtos.project.ProjectUpdateDTO;
 import com.assemble.backend.services.project.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -158,6 +159,58 @@ public class ProjectRestController {
     ) {
         return ResponseEntity.status( HttpStatus.CREATED )
                 .body( projectService.createProject( projectCreateDTO ) );
+    }
+
+    @Operation(
+            summary = "Update a project"
+    )
+    @ApiResponse(
+            description = "OK",
+            responseCode = "200",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(
+                            implementation = ProjectDTO.class
+                    )
+            )
+    )
+    @ApiResponse(
+            description = "Bad Request",
+            responseCode = "400",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(
+                            implementation = ValidationErrorResponse.class
+                    )
+            )
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Not Found",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "409",
+            description = "Conflict",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorResponse.class)
+            )
+    )
+    @PatchMapping(
+            path = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<ProjectDTO> updateProject(
+            @PathVariable String id,
+            @Valid @RequestBody ProjectUpdateDTO projectUpdateDTO
+    ) {
+        return ResponseEntity
+                .ok( projectService.updateProject( id, projectUpdateDTO ) );
     }
 
     @Operation(

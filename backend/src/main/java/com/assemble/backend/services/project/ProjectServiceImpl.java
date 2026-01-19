@@ -12,6 +12,7 @@ package com.assemble.backend.services.project;
 
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
 import com.assemble.backend.models.dtos.project.ProjectDTO;
+import com.assemble.backend.models.dtos.project.ProjectUpdateDTO;
 import com.assemble.backend.models.entities.project.Project;
 import com.assemble.backend.models.mappers.project.ProjectMapper;
 import com.assemble.backend.repositories.project.ProjectAssignmentRepository;
@@ -65,6 +66,21 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDTO createProject( ProjectCreateDTO projectCreateDTO ) {
         Project newProject = projectRepository.save( projectMapper.toProject( projectCreateDTO ) );
         return projectMapper.toProjectDTO( newProject );
+    }
+
+    @Override
+    @Transactional
+    public ProjectDTO updateProject( String id, ProjectUpdateDTO projectUpdateDTO ) {
+        Project project = projectRepository.findById( UUID.fromString( id ) )
+                .orElseThrow(
+                        () -> new EntityNotFoundException( "Could not find project with id: " + id )
+                );
+
+        return projectMapper.toProjectDTO(
+                projectRepository.save(
+                        projectMapper.toProject( projectUpdateDTO, project )
+                )
+        );
     }
 
     @Override

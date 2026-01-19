@@ -11,6 +11,7 @@
 package com.assemble.backend.controllers.rest.project;
 
 import com.assemble.backend.models.dtos.project.ProjectCreateDTO;
+import com.assemble.backend.models.dtos.project.ProjectUpdateDTO;
 import com.assemble.backend.models.entities.auth.UserRole;
 import com.assemble.backend.models.entities.employee.Employee;
 import com.assemble.backend.models.entities.project.*;
@@ -32,6 +33,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -274,13 +276,67 @@ class ProjectRestControllerTest {
                 ).andExpect(
                         jsonPath( "$.type" ).value( validCreateDTO.getType().toString() )
                 ).andExpect(
-                        jsonPath( "$.active" ).value( validCreateDTO.isActive() )
+                        jsonPath( "$.active" ).value( validCreateDTO.getActive() )
                 );
     }
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
-    @DisplayName("/DELETE should return status code 404 when project does not exist in db")
+    @DisplayName("/PATCH updateProject should return status code 404 when project does not exist in db")
+    void updateProject_ShouldReturnStatusCode404_WhenProjectDoesNotExistInDB() throws Exception {
+        mockMvc.perform(
+                patch( "/api/projects/" + UuidCreator.getTimeOrderedEpoch().toString() )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .content( """
+                                  {}
+                                """ )
+                        .with( csrf() )
+        ).andExpect(
+                status().isNotFound()
+        ).andExpect(
+                content().contentType( MediaType.APPLICATION_JSON )
+        ).andExpect(
+                jsonPath( "$.message" ).isNotEmpty()
+        );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.MANAGER })
+    @DisplayName("/PATCH updateProject should return status code 200 when request body is valid")
+    void updateProject_ShouldReturnStatusCode200_WhenRequestBodyIsValid() throws Exception {
+        Project project = projectRepository.save( testProject );
+
+        assertNotNull( project.getId() );
+
+        ProjectUpdateDTO dto = ProjectUpdateDTO.builder()
+                .description( "New description" )
+                .stage( ProjectStage.CLOSED )
+                .active( false )
+                .build();
+
+        String jsonContent = objectMapper.writeValueAsString( dto );
+
+        mockMvc.perform(
+                patch( "/api/projects/" + project.getId().toString() )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .content( jsonContent )
+                        .with( csrf() )
+        ).andExpect(
+                status().isOk()
+        ).andExpect(
+                content().contentType( MediaType.APPLICATION_JSON )
+        ).andExpect(
+                jsonPath( "$.description" ).value( dto.getDescription() )
+        ).andExpect(
+                jsonPath( "$.stage" ).value( dto.getStage().toString() )
+        ).andExpect(
+                jsonPath( "$.active" ).value( dto.getActive() )
+        );
+    }
+
+    @Test
+    @WithMockCustomUser(roles = { UserRole.MANAGER })
+    @DisplayName("/DELETE deleteProjectById should return status code 404 when project does not exist in db")
     void deleteProjectById_ShouldReturnStatusCode404_WhenProjectDoesNotExistInDB() throws Exception {
         mockMvc.perform(
                 delete( "/api/projects/" + UuidCreator.getTimeOrderedEpoch().toString() )
@@ -296,7 +352,7 @@ class ProjectRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
-    @DisplayName("/DELETE should return status code 204 when project does exist in db")
+    @DisplayName("/DELETE deleteProjectById should return status code 204 when project does exist in db")
     void deleteProjectById_ShouldReturnStatusCode204_WhenProjectDoesExistInDB() throws Exception {
         Project project = projectRepository.save( testProject );
         assert project.getId() != null;
@@ -310,7 +366,7 @@ class ProjectRestControllerTest {
 
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
-    @DisplayName("/DELETE should return status code 204 and delete related assignments when project does exist in db")
+    @DisplayName("/DELETE deleteProjectById should return status code 204 and delete related assignments when project does exist in db")
     void deleteProjectById_ShouldReturnStatusCode204AndDeleteRelatedAssignments_WhenProjectDoesExistInDB() throws Exception {
         Project project = projectRepository.save( testProject );
         Employee employee = employeeRepository.save(

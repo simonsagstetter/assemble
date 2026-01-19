@@ -1,6 +1,6 @@
 /*
  * assemble
- * ProjectCreateDTO.java
+ * ProjectUpdateDTO.java
  *
  * Copyright (c) 2025 Simon Sagstetter
  *
@@ -14,52 +14,49 @@ import com.assemble.backend.models.entities.project.ProjectColor;
 import com.assemble.backend.models.entities.project.ProjectStage;
 import com.assemble.backend.models.entities.project.ProjectType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
+import org.springframework.lang.Nullable;
 
 
 @Data
 @Builder
 @Schema
-public class ProjectCreateDTO {
+public class ProjectUpdateDTO {
 
-    @NonNull
-    @NotBlank
+    @Size(min = 1)
+    @Nullable
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
-            requiredMode = Schema.RequiredMode.REQUIRED
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
     private String name;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @Builder.Default
-    private Boolean active = true;
+    private Boolean active;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
-    @Builder.Default
-    private ProjectType type = ProjectType.EXTERNAL;
+    private ProjectType type;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
-    @Builder.Default
-    private ProjectStage stage = ProjectStage.PROPOSAL;
+    private ProjectStage stage;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
     @Size(min = 1)
+    @Nullable
     private String category;
 
     @Schema(
@@ -67,12 +64,12 @@ public class ProjectCreateDTO {
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
     @Size(min = 1)
+    @Nullable
     private String description;
 
     @Schema(
-            requiredMode = Schema.RequiredMode.REQUIRED,
-            accessMode = Schema.AccessMode.READ_WRITE
+            accessMode = Schema.AccessMode.READ_WRITE,
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
-    @Builder.Default
-    private ProjectColor color = ProjectColor.PURPLE;
+    private ProjectColor color;
 }
