@@ -303,7 +303,7 @@ class ProjectRestControllerTest {
     @Test
     @WithMockCustomUser(roles = { UserRole.MANAGER })
     @DisplayName("/PATCH updateProject should return status code 200 when request body is valid")
-    void updateProject_ShouldReturnStatusCode400_WhenRequestBodyIsInvalid() throws Exception {
+    void updateProject_ShouldReturnStatusCode200_WhenRequestBodyIsValid() throws Exception {
         Project project = projectRepository.save( testProject );
 
         assertNotNull( project.getId() );

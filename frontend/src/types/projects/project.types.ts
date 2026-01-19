@@ -34,11 +34,11 @@ const ProjectAssignmentCreateSchema = z.object( {
 type ProjectAssignmentCreateFormData = z.infer<typeof ProjectAssignmentCreateSchema>;
 
 const ProjectUpdateSchema = z.object( {
-    name: z.string().trim().optional(),
+    name: z.string().trim().min( 1, "Name is required." ).optional(),
     active: z.boolean().optional(),
     type: optionalString( z.enum( ProjectDTOType ) ),
-    category: z.string().trim().optional(),
-    description: z.string().trim().optional(),
+    category: z.string().trim().min( 1, "Category is required." ).optional(),
+    description: z.string().trim().min( 1, "Description is required." ).optional(),
     stage: optionalString( z.enum( ProjectDTOStage ) ),
     color: optionalString( z.enum( ProjectDTOColor ) )
 } )

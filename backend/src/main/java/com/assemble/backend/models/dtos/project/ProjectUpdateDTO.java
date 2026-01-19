@@ -1,6 +1,6 @@
 /*
  * assemble
- * ProjectCreateDTO.java
+ * ProjectUpdateDTO.java
  *
  * Copyright (c) 2025 Simon Sagstetter
  *
@@ -35,9 +35,9 @@ public class ProjectUpdateDTO {
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
-    private boolean active;
+    private Boolean active;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
