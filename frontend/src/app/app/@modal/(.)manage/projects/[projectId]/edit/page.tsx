@@ -10,14 +10,14 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useGetProjectByIdSuspense } from "@/api/rest/generated/query/projects/projects";
-import ProjectEditForm from "@/components/manage/projects/ProjectEditForm";
+import ProjectEditForm from "@/components/projects/ProjectEditForm";
 import dynamic from "next/dynamic";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 
 function EditProjectPage() {
     const { projectId } = useParams<{ projectId: string }>();
     const { data: project } = useGetProjectByIdSuspense( projectId );
-    return <ModalHeader title={ "Edit" } description={ "Update the fields and click save to update the project." }
+    return <ModalHeader title={ "Edit" } description={ "Update the fields and click save to edit the project." }
                         entity={ "Project" }>
         <ProjectEditForm project={ project }/>
     </ModalHeader>

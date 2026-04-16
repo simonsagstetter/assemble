@@ -14,7 +14,7 @@ import { useParams } from "next/navigation";
 import { useGetUserByIdSuspense } from "@/api/rest/generated/query/user-management/user-management";
 import dynamic from "next/dynamic";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import UserUpdateEmployeeForm from "@/components/admin/users/UserUpdateEmployeeForm";
+import UserUpdateEmployeeForm from "@/components/users/UserUpdateEmployeeForm";
 
 function UpdateEmployeePage() {
     const { id } = useParams<{ id: string }>();

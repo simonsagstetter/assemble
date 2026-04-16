@@ -12,7 +12,7 @@
 
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 import dynamic from "next/dynamic";
-import ProjectCreateForm from "@/components/manage/projects/ProjectCreateForm";
+import ProjectCreateForm from "@/components/projects/ProjectCreateForm";
 
 function CreateProjectModal() {
     return <ModalHeader title={ "New" } description={ "Fill out the fields and click new to create a new project." }

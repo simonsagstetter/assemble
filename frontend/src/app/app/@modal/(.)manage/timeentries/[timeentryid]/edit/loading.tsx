@@ -12,7 +12,7 @@ import ModalHeader from "@/components/custom-ui/ModalHeader";
 import Loading from "@/components/custom-ui/Loading";
 
 export default function LoadingPage() {
-    return <ModalHeader title={ "Edit" } description={ "Update the fields and click save to update the time entry." }
+    return <ModalHeader title={ "Edit" } description={ "Update the fields and click save to edit the time entry." }
                         entity={ "Time Entry" }>
         <Loading title={ "Loading Time Entry Details" }/>
     </ModalHeader>

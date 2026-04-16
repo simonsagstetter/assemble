@@ -8,21 +8,17 @@
  * All rights reserved.
  */
 "use client";
-import { User } from "@/api/rest/generated/fetch/openAPIDefinition.schemas";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar";
 import AppSidebarFooter from "@/components/nav/AppSidebarFooter";
-import { useEffect } from "react";
-import useUserContext from "@/hooks/useUserContext";
+import useUserContext from "@/hooks/use-user";
 import { TimetrackingMenu } from "@/components/nav/menus/TimetrackingMenu";
 import { AdministrationMenu } from "@/components/nav/menus/AdministrationMenu";
 import AppSidebarHeader from "@/components/nav/AppSidebarHeader";
 import ManagementMenu from "@/components/nav/menus/ManagementMenu";
 
-type AppSidebarProps = { userDetails: User }
 
-export default function AppSidebar( { userDetails }: AppSidebarProps ) {
-    const { setState, isManager, isAdmin, isSuperUser } = useUserContext();
-    useEffect( () => setState( userDetails ), [ userDetails, setState ] );
+export default function AppSidebar() {
+    const { isManager, isAdmin, isSuperUser, user } = useUserContext();
 
     return (
         <Sidebar collapsible="offcanvas" variant="inset">
@@ -35,7 +31,7 @@ export default function AppSidebar( { userDetails }: AppSidebarProps ) {
                 { isAdmin || isSuperUser ? <AdministrationMenu/> : null }
             </SidebarContent>
             <SidebarFooter>
-                <AppSidebarFooter userDetails={ userDetails }/>
+                <AppSidebarFooter userDetails={ user }/>
             </SidebarFooter>
         </Sidebar>
     )

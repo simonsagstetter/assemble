@@ -15,7 +15,7 @@ import {
     useGetProjectAssignmentByIdSuspense
 } from "@/api/rest/generated/query/project-assignments/project-assignments";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import ProjectAssignmentDeleteForm from "@/components/manage/projects/ProjectAssignmentDeleteForm";
+import ProjectAssignmentDeleteForm from "@/components/projects/ProjectAssignmentDeleteForm";
 
 function DeleteProjectAssignmentPage() {
     const { assignmentId } = useParams<{ assignmentId: string }>();

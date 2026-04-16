@@ -11,7 +11,7 @@
 
 
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import ProjectCreateForm from "@/components/manage/projects/ProjectCreateForm";
+import ProjectCreateForm from "@/components/projects/ProjectCreateForm";
 
 export default function CreateProjectPage() {
     return <FormPageHeader title={ "New" } description={ "Fill out the fields and click new to create a new project." }

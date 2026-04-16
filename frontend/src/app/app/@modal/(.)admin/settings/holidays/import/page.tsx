@@ -8,7 +8,7 @@
  * All rights reserved.
  */
 
-import HolidayImportFrom from "@/components/admin/settings/holidays/HolidayImportFrom";
+import HolidayImportFrom from "@/components/settings/holidays/HolidayImportFrom";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 
 export default function HolidayImportPage() {

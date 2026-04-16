@@ -12,7 +12,7 @@
 
 import { useParams } from "next/navigation";
 import { useGetProjectByIdSuspense } from "@/api/rest/generated/query/projects/projects";
-import ProjectDeleteForm from "@/components/manage/projects/ProjectDeleteForm";
+import ProjectDeleteForm from "@/components/projects/ProjectDeleteForm";
 import dynamic from "next/dynamic";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 

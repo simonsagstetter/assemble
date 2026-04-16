@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 import { useGetUserByIdSuspense } from "@/api/rest/generated/query/user-management/user-management";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
 import dynamic from "next/dynamic";
-import UserUpdateRolesForm from "@/components/admin/users/UserUpdateRolesForm";
+import UserUpdateRolesForm from "@/components/users/UserUpdateRolesForm";
 
 function UpdateRolesPage() {
     const { id } = useParams<{ id: string }>();

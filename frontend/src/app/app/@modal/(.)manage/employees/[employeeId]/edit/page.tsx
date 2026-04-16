@@ -12,12 +12,12 @@ import { useParams } from "next/navigation";
 import { useGetEmployeeSuspense } from "@/api/rest/generated/query/employees/employees";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 import dynamic from "next/dynamic";
-import EmployeeEditForm from "@/components/manage/employees/EmployeeEditForm";
+import EmployeeEditForm from "@/components/employees/EmployeeEditForm";
 
 function EmployeeEditModal() {
     const { employeeId } = useParams<{ employeeId: string }>();
     const { data: employee } = useGetEmployeeSuspense( employeeId );
-    return <ModalHeader title={ "Edit" } description={ "Update the fields and click save to update the employee." }
+    return <ModalHeader title={ "Edit" } description={ "Update the fields and click save to edit the employee." }
                         entity={ "Employee" }>
         <EmployeeEditForm employee={ employee }/>
     </ModalHeader>;

@@ -8,13 +8,13 @@
  * All rights reserved.
  */
 
-import TimeEntryAdminForm from "@/components/manage/timeentries/TimeEntryAdminForm";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
+import TimeEntryAdminCreateForm from "@/components/timeentries/TimeEntryAdminCreateForm";
 
 export default function CreateTimeEntryModal() {
     return <ModalHeader title={ "New" }
                         description={ "Fill out the fields and click new to create a new time entry." }
                         entity={ "Time Entry" }>
-        <TimeEntryAdminForm/>
+        <TimeEntryAdminCreateForm/>
     </ModalHeader>
 }

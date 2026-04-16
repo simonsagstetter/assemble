@@ -13,7 +13,7 @@
 import { useParams } from "next/navigation";
 import { useGetTimeEntryByIdSuspense } from "@/api/rest/generated/query/timeentries/timeentries";
 import dynamic from "next/dynamic";
-import TimeEntryAdminDeleteForm from "@/components/manage/timeentries/TimeEntryAdminDeleteForm";
+import TimeEntryAdminDeleteForm from "@/components/timeentries/TimeEntryAdminDeleteForm";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 
 function DeleteTimeEntryModal() {

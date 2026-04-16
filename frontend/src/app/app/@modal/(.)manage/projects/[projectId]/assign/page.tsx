@@ -17,7 +17,7 @@ import dynamic from "next/dynamic";
 import {
     useGetAllProjectAssignmentsByProjectIdSuspense
 } from "@/api/rest/generated/query/project-assignments/project-assignments";
-import ProjectAssignmentCreateForm from "@/components/manage/projects/ProjectAssignmentCreateForm";
+import ProjectAssignmentCreateForm from "@/components/projects/ProjectAssignmentCreateForm";
 
 function AssignEmployeesModal() {
     const { projectId } = useParams<{ projectId: string }>();

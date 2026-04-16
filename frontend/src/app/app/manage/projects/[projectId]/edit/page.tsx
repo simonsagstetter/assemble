@@ -12,12 +12,12 @@ import FormPageHeader from "@/components/custom-ui/FormPageHeader";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { useGetProjectByIdSuspense } from "@/api/rest/generated/query/projects/projects";
-import ProjectEditForm from "@/components/manage/projects/ProjectEditForm";
+import ProjectEditForm from "@/components/projects/ProjectEditForm";
 
 function EditProjectPage() {
     const { projectId } = useParams<{ projectId: string }>();
     const { data: project } = useGetProjectByIdSuspense( projectId );
-    return <FormPageHeader title={ "Edit" } description={ "Update the fields and click save to update the project." }
+    return <FormPageHeader title={ "Edit" } description={ "Update the fields and click save to edit the project." }
                            entity={ "Project" }>
         <ProjectEditForm project={ project }/>
     </FormPageHeader>

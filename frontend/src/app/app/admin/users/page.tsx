@@ -10,7 +10,7 @@
 "use client"
 import { useGetAllUsersSuspense } from "@/api/rest/generated/query/user-management/user-management";
 import dynamic from "next/dynamic";
-import UserDataTable from "@/components/admin/users/UserDataTable";
+import UserDataTable from "@/components/users/UserDataTable";
 
 function UsersPage() {
     const { data: users } = useGetAllUsersSuspense();

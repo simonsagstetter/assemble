@@ -11,7 +11,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import TimeEntryDataTable from "@/components/manage/timeentries/TimeEntryDataTable";
+import TimeEntryDataTable from "@/components/timeentries/TimeEntryDataTable";
 import { useGetAllTimeEntriesSuspense } from "@/api/rest/generated/query/timeentries/timeentries";
 
 function TimeentriesPage() {

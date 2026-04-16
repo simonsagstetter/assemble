@@ -13,7 +13,7 @@
 import dynamic from "next/dynamic";
 import { useGetProjectByIdSuspense } from "@/api/rest/generated/query/projects/projects";
 import { useParams } from "next/navigation";
-import ProjectDetail from "@/components/manage/projects/ProjectDetail";
+import ProjectDetail from "@/components/projects/ProjectDetail";
 
 function ProjectDetailsPage() {
     const { projectId } = useParams<{ projectId: string }>();

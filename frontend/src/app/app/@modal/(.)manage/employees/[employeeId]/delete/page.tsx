@@ -10,7 +10,7 @@
 "use client";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 import dynamic from "next/dynamic";
-import EmployeeDeleteForm from "@/components/manage/employees/EmployeeDeleteForm";
+import EmployeeDeleteForm from "@/components/employees/EmployeeDeleteForm";
 import { useParams } from "next/navigation";
 import { useGetEmployeeSuspense } from "@/api/rest/generated/query/employees/employees";
 

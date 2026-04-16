@@ -13,7 +13,7 @@
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { useGetTimeEntryByIdSuspense } from "@/api/rest/generated/query/timeentries/timeentries";
-import TimeEntryDetail from "@/components/manage/timeentries/TimeEntryDetail";
+import TimeEntryDetail from "@/components/timeentries/TimeEntryDetail";
 
 function TimeEntryDetailsPage() {
     const { timeentryid } = useParams<{ timeentryid: string }>();

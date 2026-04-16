@@ -7,7 +7,7 @@
  * This software is the property of Simon Sagstetter.
  * All rights reserved.
  */
-import UserCreateForm from "@/components/admin/users/UserCreateForm";
+import UserCreateForm from "@/components/users/UserCreateForm";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
 
 export default function CreateUserPage() {

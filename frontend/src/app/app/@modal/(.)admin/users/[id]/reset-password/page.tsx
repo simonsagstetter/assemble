@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 import { useGetUserByIdSuspense } from "@/api/rest/generated/query/user-management/user-management";
 import dynamic from "next/dynamic";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
-import UserResetPasswordForm from "@/components/admin/users/UserResetPasswordForm";
+import UserResetPasswordForm from "@/components/users/UserResetPasswordForm";
 
 function ResetPasswordModal() {
     const { id } = useParams<{ id: string }>();

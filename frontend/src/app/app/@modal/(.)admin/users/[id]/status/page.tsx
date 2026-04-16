@@ -9,7 +9,7 @@
  */
 "use client";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
-import UserUpdateStatusForm from "@/components/admin/users/UserUpdateStatusForm";
+import UserUpdateStatusForm from "@/components/users/UserUpdateStatusForm";
 import { useParams } from "next/navigation";
 import { useGetUserByIdSuspense } from "@/api/rest/generated/query/user-management/user-management";
 import dynamic from "next/dynamic";

@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useGetProjectByIdSuspense } from "@/api/rest/generated/query/projects/projects";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import ProjectAssignmentCreateForm from "@/components/manage/projects/ProjectAssignmentCreateForm";
+import ProjectAssignmentCreateForm from "@/components/projects/ProjectAssignmentCreateForm";
 import {
     useGetAllProjectAssignmentsByProjectIdSuspense
 } from "@/api/rest/generated/query/project-assignments/project-assignments";

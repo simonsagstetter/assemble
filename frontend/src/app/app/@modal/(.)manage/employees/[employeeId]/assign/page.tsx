@@ -15,7 +15,7 @@ import {
     useGetAllProjectAssignmentsByEmployeeIdSuspense,
 } from "@/api/rest/generated/query/project-assignments/project-assignments";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
-import ProjectAssignmentCreateForm from "@/components/manage/projects/ProjectAssignmentCreateForm";
+import ProjectAssignmentCreateForm from "@/components/projects/ProjectAssignmentCreateForm";
 import dynamic from "next/dynamic";
 import { useGetEmployeeSuspense } from "@/api/rest/generated/query/employees/employees";
 

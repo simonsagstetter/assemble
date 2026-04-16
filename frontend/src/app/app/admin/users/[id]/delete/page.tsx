@@ -12,7 +12,7 @@
 import { useParams } from "next/navigation";
 import { useGetUserByIdSuspense } from "@/api/rest/generated/query/user-management/user-management";
 import dynamic from "next/dynamic";
-import UserDeleteForm from "@/components/admin/users/UserDeleteForm";
+import UserDeleteForm from "@/components/users/UserDeleteForm";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
 
 function DeleteUserPage() {

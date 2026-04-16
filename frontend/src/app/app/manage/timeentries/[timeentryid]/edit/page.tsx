@@ -13,17 +13,17 @@
 import { useParams } from "next/navigation";
 import { useGetTimeEntryByIdSuspense } from "@/api/rest/generated/query/timeentries/timeentries";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import TimeEntryAdminForm from "@/components/manage/timeentries/TimeEntryAdminForm";
 import dynamic from "next/dynamic";
+import TimeEntryAdminEditForm from "@/components/timeentries/TimeEntryAdminEditForm";
 
 function EditTimeEntryPage() {
     const { timeentryid } = useParams<{ timeentryid: string }>();
     const { data: timeEntry } = useGetTimeEntryByIdSuspense( timeentryid );
 
-    return <FormPageHeader title={ "Edit" } description={ "Update the fields and click save to update the time entry." }
+    return <FormPageHeader title={ "Edit" } description={ "Update the fields and click save to edit the time entry." }
                            entity={ "Time Entry" }>
 
-        <TimeEntryAdminForm timeentry={ timeEntry }/>
+        <TimeEntryAdminEditForm timeentry={ timeEntry }/>
     </FormPageHeader>
 }
 

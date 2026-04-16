@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 import { useGetEmployeeSuspense } from "@/api/rest/generated/query/employees/employees";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 import dynamic from "next/dynamic";
-import EmployeeUpdateUserForm from "@/components/manage/employees/EmployeeUpdateUserForm";
+import EmployeeUpdateUserForm from "@/components/employees/EmployeeUpdateUserForm";
 
 function EmployeeUpdateUserModal() {
     const { employeeId } = useParams<{ employeeId: string }>();

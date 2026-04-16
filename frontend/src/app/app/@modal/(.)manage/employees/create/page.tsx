@@ -10,7 +10,7 @@
 "use client"
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 import dynamic from "next/dynamic";
-import EmployeeCreateForm from "@/components/manage/employees/EmployeeCreateForm";
+import EmployeeCreateForm from "@/components/employees/EmployeeCreateForm";
 
 function CreateEmployeeModal() {
     return <ModalHeader title={ "New" }

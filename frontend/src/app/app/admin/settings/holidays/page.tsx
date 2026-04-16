@@ -14,7 +14,7 @@ import dynamic from "next/dynamic";
 import { useGetHolidaysByYearAndSubdivisionCodeSuspense } from "@/api/rest/generated/query/holidays/holidays";
 import { useGetAppSettingsSuspense } from "@/api/rest/generated/query/app-settings/app-settings";
 import { format } from "date-fns";
-import HolidayDataTable from "@/components/admin/settings/holidays/HolidayDataTable";
+import HolidayDataTable from "@/components/settings/holidays/HolidayDataTable";
 import { useSearchParams } from "next/navigation";
 
 function HolidaysPage() {

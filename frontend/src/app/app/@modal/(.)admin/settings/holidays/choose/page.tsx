@@ -9,7 +9,7 @@
  */
 "use client";
 import { useGetImportedYearsSuspense } from "@/api/rest/generated/query/holiday-import/holiday-import";
-import HolidayChooseYearForm from "@/components/admin/settings/holidays/HolidayChooseYearForm";
+import HolidayChooseYearForm from "@/components/settings/holidays/HolidayChooseYearForm";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 import dynamic from "next/dynamic";
 

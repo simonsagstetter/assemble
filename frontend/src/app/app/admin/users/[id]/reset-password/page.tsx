@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 import { useGetUserByIdSuspense } from "@/api/rest/generated/query/user-management/user-management";
 import dynamic from "next/dynamic";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import UserResetPasswordForm from "@/components/admin/users/UserResetPasswordForm";
+import UserResetPasswordForm from "@/components/users/UserResetPasswordForm";
 
 function ResetPasswordPage() {
     const { id } = useParams<{ id: string }>();

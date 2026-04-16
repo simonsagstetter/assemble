@@ -40,7 +40,7 @@ import { Textarea } from "@/components/ui/textarea";
 function CustomField<TFieldValues extends FieldValues, TTransformedValues extends FieldValues>(
     { fieldName, formControl, renderAction }
     :
-    {
+    Readonly<{
         fieldName: Path<TFieldValues>,
         formControl: Control<TFieldValues, unknown, TTransformedValues>,
         renderAction: ( { field, fieldState, formState }: {
@@ -48,7 +48,7 @@ function CustomField<TFieldValues extends FieldValues, TTransformedValues extend
             fieldState: ControllerFieldState,
             formState: UseFormStateReturn<TFieldValues>
         } ) => ReactElement
-    }
+    }>
 ) {
     return <Controller
         name={ fieldName }

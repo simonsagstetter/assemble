@@ -13,8 +13,10 @@ import { UseFormReturn, useWatch } from "react-hook-form";
 import { type TimeEntryFormInput, type TimeEntryFormOutput } from "@/types/timeentries/timeentry.types";
 import { useEffect, useState } from "react";
 import { HHmmToMs, msToHHmm } from "@/utils/duration";
+import { useGetOwnTimeEntries } from "@/api/rest/generated/query/timeentries/timeentries";
+import { format } from "date-fns";
 
-export function useTimeEntryCalculations( form: UseFormReturn<TimeEntryFormInput, unknown, TimeEntryFormOutput> ) {
+function useTimeEntryCalculations( form: UseFormReturn<TimeEntryFormInput, unknown, TimeEntryFormOutput> ) {
     const [ total, setTotal ] = useState<string>( "00:00" );
     const [ startTime, endTime ] = useWatch( {
         name: [ "startTime", "endTime" ],
@@ -25,7 +27,6 @@ export function useTimeEntryCalculations( form: UseFormReturn<TimeEntryFormInput
         control: form.control
     } );
 
-    // Start/End Time Validation
     useEffect( () => {
         if ( startTime && endTime ) {
             const startTimeMs = HHmmToMs( startTime );
@@ -44,7 +45,6 @@ export function useTimeEntryCalculations( form: UseFormReturn<TimeEntryFormInput
         }
     }, [ startTime, endTime, form ] );
 
-    // Duration/Pause Time Validation
     useEffect( () => {
 
         const stateCallback = ( total: string ) => setTotal( total );
@@ -66,4 +66,20 @@ export function useTimeEntryCalculations( form: UseFormReturn<TimeEntryFormInput
     }, [ duration, pauseTime, form ] );
 
     return { total };
+}
+
+function useRelatedTimeEntries( form: UseFormReturn<TimeEntryFormInput, unknown, TimeEntryFormOutput> ) {
+    const [ date ] = useWatch( {
+        name: [ "date" ],
+        control: form.control
+    } );
+
+    return useGetOwnTimeEntries( {
+        exactDate: format( date, "yyyy-MM-dd" )
+    } )
+}
+
+export {
+    useTimeEntryCalculations,
+    useRelatedTimeEntries,
 }

@@ -13,7 +13,7 @@
 import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useGetEmployeeSuspense } from "@/api/rest/generated/query/employees/employees";
-import EmployeeDetail from "@/components/manage/employees/EmployeeDetail";
+import EmployeeDetail from "@/components/employees/EmployeeDetail";
 
 function EmployeeDetailPage() {
     const { employeeId } = useParams<{ employeeId: string }>();

@@ -12,14 +12,14 @@
 import { useParams } from "next/navigation";
 import { useGetUserByIdSuspense } from "@/api/rest/generated/query/user-management/user-management";
 import dynamic from "next/dynamic";
-import UserEditForm from "@/components/admin/users/UserEditForm";
+import UserEditForm from "@/components/users/UserEditForm";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
 
 function EditUserPage() {
     const { id } = useParams<{ id: string }>();
     const { data: userDetails } = useGetUserByIdSuspense( id );
 
-    return <FormPageHeader title={ "Edit" } description={ "Update the fields and click save to update the user." }
+    return <FormPageHeader title={ "Edit" } description={ "Update the fields and click save to edit the user." }
                            entity={ "User" }>
         <UserEditForm user={ userDetails }/>
     </FormPageHeader>

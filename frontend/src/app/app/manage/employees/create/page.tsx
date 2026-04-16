@@ -9,7 +9,7 @@
  */
 
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import EmployeeCreateForm from "@/components/manage/employees/EmployeeCreateForm";
+import EmployeeCreateForm from "@/components/employees/EmployeeCreateForm";
 
 export default function CreateEmployeePage() {
     return <FormPageHeader title={ "New" } description={ "Fill out the fields and click new to create a new employee." }

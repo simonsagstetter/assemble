@@ -14,7 +14,7 @@ import { useParams } from "next/navigation";
 import { useGetOwnTimeEntryByIdSuspense } from "@/api/rest/generated/query/timeentries/timeentries";
 import dynamic from "next/dynamic";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
-import TimeEntryDeleteForm from "@/components/timetracking/timeentries/TimeEntryDeleteForm";
+import TimeEntryDeleteForm from "@/components/timeentries/TimeEntryDeleteForm";
 
 function DeleteTimeEntryModal() {
     const { id } = useParams<{ id: string }>();

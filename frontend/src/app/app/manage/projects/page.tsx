@@ -12,7 +12,7 @@
 
 import { useGetAllProjectsSuspense } from "@/api/rest/generated/query/projects/projects";
 import dynamic from "next/dynamic";
-import ProjectDataTable from "@/components/manage/projects/ProjectDataTable";
+import ProjectDataTable from "@/components/projects/ProjectDataTable";
 
 function ProjectsPage() {
     const { data: projects } = useGetAllProjectsSuspense();

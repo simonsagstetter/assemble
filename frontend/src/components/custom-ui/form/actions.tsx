@@ -13,21 +13,21 @@ import { Spinner } from "@/components/ui/spinner";
 import { Field } from "@/components/ui/field";
 import { useFormContext } from "react-hook-form";
 import { ComponentProps, ReactNode } from "react";
-import useFormActionContext from "@/hooks/useFormActionContext";
+import useFormActionContext from "@/hooks/use-form-action";
 
 type Variants = ComponentProps<typeof Button>["variant"];
 
 function FormActions(
     { formId, variant, label, hideCancel = false, className = "p-8", children }
     :
-    {
+    Readonly<{
         formId: string,
         variant?: Variants,
         label: string,
         hideCancel?: boolean,
         className?: string,
         children?: ReactNode,
-    }
+    }>
 ) {
     const { formState: { isSubmitting } } = useFormContext();
     const { isPending, isSuccess, handleCancel, disableOnSuccess } = useFormActionContext();

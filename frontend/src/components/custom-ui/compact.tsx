@@ -30,8 +30,7 @@ type CompactProps = {
     details: { label: string, value?: string, node?: ReactNode }[];
 }
 
-function Compact( { Icon, title, details }: CompactProps ) {
-
+function Compact( { Icon, title, details }: Readonly<CompactProps> ) {
     return <div className={ "**:tracking-tight" }>
         <div className={ "flex flex-row items-center gap-3 justify-start bg-accent/50 p-2" }>
             <Icon className={ "size-7 bg-primary text-primary-foreground rounded-lg stroke-1 p-1" }/>
@@ -44,7 +43,7 @@ function Compact( { Icon, title, details }: CompactProps ) {
             { details.map( ( { label, value, node } ) => (
                 <Fragment key={ label }>
                     <small className={ "text-xs text-accent-foreground" }>{ label }</small>
-                    { !node ? <p className={ "text-sm" }>{ value }</p> : node }
+                    { node || <p className={ "text-sm" }>{ value }</p> }
                 </Fragment>
             ) ) }
         </div>
@@ -60,22 +59,31 @@ function EntityCompact( { delay = 200, children, ...props }: EntityCompactProps 
     const [ open, setOpen ] = useState( false );
     const timeout = useRef<Timeout | null>( null )
 
-    const handleMouseEnter = useCallback( ( e: MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement> ) => {
-        e.preventDefault();
-        if ( timeout.current ) clearTimeout( timeout.current );
-        timeout.current = setTimeout( () => {
-            setOpen( true )
-        }, delay );
-    }, [ delay ] );
+    const handleMouseEnter = useCallback(
+        ( e: MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement> ) => {
+            e.preventDefault();
+            if ( timeout.current ) clearTimeout( timeout.current );
+            timeout.current = setTimeout( () => {
+                setOpen( true )
+            }, delay );
+        }, [ delay ]
+    );
 
-    const debouncedMouseEnterHandler = useDebounceCallback( handleMouseEnter, delay );
+    const debouncedMouseEnterHandler = useDebounceCallback(
+        handleMouseEnter, delay
+    );
 
-    const handleMouseLeave = useCallback( ( e: MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement> ) => {
-        e.preventDefault();
-        if ( timeout.current ) clearTimeout( timeout.current );
-        setOpen( false );
-    }, [] );
-    const debouncedMouseLeaveHandler = useDebounceCallback( handleMouseLeave, delay );
+    const handleMouseLeave = useCallback(
+        ( e: MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement> ) => {
+            e.preventDefault();
+            if ( timeout.current ) clearTimeout( timeout.current );
+            setOpen( false );
+        }, []
+    );
+
+    const debouncedMouseLeaveHandler = useDebounceCallback(
+        handleMouseLeave, delay
+    );
 
     useEffect( () => {
         return () => {
@@ -88,7 +96,7 @@ function EntityCompact( { delay = 200, children, ...props }: EntityCompactProps 
             asChild
             onMouseEnter={ debouncedMouseEnterHandler }
             onMouseLeave={ debouncedMouseLeaveHandler }
-            onClick={ ( e ) => e.preventDefault() }
+            onClick={ ( e ) => e.stopPropagation() }
         >
             { children }
         </PopoverTrigger>

@@ -14,7 +14,7 @@ import { useParams } from "next/navigation";
 import {
     useGetProjectAssignmentByIdSuspense
 } from "@/api/rest/generated/query/project-assignments/project-assignments";
-import ProjectAssignmentDeleteForm from "@/components/manage/projects/ProjectAssignmentDeleteForm";
+import ProjectAssignmentDeleteForm from "@/components/projects/ProjectAssignmentDeleteForm";
 import dynamic from "next/dynamic";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 

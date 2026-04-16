@@ -14,12 +14,12 @@ import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useGetEmployeeSuspense } from "@/api/rest/generated/query/employees/employees";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import EmployeeEditForm from "@/components/manage/employees/EmployeeEditForm";
+import EmployeeEditForm from "@/components/employees/EmployeeEditForm";
 
 function EmployeeEditPage() {
     const { employeeId } = useParams<{ employeeId: string }>();
     const { data: employee } = useGetEmployeeSuspense( employeeId );
-    return <FormPageHeader title={ "Edit" } description={ "Update the fields and click save to update the employee." }
+    return <FormPageHeader title={ "Edit" } description={ "Update the fields and click save to edit the employee." }
                            entity={ "Employee" }>
         <EmployeeEditForm employee={ employee }/>
     </FormPageHeader>

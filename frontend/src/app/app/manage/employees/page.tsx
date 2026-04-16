@@ -12,7 +12,7 @@
 
 import { useGetAllEmployeesSuspense } from "@/api/rest/generated/query/employees/employees";
 import dynamic from "next/dynamic";
-import EmployeeDataTable from "@/components/manage/employees/EmployeeDataTable";
+import EmployeeDataTable from "@/components/employees/EmployeeDataTable";
 
 function EmployeesPage() {
     const { data: employees } = useGetAllEmployeesSuspense();

@@ -9,7 +9,7 @@
  */
 
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import HolidayImportFrom from "@/components/admin/settings/holidays/HolidayImportFrom";
+import HolidayImportFrom from "@/components/settings/holidays/HolidayImportFrom";
 
 export default function HolidayImportPage() {
     return <FormPageHeader title={ "Holiday Import" } description={ "Select a year to import holidays" }

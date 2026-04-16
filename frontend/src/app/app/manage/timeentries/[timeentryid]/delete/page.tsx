@@ -14,7 +14,7 @@ import { useParams } from "next/navigation";
 import { useGetTimeEntryByIdSuspense } from "@/api/rest/generated/query/timeentries/timeentries";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
 import dynamic from "next/dynamic";
-import TimeEntryAdminDeleteForm from "@/components/manage/timeentries/TimeEntryAdminDeleteForm";
+import TimeEntryAdminDeleteForm from "@/components/timeentries/TimeEntryAdminDeleteForm";
 
 function DeleteTimeEntryPage() {
     const { timeentryid } = useParams<{ timeentryid: string }>();

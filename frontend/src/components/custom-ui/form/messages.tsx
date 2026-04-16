@@ -12,7 +12,7 @@ import { FieldGroup } from "@/components/ui/field";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon, CheckCircle2Icon } from "lucide-react";
 import { useFormContext } from "react-hook-form";
-import useFormActionContext from "@/hooks/useFormActionContext";
+import useFormActionContext from "@/hooks/use-form-action";
 
 function SuccessMessage( { message }: { message: string } ) {
     const { isSuccess } = useFormActionContext();

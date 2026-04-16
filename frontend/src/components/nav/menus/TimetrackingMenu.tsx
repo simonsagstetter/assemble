@@ -47,15 +47,15 @@ const items = [
         items: [
             {
                 title: "Vacation",
-                url: "/app",
+                url: "/app/timetracking/absence",
             },
             {
                 title: "Sickness",
-                url: "/app",
+                url: "/app/timetracking/absence",
             },
             {
                 title: "Other",
-                url: "/app",
+                url: "/app/timetracking/absence",
             },
         ],
     },

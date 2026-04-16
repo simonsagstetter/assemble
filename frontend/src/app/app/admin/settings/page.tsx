@@ -12,7 +12,7 @@
 import { useGetAppSettingsSuspense } from "@/api/rest/generated/query/app-settings/app-settings";
 import dynamic from "next/dynamic";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import SettingsInteractiveForm from "@/components/admin/settings/SettingsInteractiveForm";
+import SettingsInteractiveForm from "@/components/settings/SettingsInteractiveForm";
 
 function SettingsPage() {
     const { data: settings } = useGetAppSettingsSuspense();

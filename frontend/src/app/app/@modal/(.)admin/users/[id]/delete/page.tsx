@@ -12,7 +12,7 @@ import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { useGetUserByIdSuspense } from "@/api/rest/generated/query/user-management/user-management";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
-import UserDeleteForm from "@/components/admin/users/UserDeleteForm";
+import UserDeleteForm from "@/components/users/UserDeleteForm";
 
 function DeleteUserModal() {
     const { id } = useParams<{ id: string }>();

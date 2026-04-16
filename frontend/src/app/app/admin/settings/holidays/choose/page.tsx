@@ -10,7 +10,7 @@
 "use client";
 
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import HolidayChooseYearForm from "@/components/admin/settings/holidays/HolidayChooseYearForm";
+import HolidayChooseYearForm from "@/components/settings/holidays/HolidayChooseYearForm";
 import dynamic from "next/dynamic";
 import { useGetImportedYearsSuspense } from "@/api/rest/generated/query/holiday-import/holiday-import";
 

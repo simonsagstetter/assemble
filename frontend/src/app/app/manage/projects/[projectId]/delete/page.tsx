@@ -13,7 +13,7 @@ import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { useGetProjectByIdSuspense } from "@/api/rest/generated/query/projects/projects";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import ProjectDeleteForm from "@/components/manage/projects/ProjectDeleteForm";
+import ProjectDeleteForm from "@/components/projects/ProjectDeleteForm";
 
 function DeleteProjectPage() {
     const { projectId } = useParams<{ projectId: string }>();

@@ -14,7 +14,7 @@ import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useGetEmployeeSuspense } from "@/api/rest/generated/query/employees/employees";
 import FormPageHeader from "@/components/custom-ui/FormPageHeader";
-import EmployeeDeleteForm from "@/components/manage/employees/EmployeeDeleteForm";
+import EmployeeDeleteForm from "@/components/employees/EmployeeDeleteForm";
 
 function EmployeeDeletePage() {
     const { employeeId } = useParams<{ employeeId: string }>();

@@ -9,7 +9,7 @@
  */
 "use client";
 import dynamic from "next/dynamic";
-import UserCreateForm from "@/components/admin/users/UserCreateForm";
+import UserCreateForm from "@/components/users/UserCreateForm";
 import ModalHeader from "@/components/custom-ui/ModalHeader";
 
 function CreateUserModal() {

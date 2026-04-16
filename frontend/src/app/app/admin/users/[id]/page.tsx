@@ -10,7 +10,7 @@
 "use client"
 import { useParams } from "next/navigation";
 import { useGetUserByIdSuspense } from "@/api/rest/generated/query/user-management/user-management";
-import UserDetail from "@/components/admin/users/UserDetail";
+import UserDetail from "@/components/users/UserDetail";
 import dynamic from "next/dynamic";
 
 function UserDetailPage() {
