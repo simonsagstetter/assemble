@@ -23,9 +23,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(properties = "assemble.env=prod")
+@SpringBootTest(properties = {
+        "assemble.bootstrap=true",
+        "assemble.superuser.username=assemble",
+        "assemble.superuser.password=password"
+})
 @DisplayName("UserBootstrap Integration Test")
 @Import(TestcontainersConfiguration.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -41,7 +44,7 @@ class UserBootstrapTest {
 
         assertEquals( 1, users.size() );
 
-        assertTrue( users.getFirst().getUsername().equals( "admin" ) );
+        assertEquals( "assemble", users.getFirst().getUsername() );
     }
 
 }
