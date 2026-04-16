@@ -15,7 +15,8 @@ import {
     addDays,
     format,
     getDay,
-    getDaysInMonth, isSameDay,
+    getDaysInMonth,
+    isSameDay,
     lastDayOfMonth,
     startOfMonth,
     startOfWeek,
@@ -35,7 +36,7 @@ function calculateDayTotal( timeentries: TimeEntryDTO[] ): number {
 function mapTimeEntriesToDayEvents( timeentries: TimeEntryDTO[] ): EventData[] {
     return timeentries.map( entry => ( {
         id: entry.id,
-        updateLink: `/app/timetracking/timeentries/${ entry.id }/update`,
+        updateLink: `/app/timetracking/timeentries/${ entry.id }/edit`,
         deleteLink: `/app/timetracking/timeentries/${ entry.id }/delete`,
         title: entry.project.name,
         time: isoDurationToMs( entry.totalTime ) - isoDurationToMs( entry.pauseTime ),
