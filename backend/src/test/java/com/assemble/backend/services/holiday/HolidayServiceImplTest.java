@@ -76,7 +76,7 @@ class HolidayServiceImplTest {
                 .endDate( LocalDate.now() )
                 .nationWide( false )
                 .subdivisions( subdivisions )
-                .temporalScope( TemporalScope.FullDay )
+                .temporalScope( TemporalScope.FULL_DAY )
                 .createdBy( userAudit )
                 .lastModifiedBy( userAudit )
                 .createdDate( now )

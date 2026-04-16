@@ -56,7 +56,7 @@ class HolidayRestControllerTest {
                 .endDate( LocalDate.of( 2026, 1, 1 ) )
                 .nationWide( true )
                 .subdivisions( null )
-                .temporalScope( TemporalScope.FullDay )
+                .temporalScope( TemporalScope.FULL_DAY )
                 .build();
     }
 
