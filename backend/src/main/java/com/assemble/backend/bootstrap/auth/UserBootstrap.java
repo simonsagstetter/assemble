@@ -19,14 +19,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.yaml.snakeyaml.error.MissingEnvironmentVariableException;
 
 import java.util.List;
 
 @Component
-@ConditionalOnProperty(
-        name = "assemble.env",
-        havingValue = "prod"
-)
+@ConditionalOnProperty(name = "assemble.bootstrap", havingValue = "true")
 @AllArgsConstructor
 public class UserBootstrap implements CommandLineRunner {
 
@@ -40,8 +38,11 @@ public class UserBootstrap implements CommandLineRunner {
             String username = environment.getProperty( "assemble.superuser.username" );
             String rawPassword = environment.getProperty( "assemble.superuser.password" );
 
-            if ( username == null ) username = "admin";
-            if ( rawPassword == null ) rawPassword = "password";
+            if ( username == null || rawPassword == null ) {
+                throw new MissingEnvironmentVariableException(
+                        "With bootstrap set to true you must also configure assemble.superuser.username and assemble.superuser.password."
+                );
+            }
 
             User superUser = User.builder()
                     .firstname( "Super" )
