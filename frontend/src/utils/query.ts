@@ -8,13 +8,17 @@
  * All rights reserved.
  */
 
-import { type QueryClient } from "@tanstack/react-query";
+import { InvalidateQueryFilters, type QueryClient } from "@tanstack/react-query";
 
-async function invalidateQueries( queryClient: QueryClient, queryKeys: Array<ReadonlyArray<string>> ) {
-    const promises = queryKeys.map(
-        async queryKey => await queryClient.invalidateQueries( { queryKey } )
-    )
+async function invalidateAllQueries( queryClient: QueryClient, queries: Array<InvalidateQueryFilters<readonly unknown[]>> ) {
+    const promises = queries.map(
+        async ( { queryKey, refetchType } ) => queryClient.invalidateQueries( {
+            queryKey,
+            refetchType: refetchType || "none"
+        } )
+    );
+
     return await Promise.all( promises );
 }
 
-export { invalidateQueries }
+export { invalidateAllQueries }
