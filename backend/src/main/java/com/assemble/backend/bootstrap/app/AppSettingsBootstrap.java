@@ -39,7 +39,7 @@ public class AppSettingsBootstrap implements CommandLineRunner {
                     .build();
 
             AppSettings appSettings = AppSettings.builder()
-                    .companyName( "" )
+                    .companyName( "Assemble" )
                     .companyAddress( address )
                     .holidaySubdivisionCode( SubdivisionCode.BE )
                     .build();
