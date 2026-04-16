@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
-import { config } from "dotenv";
+import { loadEnvConfig } from '@next/env'
 
 const isDev = process.env.NODE_ENV === "development";
-config( { path: isDev ? ".env.development" : ".env.production" } );
+const projectDir = process.cwd()
+
+loadEnvConfig( isDev ? projectDir + "/.env.development" : projectDir + ".env.production" )
 
 if ( process.env.BACKEND_API_URL === undefined ) throw new Error( "BACKEND_API_URL is not defined in .env file." )
 
