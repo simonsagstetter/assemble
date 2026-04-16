@@ -19,6 +19,7 @@ import com.assemble.backend.repositories.auth.UserRepository;
 import com.assemble.backend.repositories.employee.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Primary
 public class UserAdminServiceImpl implements UserAdminService {
 
     private final UserRepository userRepository;
@@ -194,7 +196,7 @@ public class UserAdminServiceImpl implements UserAdminService {
 
     @Override
     @Transactional
-    public void setUserPassword( String id, String newPassword, Boolean invalidateAllSessions ) {
+    public void setUserPassword( String id, String newPassword, boolean invalidateAllSessions ) {
         User user = userRepository.findById( UUID.fromString( id ) )
                 .orElseThrow(
                         () -> new EntityNotFoundException( "Could not find user with id: " + id )

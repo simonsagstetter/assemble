@@ -260,7 +260,7 @@ public class UserAdminRestController {
         userAdminService.setUserPassword(
                 id,
                 userUpdatePasswordDTO.getNewPassword(),
-                userUpdatePasswordDTO.getInvalidateAllSessions()
+                userUpdatePasswordDTO.isInvalidateAllSessions()
         );
 
         return ResponseEntity.noContent().build();

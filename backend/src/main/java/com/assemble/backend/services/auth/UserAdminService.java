@@ -33,7 +33,7 @@ public interface UserAdminService {
 
     UserAdminDTO updateUser( String id, UserUpdateDTO user );
 
-    void setUserPassword( String id, String newPassword, Boolean invalidateAllSessions );
+    void setUserPassword( String id, String newPassword, boolean invalidateAllSessions );
 
     void deleteUser( String id );
 }

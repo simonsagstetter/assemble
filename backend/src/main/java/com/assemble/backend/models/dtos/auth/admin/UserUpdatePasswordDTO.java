@@ -31,7 +31,7 @@ public class UserUpdatePasswordDTO {
     @NonNull
     @NotNull
     @Builder.Default
-    Boolean invalidateAllSessions = false;
+    boolean invalidateAllSessions = false;
 
     @Schema(
             requiredMode = Schema.RequiredMode.REQUIRED,
