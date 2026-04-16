@@ -72,7 +72,6 @@ export default async function proxy( request: NextRequest ) {
 
 export const config = {
     matcher: [
-        // Exclude API routes, static files, image optimizations, and .png files
-        '/((?!rest|_next/static|_next/image|.*\\.png$).*)',
+        "/((?!rest|_next/static|_next/image|.*\\.png$).*)",
     ],
 }
