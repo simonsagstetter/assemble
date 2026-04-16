@@ -1,6 +1,6 @@
 /*
  * assemble
- * status.tsx
+ * Status.tsx
  *
  * Copyright (c) 2026 Simon Sagstetter
  *
@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 
 function Status(
     { label, variant = "green", className }:
-    { label?: string, variant?: "green" | "red", className?: string }
+    Readonly<{ label?: string, variant?: "green" | "red", className?: string }>
 ) {
     const isGreen = variant === "green";
     return <Badge className={ `${ className }  **:text-primary-foreground` }

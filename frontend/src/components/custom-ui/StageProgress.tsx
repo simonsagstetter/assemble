@@ -1,6 +1,6 @@
 /*
  * assemble
- * progress.tsx
+ * StageProgress.tsx
  *
  * Copyright (c) 2025 Simon Sagstetter
  *
@@ -17,7 +17,7 @@ type StageProgressProps<T> = {
     value: T
 }
 
-export default function StageProgress<T>( { label, values, value }: StageProgressProps<T> ) {
+export default function StageProgress<T>( { label, values, value }: Readonly<StageProgressProps<T>> ) {
     const getStageProgressPercent = useCallback( ( stage: T ) => {
         return Math.round( ( ( values.indexOf( stage ) + 1 ) / values.length ) * 100 );
     }, [ values ] );
