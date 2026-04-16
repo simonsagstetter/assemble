@@ -8,17 +8,9 @@
  * All rights reserved.
  */
 import Day from "@/components/custom-ui/calendar/Day";
-import {
-    addDays,
-    subDays,
-    subMonths
-} from "date-fns";
+import { addDays, subDays, subMonths } from "date-fns";
 import useCalendar from "@/hooks/use-calendar";
-import {
-    calculateWeekTotals,
-    createDayInfo,
-    getMonthDayRange
-} from "@/utils/calendar/timeentries";
+import { calculateWeekTotals, createDayInfo, getMonthDayRange } from "@/utils/calendar/timeentries";
 import { ReactElement } from "react";
 import { MonthDayRange } from "@/types/calendar/calendar.types";
 import { HolidaysByDate, TimeEntriesByDate } from "@/store/calendar-store";
@@ -39,11 +31,11 @@ export default function MonthGrid() {
     const rangeStart = subDays( range.firstDay, range.firstDayWeekDay );
     const rangeEnd = addDays( range.lastDay, range.nextMonthDays );
     const weekTotals = calculateWeekTotals( events, rangeStart, rangeEnd );
-
     days.push(
         ...renderPreviousMonthDays( range, events, weekTotals ),
         ...renderCurrentMonthDays( range, events, holidays, weekTotals, selectedDate ),
-...renderNextMonthDays( range, events, weekTotals );
+        ...renderNextMonthDays( range, events, weekTotals )
+    );
 
     const rows = Math.ceil( days.length / 7 );
     const cssClasses = `grid flex-1 ${ rowClasses[ rows as keyof typeof rowClasses ] } grid-cols-7`;
