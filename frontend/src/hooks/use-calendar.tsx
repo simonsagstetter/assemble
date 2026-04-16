@@ -1,6 +1,6 @@
 /*
  * assemble
- * useCalendar.tsx
+ * use-calendar.tsx
  *
  * Copyright (c) 2026 Simon Sagstetter
  *

@@ -1,6 +1,6 @@
 /*
  * assemble
- * useUserContext.tsx
+ * use-user.tsx
  *
  * Copyright (c) 2025 Simon Sagstetter
  *
@@ -8,7 +8,7 @@
  * All rights reserved.
  */
 import { use } from "react";
-import { UserContext } from "@/store/userStore";
+import { UserContext } from "@/store/user-store";
 
 export default function useUserContext() {
     const ctx = use( UserContext );

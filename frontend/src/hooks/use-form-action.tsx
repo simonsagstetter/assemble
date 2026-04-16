@@ -1,13 +1,13 @@
 /*
  * assemble
- * useFormActionContext.tsx
+ * use-form-action.tsx
  *
  * Copyright (c) 2025 Simon Sagstetter
  *
  * This software is the property of Simon Sagstetter.
  * All rights reserved.
  */
-import { FormActionContext } from "@/store/formActionStore";
+import { FormActionContext } from "@/store/form-action-store";
 import { use } from "react";
 
 export default function useFormActionContext() {

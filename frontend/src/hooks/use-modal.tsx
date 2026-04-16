@@ -1,6 +1,6 @@
 /*
  * assemble
- * useModalContext.tsx
+ * use-modal.tsx
  *
  * Copyright (c) 2025 Simon Sagstetter
  *
