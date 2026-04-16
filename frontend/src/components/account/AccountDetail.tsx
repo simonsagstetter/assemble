@@ -23,7 +23,16 @@ import {
 type AccountDetailProps = {
     userDetails: User;
 }
-export default function AccountDetail( { userDetails: { firstname, lastname, username, email } }: AccountDetailProps ) {
+export default function AccountDetail(
+    {
+        userDetails: {
+            firstname,
+            lastname,
+            username,
+            email
+        }
+    }: Readonly<AccountDetailProps>
+) {
     return <Card className={ "p-0 border-0 shadow-none rounded-none" }>
         <CardHeader>
             <CardTitle>Account</CardTitle>
@@ -56,7 +65,7 @@ export default function AccountDetail( { userDetails: { firstname, lastname, use
                     </DetailRow>
                 </DetailSection>
             </FieldSet>
-            <ChangePasswordForm/>
+            <ChangePasswordForm username={ username }/>
         </CardContent>
     </Card>
 }

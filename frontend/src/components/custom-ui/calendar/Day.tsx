@@ -13,7 +13,7 @@ import Event from "@/components/custom-ui/calendar/Event";
 import { format } from "date-fns";
 import { msToHHmm } from "@/utils/duration";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import useCalendar from "@/hooks/useCalendar";
+import useCalendar from "@/hooks/use-calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { EventData } from "@/types/calendar/calendar.types";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
@@ -45,7 +45,7 @@ export default function Day(
         isSelected = false,
         isReadOnly = false,
         isHoliday = false,
-    }: DayProps
+    }: Readonly<DayProps>
 ) {
     const router = useRouter();
     const { setSelectedDate, settings } = useCalendar();

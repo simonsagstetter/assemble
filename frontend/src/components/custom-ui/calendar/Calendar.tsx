@@ -10,7 +10,7 @@
 
 import MonthView from "@/components/custom-ui/calendar/MonthView";
 import { HolidayDTO, TimeEntryDTO } from "@/api/rest/generated/query/openAPIDefinition.schemas";
-import useCalendar from "@/hooks/useCalendar";
+import useCalendar from "@/hooks/use-calendar";
 import { useEffect } from "react";
 import CalenderLoading from "@/components/custom-ui/calendar/CalendarLoading";
 
@@ -21,7 +21,7 @@ type CalendarProps = {
     disabled?: boolean;
 }
 
-export default function Calendar( { events, holidays, subdivisionCode, disabled = false }: CalendarProps ) {
+export default function Calendar( { events, holidays, subdivisionCode, disabled = false }: Readonly<CalendarProps> ) {
     const { setEvents, setHolidays, setSettings, settings, isLoading } = useCalendar();
 
     useEffect( () => {

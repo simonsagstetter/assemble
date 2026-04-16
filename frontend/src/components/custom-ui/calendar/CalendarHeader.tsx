@@ -11,7 +11,7 @@
 import { addMonths, format, isSameDay, isSameYear, lastDayOfMonth, startOfMonth, subMonths } from "date-fns";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import Link from "next/link";
-import useCalendar from "@/hooks/useCalendar";
+import useCalendar from "@/hooks/use-calendar";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Badge } from "@/components/ui/badge";

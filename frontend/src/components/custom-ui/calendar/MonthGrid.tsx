@@ -13,7 +13,7 @@ import {
     subDays,
     subMonths
 } from "date-fns";
-import useCalendar from "@/hooks/useCalendar";
+import useCalendar from "@/hooks/use-calendar";
 import {
     calculateWeekTotals,
     createDayInfo,
@@ -40,9 +40,10 @@ export default function MonthGrid() {
     const rangeEnd = addDays( range.lastDay, range.nextMonthDays );
     const weekTotals = calculateWeekTotals( events, rangeStart, rangeEnd );
 
-    days.push( ...renderPreviousMonthDays( range, events, weekTotals ) );
-    days.push( ...renderCurrentMonthDays( range, events, holidays, weekTotals, selectedDate ) );
-    days.push( ...renderNextMonthDays( range, events, weekTotals ) );
+    days.push(
+        ...renderPreviousMonthDays( range, events, weekTotals ),
+        ...renderCurrentMonthDays( range, events, holidays, weekTotals, selectedDate ),
+...renderNextMonthDays( range, events, weekTotals );
 
     const rows = Math.ceil( days.length / 7 );
     const cssClasses = `grid flex-1 ${ rowClasses[ rows as keyof typeof rowClasses ] } grid-cols-7`;

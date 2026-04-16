@@ -8,7 +8,7 @@
  * All rights reserved.
  */
 
-import useCalendar from "@/hooks/useCalendar";
+import useCalendar from "@/hooks/use-calendar";
 import { format } from "date-fns";
 import { mapTimeEntriesToDayEvents } from "@/utils/calendar/timeentries";
 import { msToHHmm } from "@/utils/duration";
