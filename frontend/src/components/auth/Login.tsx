@@ -63,7 +63,8 @@ export default function Login() {
     }
 
     useEffect( () => {
-        if ( searchParams.has( "referrer" ) && searchParams.get( "referrer" )! === "SESSION_INVALID" ) {
+        if ( searchParams.has( "referrer" )
+            && searchParams.get( "referrer" ) === "SESSION_INVALID" ) {
             form.setError( "root", { message: "Your session has expired. Please login again.", type: "manual" } )
         }
     }, [ searchParams, form ] )
