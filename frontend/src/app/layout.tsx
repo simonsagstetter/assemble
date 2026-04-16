@@ -12,7 +12,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
-import Providers from "@/components/custom-ui/Providers";
+import GlobalProvider from "@/providers/global-provider";
 
 export const metadata: Metadata = {
     title: "Assemble",
@@ -26,9 +26,9 @@ export default function RootLayout(
         <html lang="en">
         <body className="antialiased">
         <main>
-            <Providers>
+            <GlobalProvider>
                 { children }
-            </Providers>
+            </GlobalProvider>
         </main>
         <Toaster position="top-right"/>
         </body>
