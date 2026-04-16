@@ -1,6 +1,30 @@
+CREATE TABLE SESSIONS
+(
+    PRIMARY_ID            CHAR(36) NOT NULL,
+    SESSION_ID            CHAR(36) NOT NULL,
+    CREATION_TIME         BIGINT   NOT NULL,
+    LAST_ACCESS_TIME      BIGINT   NOT NULL,
+    MAX_INACTIVE_INTERVAL INT      NOT NULL,
+    EXPIRY_TIME           BIGINT   NOT NULL,
+    PRINCIPAL_NAME        VARCHAR(100),
+    CONSTRAINT SESSIONS_PK PRIMARY KEY (PRIMARY_ID)
+);
+
+CREATE UNIQUE INDEX SESSIONS_IX1 ON SESSIONS (SESSION_ID);
+CREATE INDEX SESSIONS_IX2 ON SESSIONS (EXPIRY_TIME);
+CREATE INDEX SESSIONS_IX3 ON SESSIONS (PRINCIPAL_NAME);
+
+CREATE TABLE SESSIONS_ATTRIBUTES
+(
+    SESSION_PRIMARY_ID CHAR(36)     NOT NULL,
+    ATTRIBUTE_NAME     VARCHAR(200) NOT NULL,
+    ATTRIBUTE_BYTES    BYTEA        NOT NULL,
+    CONSTRAINT SESSIONS_ATTRIBUTES_PK PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
+    CONSTRAINT SESSIONS_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SESSIONS (PRIMARY_ID) ON DELETE CASCADE
+);
 create table employees (date_of_birth date, created_date timestamp(6) with time zone not null, last_modified_date timestamp(6) with time zone not null, version bigint not null, bank_account_bic varchar(11), phone varchar(15), created_by_id uuid, id uuid not null, last_modified_by_id uuid, user_id uuid unique, address_number varchar(20), address_postal_code varchar(20), citizenship varchar(30), bank_account_iban varchar(34), address_city varchar(100), address_country varchar(100), address_state varchar(100), address_street varchar(100), bank_account_holder_name varchar(100), bank_account_institution_name varchar(100), health_insurance varchar(100), national_insurance_number varchar(100), place_of_birth varchar(100), tax_identification_number varchar(100), created_by_username varchar(255) not null, email varchar(255), first_name varchar(255) not null, last_modified_by_username varchar(255) not null, last_name varchar(255) not null, marital_status varchar(255) check (marital_status in ('SINGLE','MARRIED','CIVIL','DIVORCED','WIDOWED')), no varchar(255) not null unique, primary key (id));
 create table greetings (created_date timestamp(6) with time zone not null, last_modified_date timestamp(6) with time zone not null, version bigint not null, created_by_id uuid, id uuid not null, last_modified_by_id uuid, created_by_username varchar(255) not null, last_modified_by_username varchar(255) not null, message varchar(255) not null, primary key (id));
-create table holidays (end_date date not null, nation_wide boolean not null, start_date date not null, created_date timestamp(6) with time zone not null, last_modified_date timestamp(6) with time zone not null, version bigint not null, created_by_id uuid, id uuid not null, last_modified_by_id uuid, created_by_username varchar(255) not null, external_id varchar(255) not null unique, last_modified_by_username varchar(255) not null, name varchar(255) not null, temporal_scope varchar(255) not null check (temporal_scope in ('FullDay','HalfDay')), primary key (id));
+create table holidays (end_date date not null, nation_wide boolean not null, start_date date not null, created_date timestamp(6) with time zone not null, last_modified_date timestamp(6) with time zone not null, version bigint not null, created_by_id uuid, id uuid not null, last_modified_by_id uuid, created_by_username varchar(255) not null, external_id varchar(255) not null unique, last_modified_by_username varchar(255) not null, name varchar(255) not null, temporal_scope varchar(255) not null check (temporal_scope in ('FULL_DAY','HALF_DAY')), primary key (id));
 create table project_assignments (active boolean not null, hourly_rate numeric(38,2), created_date timestamp(6) with time zone not null, last_modified_date timestamp(6) with time zone not null, version bigint not null, created_by_id uuid, employee_id uuid not null, id uuid not null, last_modified_by_id uuid, project_id uuid not null, created_by_username varchar(255) not null, last_modified_by_username varchar(255) not null, primary key (id), unique (employee_id, project_id));
 create table projects (active boolean not null, created_date timestamp(6) with time zone not null, last_modified_date timestamp(6) with time zone not null, version bigint not null, created_by_id uuid, id uuid not null, last_modified_by_id uuid, category varchar(255), color varchar(255) not null check (color in ('RED','ORANGE','AMBER','YELLOW','LIME','GREEN','EMERALD','TEAL','CYAN','SKY','BLUE','INDIGO','VIOLET','PURPLE','PINK','ROSE','GRAY')), created_by_username varchar(255) not null, description varchar(255), last_modified_by_username varchar(255) not null, name varchar(255) not null unique, no varchar(255) unique, stage varchar(255) check (stage in ('PROPOSAL','NEGOTIATION','ASSIGNED','IMPLEMENTATION','FINAL_BILLING','COMPLETED','CLOSED')), type varchar(255) check (type in ('INTERNAL','EXTERNAL')), primary key (id));
 create table sequences (current_value bigint, version bigint, name varchar(255) not null, primary key (name));
