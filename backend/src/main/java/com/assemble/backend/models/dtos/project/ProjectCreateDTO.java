@@ -14,8 +14,8 @@ import com.assemble.backend.models.entities.project.ProjectColor;
 import com.assemble.backend.models.entities.project.ProjectStage;
 import com.assemble.backend.models.entities.project.ProjectType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -59,14 +59,14 @@ public class ProjectCreateDTO {
             accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
-    @Size(min = 1)
+    @Nullable
     private String category;
 
     @Schema(
             accessMode = Schema.AccessMode.READ_WRITE,
             requiredMode = Schema.RequiredMode.NOT_REQUIRED
     )
-    @Size(min = 1)
+    @Nullable
     private String description;
 
     @Schema(
